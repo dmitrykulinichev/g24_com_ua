@@ -1,0 +1,16 @@
+[
+    {
+        "title": "Початок роботи",
+        "items": [
+            { "title": "Вступ", "slug": "intro" },
+            { "title": "Встановлення", "slug": "installation" }
+        ]
+    },
+    {
+        "title": "Функціонал системи",
+        "items": [
+            { "title": "Робота з водіями", "slug": "drivers" },
+            { "title": "Звіти та аналітика", "slug": "reports" }
+        ]
+    }
+]

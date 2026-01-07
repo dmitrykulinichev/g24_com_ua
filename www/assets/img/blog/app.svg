@@ -1,0 +1,17 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+ <rect width="100%" height="100%" fill="#f3f4f6"/>
+
+ <!-- Телефон -->
+ <rect x="300" y="50" width="200" height="300" rx="20" fill="#1f2937"/>
+ <rect x="310" y="60" width="180" height="280" rx="10" fill="#ffffff"/>
+
+ <!-- Екран -->
+ <rect x="310" y="60" width="180" height="40" fill="#2563eb"/>
+ <circle cx="330" cy="80" r="10" fill="#ffffff" opacity="0.5"/>
+ <rect x="350" y="75" width="100" height="10" rx="5" fill="#ffffff"/>
+
+ <!-- Елементи інтерфейсу -->
+ <rect x="330" y="120" width="140" height="60" rx="5" fill="#e5e7eb"/>
+ <rect x="330" y="200" width="140" height="60" rx="5" fill="#e5e7eb"/>
+ <circle cx="400" cy="310" r="20" fill="#2563eb"/>
+</svg>

@@ -1,0 +1,12 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+ <rect width="100%" height="100%" fill="#f3f4f6"/>
+
+ <!-- Каністра -->
+ <path d="M350,100 L450,100 L470,130 L470,300 L330,300 L330,130 Z" fill="#ef4444"/>
+ <rect x="360" y="80" width="80" height="20" fill="#1f2937"/> <!-- Кришка -->
+ <path d="M350,150 L450,150" stroke="#b91c1c" stroke-width="5"/>
+
+ <!-- Стрілка вниз (економія) -->
+ <path d="M500,150 L500,250 L530,220 M500,250 L470,220" stroke="#10b981" stroke-width="10" fill="none"/>
+ <text x="550" y="210" font-family="Arial" font-size="40" fill="#10b981" font-weight="bold">-15%</text>
+</svg>
