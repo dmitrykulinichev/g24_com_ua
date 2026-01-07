@@ -13,58 +13,48 @@ class PricingController
 
     public function index()
     {
-        // Мок-дані (пізніше замінимо на API запит)
         $plans = [
-            [
-                'id' => 1,
-                'name' => 'Демо (Trial)',
-                'slug' => 'demo',
-                'price_monthly' => 0,
-                'price_yearly' => 0,
-                'currency' => 'UAH',
-                'features' => [
-                    'max_drivers' => 5,
-                    'max_vehicles' => 5,
-                    'support' => 'Email',
-                    'history' => '7 днів'
-                ],
-                'is_popular' => false,
-                'button_text' => 'Спробувати безкоштовно',
-                'button_link' => 'https://app.g24.com.ua/register?plan=demo'
-            ],
             [
                 'id' => 2,
                 'name' => 'Базовий (Basic)',
                 'slug' => 'basic',
                 'price_monthly' => 500,
-                'price_yearly' => 5000, // Економія 1000 грн
+                'price_yearly' => 5000,
                 'currency' => 'UAH',
+                'description' => 'Для невеликих парків, яким потрібен порядок.',
                 'features' => [
-                    'max_drivers' => 30,
-                    'max_vehicles' => 20,
-                    'support' => 'Email + Chat',
-                    'history' => '30 днів'
+                    'Облік автомобілів (до 20)',
+                    'База водіїв',
+                    'Призначення водіїв',
+                    'Базові звіти',
+                    'Telegram бот'
                 ],
-                'is_popular' => true,
+                'is_popular' => false,
                 'button_text' => 'Обрати Базовий',
-                'button_link' => 'https://app.g24.com.ua/register?plan=basic'
+                'button_link' => '#'
             ],
             [
                 'id' => 3,
                 'name' => 'Професійний (Pro)',
                 'slug' => 'pro',
                 'price_monthly' => 1500,
-                'price_yearly' => 15000, // Економія 3000 грн
+                'price_yearly' => 15000,
                 'currency' => 'UAH',
+                'description' => 'Повний контроль, фінанси та автоматизація.',
                 'features' => [
-                    'max_drivers' => 150,
-                    'max_vehicles' => 100,
-                    'support' => '24/7 Пріоритетна',
-                    'history' => 'Необмежено'
+                    'Облік автомобілів (до 100)',
+                    'Технічне обслуговування (ТО)',
+                    'Страхування',
+                    'База водіїв та Графік роботи',
+                    'Призначення водіїв',
+                    'Розширені звіти',
+                    'Інтеграція з Uklon',
+                    'Telegram бот',
+                    'Фінансовий модуль'
                 ],
-                'is_popular' => false,
+                'is_popular' => true,
                 'button_text' => 'Обрати Pro',
-                'button_link' => 'https://app.g24.com.ua/register?plan=pro'
+                'button_link' => '#'
             ]
         ];
 

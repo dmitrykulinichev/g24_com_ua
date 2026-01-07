@@ -26,8 +26,20 @@
             margin: 0 auto;
         }
 
+        /* Trial Badge */
+        .trial-badge {
+            display: inline-block;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+            color: #60a5fa; /* Світло-блакитний */
+        }
+
         .pricing-container {
-            max-width: 1200px;
+            max-width: 1000px;
             margin: -3rem auto 4rem;
             padding: 0 2rem;
             position: relative;
@@ -84,6 +96,14 @@
             text-align: center;
         }
 
+        .plan-desc {
+            text-align: center;
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            min-height: 2.5em;
+        }
+
         .plan-price {
             text-align: center;
             margin-bottom: 2rem;
@@ -112,10 +132,11 @@
         }
 
         .plan-features li {
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             padding-left: 1.5rem;
             position: relative;
             color: var(--text-color);
+            font-size: 0.95rem;
         }
 
         .plan-features li::before {
@@ -134,6 +155,10 @@
             text-decoration: none;
             font-weight: 600;
             transition: background 0.2s;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            font-size: 1rem;
         }
 
         .plan-btn.primary {
@@ -147,6 +172,7 @@
         .plan-btn.outline {
             border: 2px solid var(--primary-color);
             color: var(--primary-color);
+            background: transparent;
         }
         .plan-btn.outline:hover {
             background-color: #eff6ff;
@@ -157,7 +183,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             color: var(--white);
         }
 
@@ -232,9 +258,13 @@
     <div x-data="{ yearly: false }">
         <div class="pricing-header">
             <h1>Тарифні плани</h1>
-            <p>Оберіть рішення, яке найкраще підходить для вашого бізнесу. Змінюйте план у будь-який момент.</p>
+            <p>Оберіть рішення, яке найкраще підходить для вашого бізнесу.</p>
 
-            <div class="billing-toggle">
+            <div class="trial-badge">
+                🎁 14 днів безкоштовного доступу до будь-якого тарифу
+            </div>
+
+            <div class="billing-toggle" style="margin-top: 2rem;">
                 <span :class="{ 'font-bold': !yearly }">Щомісяця</span>
                 <label class="toggle-switch">
                     <input type="checkbox" x-model="yearly">
@@ -253,6 +283,7 @@
                         @endif
 
                         <div class="plan-name">{{ $plan['name'] }}</div>
+                        <div class="plan-desc">{{ $plan['description'] }}</div>
 
                         <div class="plan-price">
                             <span class="price-currency">{{ $plan['currency'] }}</span>
@@ -268,17 +299,15 @@
                         </div>
 
                         <ul class="plan-features">
-                            <li><strong>{{ $plan['features']['max_drivers'] }}</strong> водіїв</li>
-                            <li><strong>{{ $plan['features']['max_vehicles'] }}</strong> авто</li>
-                            <li>Підтримка: {{ $plan['features']['support'] }}</li>
-                            <li>Історія: {{ $plan['features']['history'] }}</li>
-                            <li>Мобільний додаток</li>
-                            <li>GPS моніторинг</li>
+                            @foreach($plan['features'] as $feature)
+                                <li>{{ $feature }}</li>
+                            @endforeach
                         </ul>
 
-                        <a href="{{ $plan['button_link'] }}" class="plan-btn {{ $plan['is_popular'] ? 'primary' : 'outline' }}">
+                        <!-- Кнопка відкриває модалку -->
+                        <button @click="$dispatch('open-order-modal', { plan: '{{ $plan['name'] }}' })" class="plan-btn {{ $plan['is_popular'] ? 'primary' : 'outline' }}">
                             {{ $plan['button_text'] }}
-                        </a>
+                        </button>
                     </div>
                 @endforeach
             </div>

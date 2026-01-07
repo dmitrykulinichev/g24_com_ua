@@ -8,6 +8,12 @@ $app->get('/', 'App\Controllers\LandingController@index');
 // Тарифи
 $app->get('/pricing', 'App\Controllers\PricingController@index');
 
+// Можливості
+$app->get('/features', 'App\Controllers\FeaturesController@index');
+
+// Контакти
+$app->get('/contacts', 'App\Controllers\ContactsController@index');
+
 // Документація
 $app->get('/docs', 'App\Controllers\DocsController@index');
 $app->get('/docs/{slug}', 'App\Controllers\DocsController@show');
@@ -16,5 +22,8 @@ $app->get('/docs/{slug}', 'App\Controllers\DocsController@show');
 $app->get('/blog', 'App\Controllers\BlogController@index');
 $app->get('/blog/{slug}', 'App\Controllers\BlogController@show');
 
-// Обробка форми
-$app->post('/contact', 'App\Controllers\ContactController@submit');
+// API для статичних сторінок (модалки)
+$app->get('/api/page/{slug}', 'App\Controllers\PageController@apiShow');
+
+// Обробка заявки (Lead)
+$app->post('/api/lead', 'App\Controllers\LeadController@submit');

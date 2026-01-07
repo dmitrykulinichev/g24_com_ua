@@ -41,10 +41,10 @@
             </button>
 
             <div class="nav-links" :class="{ 'mobile-open': isOpen }">
-                <a href="/#features" @click="isOpen = false">Можливості</a>
-                <a href="/pricing" @click="isOpen = false">Ціни</a> <!-- Додано -->
+                <a href="/features" @click="isOpen = false">Можливості</a> <!-- Змінено -->
+                <a href="/pricing" @click="isOpen = false">Тарифи</a>
                 <a href="/blog" @click="isOpen = false">Блог</a>
-                <a href="/#contact" @click="isOpen = false">Контакти</a>
+                <a href="/contacts" @click="isOpen = false">Контакти</a>
                 <a href="/docs" @click="isOpen = false">Документація</a>
             </div>
         </nav>

@@ -18,7 +18,8 @@
             <div class="container">
                 <h1>CRM-система для таксопарків<br>та логістичних компаній</h1>
                 <p>Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.</p>
-                <a href="#contact" class="btn-primary">Підключитися</a>
+                <!-- Кнопка відкриває модалку -->
+                <button @click="$dispatch('open-order-modal', {})" class="btn-primary">Підключитися</button>
             </div>
         </section>
 
@@ -80,7 +81,7 @@
                             <li>Облік ремонтів та запчастин</li>
                             <li>Скоринг водіїв (стиль водіння)</li>
                         </ul>
-                        <a href="#contact" class="btn-primary">Дізнатися більше</a>
+                        <button @click="$dispatch('open-order-modal', { plan: 'Власні парки' })" class="btn-primary">Дізнатися більше</button>
                     </div>
                     <div class="product-card">
                         <h3>🤝 Для партнерських парків</h3>
@@ -91,7 +92,7 @@
                             <li>Інтеграція з агрегаторами (Bolt, Uklon, Uber)</li>
                             <li>Автоматична бухгалтерія</li>
                         </ul>
-                        <a href="#contact" class="btn-primary">Дізнатися більше</a>
+                        <button @click="$dispatch('open-order-modal', { plan: 'Партнерські парки' })" class="btn-primary">Дізнатися більше</button>
                     </div>
                 </div>
             </div>
@@ -152,77 +153,14 @@
             </div>
         </section>
 
-        <!-- Contact Form (AJAX with Alpine.js) -->
+        <!-- Секція контактів (стара форма видалена, залишили тільки заклик) -->
         <section id="contact" class="contact-section">
-            <div class="container">
+            <div class="container" style="text-align: center;">
                 <div class="section-title">
                     <h2>Залишилися запитання?</h2>
                     <p>Залиште заявку і ми зв'яжемося з вами протягом 15 хвилин.</p>
                 </div>
-
-                <form class="contact-form" x-data="{
-                    formData: { name: '', email: '', company: '', phone: '' },
-                    loading: false,
-                    success: false,
-                    error: null,
-                    submitForm() {
-                        this.loading = true;
-                        this.error = null;
-
-                        fetch('/contact', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(this.formData)
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            this.loading = false;
-                            if (data.status === 'success') {
-                                this.success = true;
-                                this.formData = { name: '', email: '', company: '', phone: '' };
-                            } else {
-                                // Показуємо першу помилку з масиву або загальне повідомлення
-                                this.error = data.errors ? Object.values(data.errors)[0] : data.message;
-                            }
-                        })
-                        .catch(() => {
-                            this.loading = false;
-                            this.error = 'Сталася помилка. Спробуйте пізніше.';
-                        });
-                    }
-                }" @submit.prevent="submitForm">
-
-                    <!-- Повідомлення про успіх -->
-                    <div x-show="success" style="display: none; background: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;">
-                        Дякуємо! Ваша заявка прийнята. Ми зателефонуємо вам найближчим часом.
-                    </div>
-
-                    <!-- Повідомлення про помилку -->
-                    <div x-show="error" style="display: none; background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;" x-text="error"></div>
-
-                    <div x-show="!success">
-                        <div class="form-group">
-                            <label>Ваше ім'я</label>
-                            <input type="text" x-model="formData.name" placeholder="Введіть ваше ім'я" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Email</label>
-                            <input type="email" x-model="formData.email" placeholder="example@company.com" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Назва компанії / таксопарку</label>
-                            <input type="text" x-model="formData.company" placeholder="Назва вашого бізнесу">
-                        </div>
-                        <div class="form-group">
-                            <label>Номер телефону</label>
-                            <input type="tel" x-model="formData.phone" placeholder="+380 ..." required>
-                        </div>
-                        <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading">
-                            <span x-show="!loading">Відправити заявку</span>
-                            <span x-show="loading" style="display: none;">Відправка...</span>
-                        </button>
-                    </div>
-                </form>
+                <button @click="$dispatch('open-order-modal', {})" class="btn-primary" style="font-size: 1.2rem; padding: 1rem 3rem;">Зв'язатися з нами</button>
             </div>
         </section>
     </main>

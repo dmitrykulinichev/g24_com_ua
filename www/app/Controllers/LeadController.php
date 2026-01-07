@@ -7,7 +7,7 @@ use App\Services\TelegramService;
 use App\Services\CrmService;
 use App\Services\LeadStorageService;
 
-class ContactController
+class LeadController
 {
     protected $telegram;
     protected $crm;
@@ -15,8 +15,6 @@ class ContactController
 
     public function __construct()
     {
-        // У повноцінному Leaf MVC це робиться через Dependency Injection,
-        // але тут ми просто створюємо екземпляри вручну.
         $this->telegram = new TelegramService();
         $this->crm = new CrmService();
         $this->storage = new LeadStorageService();
@@ -30,7 +28,14 @@ class ContactController
             
             Logger::info('Отримано нову заявку', ['ip' => $ip]);
 
-            // 1. Валідація
+            // 1. Перевірка reCAPTCHA
+            if (!$this->verifyRecaptcha($data['g-recaptcha-response'] ?? null)) {
+                Logger::info('Помилка reCAPTCHA', ['ip' => $ip]);
+                response()->json(['status' => 'error', 'message' => 'Будь ласка, підтвердіть, що ви не робот.'], 422);
+                return;
+            }
+
+            // 2. Валідація
             $errors = $this->validate($data);
             if (!empty($errors)) {
                 Logger::info('Помилка валідації', $errors);
@@ -42,8 +47,9 @@ class ContactController
             $data['ip'] = $ip;
             $data['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
             $data['created_at'] = date('Y-m-d H:i:s');
+            $data['plan'] = $data['plan'] ?? '-';
 
-            // 2. Обробка заявки (через сервіси)
+            // 3. Обробка заявки
             $this->storage->save($data);
             $this->crm->sendLead($data);
             $this->telegram->sendLead($data);
@@ -51,13 +57,45 @@ class ContactController
             response()->json(['status' => 'success', 'message' => 'Заявку прийнято!']);
 
         } catch (\Throwable $e) {
-            Logger::error('Критична помилка в ContactController', [
+            Logger::error('Критична помилка в LeadController', [
                 'message' => $e->getMessage(),
                 'trace' => $e->getTraceAsString()
             ]);
             
             response()->json(['status' => 'error', 'message' => 'Server Error'], 500);
         }
+    }
+
+    private function verifyRecaptcha($token)
+    {
+        $secret = $_ENV['RECAPTCHA_SECRET_KEY'] ?? null;
+        
+        if (!$secret || $secret === 'YOUR_SECRET_KEY') {
+            return true;
+        }
+
+        if (!$token) return false;
+
+        $url = 'https://www.google.com/recaptcha/api/siteverify';
+        $data = [
+            'secret' => $secret,
+            'response' => $token,
+            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? null
+        ];
+
+        $options = [
+            'http' => [
+                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method' => 'POST',
+                'content' => http_build_query($data)
+            ]
+        ];
+
+        $context = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        $json = json_decode($result, true);
+
+        return $json['success'] ?? false;
     }
 
     private function validate($data)

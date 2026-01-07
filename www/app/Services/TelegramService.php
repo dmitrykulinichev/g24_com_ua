@@ -24,7 +24,11 @@ class TelegramService
         $message .= "👤 Ім'я: " . $data['name'] . "\n";
         $message .= "📧 Email: " . ($data['email'] ?? '-') . "\n";
         $message .= "🏢 Компанія: " . ($data['company'] ?? '-') . "\n";
-        $message .= "📞 Телефон: " . $data['phone'];
+        $message .= "📞 Телефон: " . $data['phone'] . "\n";
+        
+        if (!empty($data['plan'])) {
+            $message .= "📦 Тариф: *" . $data['plan'] . "*";
+        }
 
         return $this->sendMessage($message);
     }
