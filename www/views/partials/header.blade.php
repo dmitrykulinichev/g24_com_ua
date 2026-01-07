@@ -3,9 +3,9 @@
 
 <!-- SEO Meta Tags -->
 @php
-    $pageTitle = $meta['title'] ?? 'G24.com.ua - CRM для автопарків';
+    $pageTitle = $meta['title'] ?? 'Garage24 - CRM для автопарків';
     if (isset($meta['title'])) {
-        $pageTitle .= ' | G24';
+        $pageTitle .= ' | Garage24';
     }
     $pageDesc = $meta['description'] ?? 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.';
     $pageImage = $meta['image'] ?? '/assets/img/landing/og-image.jpg';
@@ -32,7 +32,7 @@
 <header x-data="{ isOpen: false }">
     <div class="container">
         <nav>
-            <a href="/" class="logo">G24.com.ua</a>
+            <a href="/" class="logo">Garage24</a>
 
             <button class="mobile-menu-btn" @click="isOpen = !isOpen" aria-label="Меню">
                 <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">

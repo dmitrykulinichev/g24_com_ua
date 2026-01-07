@@ -15,7 +15,7 @@ class ContactsController
     {
         $meta = [
             'title' => 'Контакти',
-            'description' => 'Зв\'яжіться з нами: телефон, email, адреса офісу G24 у Києві.'
+            'description' => 'Зв\'яжіться з нами: телефон, email, адреса офісу Garage24 у Києві.'
         ];
 
         echo $this->blade->make('contacts', ['meta' => $meta])->render();

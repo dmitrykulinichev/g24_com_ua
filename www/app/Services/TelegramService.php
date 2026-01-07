@@ -20,7 +20,7 @@ class TelegramService
             return false;
         }
 
-        $message = "🚀 *Нова заявка G24*\n\n";
+        $message = "🚀 *Нова заявка Garage24*\n\n";
         $message .= "👤 Ім'я: " . $data['name'] . "\n";
         $message .= "📧 Email: " . ($data['email'] ?? '-') . "\n";
         $message .= "🏢 Компанія: " . ($data['company'] ?? '-') . "\n";

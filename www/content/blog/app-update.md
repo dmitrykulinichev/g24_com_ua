@@ -1,7 +1,7 @@
 # Оновлення мобільного додатку v2.0
 Date: 2023-11-15
 
-Вийшла нова версія додатку G24 Driver для Android та iOS.
+Вийшла нова версія додатку Garage24 Driver для Android та iOS.
 
 ![Мобільний додаток](/assets/img/blog/app.svg)
 

@@ -43,19 +43,32 @@
             margin-bottom: 2rem;
         }
 
+        .feature-category-header {
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
         .feature-category-title {
             font-size: 1.5rem;
             color: var(--secondary-color);
-            margin-bottom: 1.5rem;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-category-slogan {
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-left: 3rem; /* Відступ під іконку */
         }
 
         .category-icon {
             font-size: 2rem;
             margin-right: 1rem;
+            width: 2rem;
+            text-align: center;
         }
 
         .feature-items {
@@ -66,7 +79,7 @@
 
         .feature-item h3 {
             font-size: 1.1rem;
-            color: var(--primary-color);
+            color: var(--secondary-color);
             margin-bottom: 0.5rem;
             font-weight: 600;
         }
@@ -94,6 +107,13 @@
             margin-bottom: 2rem;
             color: #4b5563;
         }
+
+        @media (max-width: 768px) {
+            .feature-category-slogan {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -101,16 +121,22 @@
 
     <div class="features-header">
         <h1>Можливості системи</h1>
-        <p>G24 — це комплексне рішення, яке закриває всі потреби сучасного автопарку.</p>
+        <p>Garage24 — це комплексне рішення, яке закриває всі потреби сучасного автопарку.</p>
     </div>
 
     <div class="features-container">
         @foreach($features as $categoryName => $category)
             <div class="feature-section">
-                <h2 class="feature-category-title">
-                    <span class="category-icon">{{ $category['icon'] }}</span>
-                    {{ $categoryName }}
-                </h2>
+                <div class="feature-category-header">
+                    <h2 class="feature-category-title">
+                        <span class="category-icon">{{ $category['icon'] }}</span>
+                        {{ $categoryName }}
+                    </h2>
+                    @if(isset($category['slogan']))
+                        <div class="feature-category-slogan">{{ $category['slogan'] }}</div>
+                    @endif
+                </div>
+
                 <div class="feature-items">
                     @foreach($category['items'] as $item)
                         <div class="feature-item">
@@ -125,7 +151,8 @@
         <div class="cta-block">
             <h2>Готові спробувати?</h2>
             <p>Отримайте повний доступ до всіх функцій на 14 днів безкоштовно.</p>
-            <button @click="$dispatch('open-order-modal', {})" class="btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;">Почати безкоштовно</button>
+            <!-- Змінено на посилання -->
+            <a href="/pricing" class="btn-primary" style="padding: 1rem 3rem; font-size: 1.1rem;">Почати безкоштовно</a>
         </div>
     </div>
 

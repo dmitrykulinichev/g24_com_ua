@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title та Meta тепер у header.blade.php -->
+    <title>Блог - Garage24</title>
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -86,7 +86,6 @@
         <a href="/blog" class="back-link">← Всі новини</a>
 
         <div class="article-meta">
-            <!-- Виправлено: використовуємо $meta['date'] замість $date -->
             Опубліковано: {{ date('d.m.Y', $meta['date']) }}
         </div>
 

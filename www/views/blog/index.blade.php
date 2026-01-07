@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог - G24.com.ua</title>
+    <title>Блог - Garage24</title>
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +71,7 @@
     <main class="blog-container">
         <div class="blog-header">
             <h1>Блог розробників</h1>
-            <p>Новини, оновлення та корисні поради щодо використання G24.</p>
+            <p>Новини, оновлення та корисні поради щодо використання Garage24.</p>
         </div>
 
         @if(count($posts) > 0)

@@ -2,7 +2,7 @@
     <div class="container">
         <div class="footer-grid">
             <div class="footer-col">
-                <h4>G24.com.ua</h4>
+                <h4>Garage24</h4>
                 <p>Сучасні рішення для управління транспортом.</p>
             </div>
             <div class="footer-col">
@@ -26,7 +26,7 @@
         </div>
         <div class="copyright">
             <p>
-                &copy; {{ date('Y') }} G24.com.ua. Всі права захищено.
+                &copy; {{ date('Y') }} Garage24. Всі права захищено.
                 <br>
                 <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Політика конфіденційності', slug: 'privacy' })">Політика конфіденційності</a> |
                 <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Угода користувача', slug: 'terms' })">Угода користувача</a>
