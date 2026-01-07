@@ -5,11 +5,14 @@ use Leaf\App;
 // Головна сторінка
 $app->get('/', 'App\Controllers\LandingController@index');
 
-// Тарифи
-$app->get('/pricing', 'App\Controllers\PricingController@index');
-
 // Можливості
 $app->get('/features', 'App\Controllers\FeaturesController@index');
+
+// Кому підійде (Target)
+$app->get('/target', 'App\Controllers\TargetController@index');
+
+// Тарифи
+$app->get('/pricing', 'App\Controllers\PricingController@index');
 
 // Контакти
 $app->get('/contacts', 'App\Controllers\ContactsController@index');

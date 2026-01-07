@@ -18,7 +18,6 @@
             <div class="container">
                 <h1>Коли автопарк росте,<br>а порядок — ні</h1>
                 <p>Система, яка перетворює хаос у чатах та Excel на прозорий бізнес.<br>Пульс вашого бізнесу на одному екрані.</p>
-                <!-- Змінено на посилання -->
                 <a href="/pricing" class="btn-primary">Навести порядок</a>
             </div>
         </section>
@@ -36,7 +35,7 @@
                         <h3>Бізнес росте, а контроль зникає</h3>
                         <p>Поки у вас було 5 машин, ви знали про кожну все: де вона, хто за кермом і коли міняти мастило. Все трималося "на голові" та в Excel.</p>
                         <p>Але коли машин стало більше, <strong>картинка розсипалась</strong>:</p>
-                        <ul style="list-style: none; margin-bottom: 1.5rem; color: #4b5563;">
+                        <ul style="list-style: none; margin-bottom: 1.5rem; color: var(--text-muted);">
                             <li style="margin-bottom: 0.5rem;">📉 <strong>Фінанси</strong> живуть в одній таблиці.</li>
                             <li style="margin-bottom: 0.5rem;">🔧 <strong>Ремонти</strong> — в чатах з механіками.</li>
                             <li style="margin-bottom: 0.5rem;">📅 <strong>Графіки</strong> — на папірцях або в голові диспетчера.</li>
@@ -72,10 +71,10 @@
         </section>
 
         <!-- Value Proposition -->
-        <section style="background-color: #1e293b; color: white; text-align: center; padding: 4rem 0;">
+        <section style="background-color: var(--bg-surface); text-align: center; padding: 4rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
             <div class="container">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: white;">Garage24 — це ваше єдине джерело правди</h2>
-                <p style="font-size: 1.2rem; opacity: 0.9; max-width: 800px; margin: 0 auto;">Ми не ускладнюємо життя "корпоративними ERP". Ми даємо простий інструмент, щоб ви бачили все в одному місці.</p>
+                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Garage24 — це ваше єдине джерело правди</h2>
+                <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">Ми не ускладнюємо життя "корпоративними ERP". Ми даємо простий інструмент, щоб ви бачили все в одному місці.</p>
             </div>
         </section>
 
@@ -163,23 +162,23 @@
         </section>
 
         <!-- Integration Section (Uklon) -->
-        <section style="background-color: #fff; border-top: 1px solid #e5e7eb;">
+        <section style="background-color: var(--bg-card); border-top: 1px solid var(--border);">
             <div class="container">
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 4rem; flex-wrap: wrap;">
                     <div style="flex: 1; min-width: 300px;">
-                        <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem; color: var(--secondary-color);">Офіційна інтеграція з Uklon</h2>
-                        <p style="font-size: 1.1rem; color: #4b5563; margin-bottom: 2rem;">Забудьте про ручне перенесення даних з кабінету партнера. Garage24 робить це автоматично.</p>
+                        <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Офіційна інтеграція з Uklon</h2>
+                        <p style="font-size: 1.1rem; margin-bottom: 2rem;">Забудьте про ручне перенесення даних з кабінету партнера. Garage24 робить це автоматично.</p>
 
                         <ul style="list-style: none;">
-                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem;">
+                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem; color: var(--text-main);">
                                 <span style="color: var(--accent-green); margin-right: 0.75rem; font-weight: bold;">✓</span>
                                 Автоматичний імпорт поїздок та каси
                             </li>
-                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem;">
+                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem; color: var(--text-main);">
                                 <span style="color: var(--accent-green); margin-right: 0.75rem; font-weight: bold;">✓</span>
                                 Синхронізація бази водіїв та авто
                             </li>
-                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem;">
+                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem; color: var(--text-main);">
                                 <span style="color: var(--accent-green); margin-right: 0.75rem; font-weight: bold;">✓</span>
                                 Точний розрахунок зарплати та комісії
                             </li>
@@ -187,7 +186,7 @@
                     </div>
                     <div style="flex: 1; min-width: 300px; text-align: center;">
                         <!-- Логотип Uklon (стилізований) -->
-                        <div style="background: #ffce00; color: #000; font-weight: 900; font-size: 3rem; padding: 2rem 4rem; border-radius: 1rem; display: inline-block; transform: rotate(-3deg); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
+                        <div style="background: #ffce00; color: #000; font-weight: 900; font-size: 3rem; padding: 2rem 4rem; border-radius: 1rem; display: inline-block; transform: rotate(-3deg); box-shadow: var(--shadow-lg);">
                             UKLON
                         </div>
                     </div>
@@ -250,7 +249,7 @@
         </section>
 
         <!-- Simplicity Section (Простота) -->
-        <section style="background-color: #f8fafc; padding: 6rem 0;">
+        <section style="background-color: var(--bg-surface); padding: 6rem 0;">
             <div class="container">
                 <div class="section-title">
                     <h2>Складно? Ні, це просто.</h2>
@@ -258,99 +257,22 @@
                 </div>
 
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; text-align: center;">
-                    <div style="background: white; padding: 2rem; border-radius: 1rem; border: 1px solid #e5e7eb;">
-                        <div style="font-size: 2rem; margin-bottom: 1rem; color: #9ca3af;">📊</div>
-                        <h3 style="margin-bottom: 1rem; color: #6b7280;">Excel</h3>
-                        <p style="color: #6b7280;">Просто, але хаотично. Дані губляться, формули ламаються, доступу з телефону немає.</p>
+                    <div style="background: var(--bg-card); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border);">
+                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--text-muted);">📊</div>
+                        <h3 style="margin-bottom: 1rem; color: var(--text-muted);">Excel</h3>
+                        <p style="color: var(--text-muted);">Просто, але хаотично. Дані губляться, формули ламаються, доступу з телефону немає.</p>
                     </div>
 
-                    <div style="background: white; padding: 2rem; border-radius: 1rem; border: 2px solid var(--primary-color); transform: scale(1.05); box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
-                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--primary-color);">🚀</div>
-                        <h3 style="margin-bottom: 1rem; color: var(--secondary-color); font-weight: 800;">Garage24</h3>
-                        <p style="color: #4b5563;">Золота середина. Простота Excel + потужність бази даних. Все працює з коробки.</p>
+                    <div style="background: var(--bg-card); padding: 2rem; border-radius: 1rem; border: 2px solid var(--primary); transform: scale(1.05); box-shadow: var(--shadow-lg); z-index: 10;">
+                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--primary);">🚀</div>
+                        <h3 style="margin-bottom: 1rem; color: var(--text-main); font-weight: 800;">Garage24</h3>
+                        <p style="color: var(--text-main);">Золота середина. Простота Excel + потужність бази даних. Все працює з коробки.</p>
                     </div>
 
-                    <div style="background: white; padding: 2rem; border-radius: 1rem; border: 1px solid #e5e7eb;">
-                        <div style="font-size: 2rem; margin-bottom: 1rem; color: #9ca3af;">🏢</div>
-                        <h3 style="margin-bottom: 1rem; color: #6b7280;">Складні ERP</h3>
-                        <p style="color: #6b7280;">Дорого, довго впроваджувати, потрібен окремий спеціаліст для обслуговування.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Reviews Section (Відгуки) -->
-        <section class="reviews-section">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Що кажуть власники парків</h2>
-                    <p>Реальний досвід тих, хто вже навів порядок.</p>
-                </div>
-
-                <div class="reviews-grid">
-                    <div class="review-card">
-                        <div class="review-text">
-                            "Раніше мій телефон дзвонив кожні 5 хвилин: 'Де машина?', 'Хто на зміні?'. Тепер я просто відкриваю сайт на телефоні і бачу все сам. Дзвінки припинилися, я нарешті можу займатися розвитком, а не гасінням пожеж."
-                        </div>
-                        <div class="review-author">
-                            <div class="author-avatar">О</div>
-                            <div class="author-info">
-                                <h4>Олександр</h4>
-                                <p>Власник парку (25 авто)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-text">
-                            "Ми з партнером постійно сперечалися про гроші. Він казав, що ми в плюсі, а я бачив тільки витрати на ремонти. Garage24 показав реальну картину. Тепер ми бачимо прибутковість кожної машини до копійки."
-                        </div>
-                        <div class="review-author">
-                            <div class="author-avatar">Д</div>
-                            <div class="author-info">
-                                <h4>Дмитро</h4>
-                                <p>Співвласник (18 авто)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-text">
-                            "Раніше я вела графік у зошиті, і це було пекло. Постійні накладки, хтось забув вийти... Тепер водії самі бачать свої зміни в Телеграмі, а я просто контролюю процес. Це небо і земля."
-                        </div>
-                        <div class="review-author">
-                            <div class="author-avatar">О</div>
-                            <div class="author-info">
-                                <h4>Олена</h4>
-                                <p>Диспетчер</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-text">
-                            "Найбільше часу забирало перенесення поїздок з кабінету Uklon в нашу таблицю. Це були години ручної роботи. Тепер все залітає автоматично. Я навіть не заходжу в кабінет партнера."
-                        </div>
-                        <div class="review-author">
-                            <div class="author-avatar">А</div>
-                            <div class="author-info">
-                                <h4>Андрій</h4>
-                                <p>Власник (12 авто)</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="review-card">
-                        <div class="review-text">
-                            "Раніше, якщо машина ламалася вночі, мені дзвонили і будили. Тепер водій просто пише в бота, а я вранці бачу заявку і фото поломки. Ніяких нічних дзвінків."
-                        </div>
-                        <div class="review-author">
-                            <div class="author-avatar">С</div>
-                            <div class="author-info">
-                                <h4>Сергій</h4>
-                                <p>Механік</p>
-                            </div>
-                        </div>
+                    <div style="background: var(--bg-card); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border);">
+                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--text-muted);">🏢</div>
+                        <h3 style="margin-bottom: 1rem; color: var(--text-muted);">Складні ERP</h3>
+                        <p style="color: var(--text-muted);">Дорого, довго впроваджувати, потрібен окремий спеціаліст для обслуговування.</p>
                     </div>
                 </div>
             </div>
@@ -418,7 +340,6 @@
                     <h2>Порядок коштує дешевше, ніж хаос</h2>
                     <p>Спробуйте Garage24 безкоштовно протягом 14 днів. Жодних зобов'язань.</p>
                 </div>
-                <!-- Змінено на посилання -->
                 <a href="/pricing" class="btn-primary" style="font-size: 1.2rem; padding: 1rem 3rem;">Спробувати безкоштовно</a>
             </div>
         </section>
