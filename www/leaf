@@ -1,0 +1,17 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/vendor/autoload.php';
+
+// Завантаження .env
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->safeLoad();
+
+use Aloe\Console;
+
+$console = new Console;
+
+// Реєстрація нашої команди
+$console->register(\App\Console\GenerateSitemapCommand::class);
+
+$console->run();

@@ -2,23 +2,30 @@
 
 namespace App\Console;
 
-// Виправлено namespace для Aloe v4
-use Aloe\Command;
+// Використовуємо чистий Symfony Command замість Aloe
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use App\Services\MarkdownService;
 
 class GenerateSitemapCommand extends Command
 {
+    // У Symfony Command ім'я задається через властивість або в configure()
     protected static $defaultName = 'sitemap:generate';
-    protected static $defaultDescription = 'Generate the sitemap.xml file';
 
     protected function configure()
     {
-        $this->setHelp('This command generates a sitemap.xml file based on your content.');
+        $this
+            ->setDescription('Generate the sitemap.xml file')
+            ->setHelp('This command generates a sitemap.xml file based on your content.');
     }
 
-    protected function handle()
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->comment('Generating sitemap...');
+        // Використовуємо SymfonyStyle для гарного виводу (як $this->info в Aloe)
+        $io = new SymfonyStyle($input, $output);
+        $io->comment('Generating sitemap...');
 
         $baseUrl = $_ENV['APP_URL'] ?? 'http://localhost';
         $baseUrl = rtrim($baseUrl, '/');
@@ -74,7 +81,8 @@ class GenerateSitemapCommand extends Command
         $path = __DIR__ . '/../../sitemap.xml';
         file_put_contents($path, $xml);
 
-        $this->info('Sitemap generated successfully at ' . $path);
-        return 0;
+        $io->success('Sitemap generated successfully at ' . $path);
+        
+        return Command::SUCCESS;
     }
 }
