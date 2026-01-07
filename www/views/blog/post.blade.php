@@ -37,6 +37,13 @@
         .content li { margin-bottom: 0.5rem; }
         .content img { max-width: 100%; border-radius: 0.5rem; margin: 2rem 0; border: 1px solid #e5e7eb; }
 
+        /* Стиль для підсвічування */
+        mark {
+            background-color: #fef08a;
+            padding: 0.1rem 0.2rem;
+            border-radius: 0.2rem;
+        }
+
         /* Навігація блогу */
         .blog-nav {
             margin-top: 4rem;
@@ -89,7 +96,7 @@
             Опубліковано: {{ date('d.m.Y', $meta['date']) }}
         </div>
 
-        <article class="content">
+        <article class="content" id="blogContent">
             {!! $content !!}
 
             <div class="blog-nav">
@@ -111,5 +118,35 @@
     </main>
 
     @include('partials.footer')
+
+    <!-- Скрипт для підсвічування тексту -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('highlight');
+
+            if (query) {
+                const content = document.getElementById('blogContent');
+                if (content) {
+                    const regex = new RegExp(`(${query})`, 'gi');
+                    const walk = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
+                    let node;
+                    const nodesToReplace = [];
+
+                    while (node = walk.nextNode()) {
+                        if (node.nodeValue.match(regex)) {
+                            nodesToReplace.push(node);
+                        }
+                    }
+
+                    nodesToReplace.forEach(node => {
+                        const span = document.createElement('span');
+                        span.innerHTML = node.nodeValue.replace(regex, '<mark>$1</mark>');
+                        node.parentNode.replaceChild(span, node);
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 </html>

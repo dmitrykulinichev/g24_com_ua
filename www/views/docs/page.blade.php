@@ -81,46 +81,74 @@
 
         /* Стиль для підсвічування */
         mark {
-            background-color: #fef08a; /* Жовтий */
+            background-color: #fef08a;
             padding: 0.1rem 0.2rem;
             border-radius: 0.2rem;
         }
 
-        /* Навігація між статтями */
+        /* Навігація між статтями (Оновлено) */
         .docs-nav {
             margin-top: 4rem;
             padding-top: 2rem;
             border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
         }
         .nav-item {
             text-decoration: none;
-            padding: 1rem;
+            padding: 1.5rem;
             border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            width: 48%;
+            border-radius: 0.75rem;
             transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            background: #fff;
         }
         .nav-item:hover {
             border-color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
         }
         .nav-label {
-            display: block;
+            display: flex;
+            align-items: center;
             font-size: 0.85rem;
             color: #6b7280;
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
         }
         .nav-title {
-            display: block;
             font-weight: 600;
-            color: var(--primary-color);
+            color: var(--secondary-color);
+            font-size: 1.1rem;
+        }
+
+        /* Вирівнювання */
+        .nav-prev {
+            grid-column: 1;
+            text-align: left;
         }
         .nav-next {
+            grid-column: 2;
             text-align: right;
-            margin-left: auto;
+            align-items: flex-end;
+        }
+
+        /* Якщо тільки одна кнопка */
+        .nav-prev:only-child { grid-column: 1; }
+        .nav-next:only-child { grid-column: 2; }
+
+        @media (max-width: 768px) {
+            .docs-nav {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .nav-prev, .nav-next {
+                grid-column: 1;
+                text-align: center;
+                align-items: center;
+            }
         }
     </style>
 </head>
@@ -171,14 +199,24 @@
             <div class="docs-nav">
                 @if($prev)
                     <a href="/docs/{{ $prev['slug'] }}" class="nav-item nav-prev">
-                        <span class="nav-label">← Попередня</span>
+                        <span class="nav-label">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px; margin-right: 0.5rem;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                            </svg>
+                            Попередня
+                        </span>
                         <span class="nav-title">{{ $prev['title'] }}</span>
                     </a>
                 @endif
 
                 @if($next)
                     <a href="/docs/{{ $next['slug'] }}" class="nav-item nav-next">
-                        <span class="nav-label">Наступна →</span>
+                        <span class="nav-label">
+                            Наступна
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px; margin-left: 0.5rem;">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                            </svg>
+                        </span>
                         <span class="nav-title">{{ $next['title'] }}</span>
                     </a>
                 @endif
@@ -195,18 +233,14 @@
             const query = urlParams.get('highlight');
 
             if (query) {
-                // 1. Вставляємо запит в інпут пошуку
                 const searchInput = document.getElementById('searchInput');
                 if (searchInput) {
                     searchInput.value = query;
                 }
 
-                // 2. Підсвічуємо текст
                 const content = document.getElementById('docsContent');
                 if (content) {
                     const regex = new RegExp(`(${query})`, 'gi');
-
-                    // Проходимо по всіх текстових вузлах, щоб не зламати HTML теги
                     const walk = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
                     let node;
                     const nodesToReplace = [];

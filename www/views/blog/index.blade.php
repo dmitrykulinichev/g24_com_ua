@@ -72,6 +72,11 @@
         <div class="blog-header">
             <h1>Блог розробників</h1>
             <p>Новини, оновлення та корисні поради щодо використання Garage24.</p>
+
+            <!-- Пошук по блогу -->
+            <div style="max-width: 500px; margin: 2rem auto 0;">
+                @include('partials.blog-search')
+            </div>
         </div>
 
         @if(count($posts) > 0)

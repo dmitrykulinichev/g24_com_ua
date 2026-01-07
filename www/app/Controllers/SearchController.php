@@ -6,7 +6,20 @@ use App\Services\MarkdownService;
 
 class SearchController
 {
+    // Пошук по документації
     public function search()
+    {
+        $this->performSearch('/../../content/docs/*.md', 'docs');
+    }
+
+    // Пошук по блогу
+    public function searchBlog()
+    {
+        $this->performSearch('/../../content/blog/*.md', 'blog');
+    }
+
+    // Універсальний метод пошуку
+    private function performSearch($pathPattern, $type)
     {
         $query = $_GET['q'] ?? '';
         $query = mb_strtolower(trim($query));
@@ -17,13 +30,13 @@ class SearchController
         }
 
         $results = [];
-        $files = glob(__DIR__ . '/../../content/docs/*.md');
+        $files = glob(__DIR__ . $pathPattern);
 
         foreach ($files as $file) {
             $data = MarkdownService::parseFile($file);
             $slug = basename($file, '.md');
             
-            // Чистимо контент від Markdown тегів для пошуку
+            // Чистимо контент
             $plainText = strip_tags($data['content']);
             $plainText = preg_replace('/[#*`_\[\]]/', '', $plainText);
             $plainTextLower = mb_strtolower($plainText);
@@ -43,12 +56,9 @@ class SearchController
             // Шукаємо в тексті
             $pos = strpos($plainTextLower, $query);
             if ($pos !== false) {
-                // Вирізаємо сніпет навколо знайденого слова
                 $start = max(0, $pos - 50);
                 $length = 100;
                 $snippet = '...' . mb_substr($plainText, $start, $length) . '...';
-                
-                // Підсвічуємо знайдене (опціонально, можна на фронті)
                 
                 $results[] = [
                     'title' => $data['meta']['title'],
@@ -59,7 +69,6 @@ class SearchController
             }
         }
 
-        // Сортуємо за релевантністю
         usort($results, function($a, $b) {
             return $b['score'] - $a['score'];
         });
