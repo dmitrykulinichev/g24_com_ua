@@ -152,27 +152,76 @@
             </div>
         </section>
 
-        <!-- Contact Form -->
+        <!-- Contact Form (AJAX with Alpine.js) -->
         <section id="contact" class="contact-section">
             <div class="container">
                 <div class="section-title">
                     <h2>Залишилися запитання?</h2>
                     <p>Залиште заявку і ми зв'яжемося з вами протягом 15 хвилин.</p>
                 </div>
-                <form class="contact-form">
-                    <div class="form-group">
-                        <label>Ваше ім'я</label>
-                        <input type="text" placeholder="Введіть ваше ім'я">
+
+                <form class="contact-form" x-data="{
+                    formData: { name: '', email: '', company: '', phone: '' },
+                    loading: false,
+                    success: false,
+                    error: null,
+                    submitForm() {
+                        this.loading = true;
+                        this.error = null;
+
+                        fetch('/contact', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(this.formData)
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            this.loading = false;
+                            if (data.status === 'success') {
+                                this.success = true;
+                                this.formData = { name: '', email: '', company: '', phone: '' };
+                            } else {
+                                // Показуємо першу помилку з масиву або загальне повідомлення
+                                this.error = data.errors ? Object.values(data.errors)[0] : data.message;
+                            }
+                        })
+                        .catch(() => {
+                            this.loading = false;
+                            this.error = 'Сталася помилка. Спробуйте пізніше.';
+                        });
+                    }
+                }" @submit.prevent="submitForm">
+
+                    <!-- Повідомлення про успіх -->
+                    <div x-show="success" style="display: none; background: #d1fae5; color: #065f46; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;">
+                        Дякуємо! Ваша заявка прийнята. Ми зателефонуємо вам найближчим часом.
                     </div>
-                    <div class="form-group">
-                        <label>Назва компанії / таксопарку</label>
-                        <input type="text" placeholder="Назва вашого бізнесу">
+
+                    <!-- Повідомлення про помилку -->
+                    <div x-show="error" style="display: none; background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; text-align: center;" x-text="error"></div>
+
+                    <div x-show="!success">
+                        <div class="form-group">
+                            <label>Ваше ім'я</label>
+                            <input type="text" x-model="formData.name" placeholder="Введіть ваше ім'я" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" x-model="formData.email" placeholder="example@company.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Назва компанії / таксопарку</label>
+                            <input type="text" x-model="formData.company" placeholder="Назва вашого бізнесу">
+                        </div>
+                        <div class="form-group">
+                            <label>Номер телефону</label>
+                            <input type="tel" x-model="formData.phone" placeholder="+380 ..." required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading">
+                            <span x-show="!loading">Відправити заявку</span>
+                            <span x-show="loading" style="display: none;">Відправка...</span>
+                        </button>
                     </div>
-                    <div class="form-group">
-                        <label>Номер телефону</label>
-                        <input type="tel" placeholder="+380 ...">
-                    </div>
-                    <button type="submit" class="btn-primary" style="width: 100%">Відправити заявку</button>
                 </form>
             </div>
         </section>

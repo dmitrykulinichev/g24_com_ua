@@ -9,7 +9,7 @@
                 <h4>Продукт</h4>
                 <ul>
                     <li><a href="/#features">Можливості</a></li>
-                    <li><a href="/#products">Для парків</a></li>
+                    <li><a href="/pricing">Тарифи</a></li>
                     <li><a href="/blog">Блог</a></li>
                     <li><a href="/docs">Документація</a></li>
                 </ul>
