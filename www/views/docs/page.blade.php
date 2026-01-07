@@ -79,6 +79,13 @@
         .content th { background-color: #f9fafb; font-weight: 600; }
         .content img { max-width: 100%; border-radius: 0.5rem; margin: 1rem 0; border: 1px solid #e5e7eb; }
 
+        /* Стиль для підсвічування */
+        mark {
+            background-color: #fef08a; /* Жовтий */
+            padding: 0.1rem 0.2rem;
+            border-radius: 0.2rem;
+        }
+
         /* Навігація між статтями */
         .docs-nav {
             margin-top: 4rem;
@@ -135,6 +142,12 @@
 
             <!-- Контент меню (на мобільному ховається, на десктопі завжди видно) -->
             <div class="sidebar-content" :class="{ 'mobile-hidden': !docsMenuOpen }">
+
+                <!-- Пошук у сайдбарі -->
+                <div style="margin-bottom: 2rem;">
+                    @include('partials.docs-search')
+                </div>
+
                 @foreach($menu as $group)
                     <div class="sidebar-group">
                         <div class="sidebar-title">{{ $group['title'] }}</div>
@@ -152,7 +165,7 @@
             </div>
         </aside>
 
-        <article class="content">
+        <article class="content" id="docsContent">
             {!! $content !!}
 
             <div class="docs-nav">
@@ -174,5 +187,44 @@
     </div>
 
     @include('partials.footer')
+
+    <!-- Скрипт для підсвічування тексту -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const query = urlParams.get('highlight');
+
+            if (query) {
+                // 1. Вставляємо запит в інпут пошуку
+                const searchInput = document.getElementById('searchInput');
+                if (searchInput) {
+                    searchInput.value = query;
+                }
+
+                // 2. Підсвічуємо текст
+                const content = document.getElementById('docsContent');
+                if (content) {
+                    const regex = new RegExp(`(${query})`, 'gi');
+
+                    // Проходимо по всіх текстових вузлах, щоб не зламати HTML теги
+                    const walk = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
+                    let node;
+                    const nodesToReplace = [];
+
+                    while (node = walk.nextNode()) {
+                        if (node.nodeValue.match(regex)) {
+                            nodesToReplace.push(node);
+                        }
+                    }
+
+                    nodesToReplace.forEach(node => {
+                        const span = document.createElement('span');
+                        span.innerHTML = node.nodeValue.replace(regex, '<mark>$1</mark>');
+                        node.parentNode.replaceChild(span, node);
+                    });
+                }
+            }
+        });
+    </script>
 </body>
 </html>

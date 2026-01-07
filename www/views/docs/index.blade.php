@@ -34,34 +34,21 @@
             margin-bottom: 2rem;
         }
 
-        /* Search Bar */
-        .search-container {
+        /* Стилі для пошуку на головній (перевизначаємо розмір) */
+        .docs-header .search-container {
             max-width: 600px;
             margin: 0 auto;
-            position: relative;
         }
-        .search-input {
-            width: 100%;
+        .docs-header .search-input {
             padding: 1rem 1.5rem;
             padding-left: 3rem;
-            border: 2px solid #e5e7eb;
             border-radius: 2rem;
             font-size: 1.1rem;
-            transition: all 0.2s;
-            outline: none;
         }
-        .search-input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        }
-        .search-icon {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #9ca3af;
+        .docs-header .search-icon {
             width: 24px;
             height: 24px;
+            left: 1rem;
         }
 
         /* Categories Grid */
@@ -153,36 +140,6 @@
             margin-bottom: 1.5rem;
         }
     </style>
-
-    <!-- Simple Search Script -->
-    <script>
-        function filterDocs() {
-            let input = document.getElementById('searchInput');
-            let filter = input.value.toUpperCase();
-            let cards = document.getElementsByClassName('doc-card');
-            let groups = document.getElementsByClassName('docs-group');
-
-            for (let i = 0; i < cards.length; i++) {
-                let title = cards[i].getElementsByTagName("h3")[0];
-                let txtValue = title.textContent || title.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    cards[i].style.display = "";
-                } else {
-                    cards[i].style.display = "none";
-                }
-            }
-
-            // Hide empty groups
-            for (let i = 0; i < groups.length; i++) {
-                let visibleCards = groups[i].querySelectorAll('.doc-card:not([style*="display: none"])');
-                if (visibleCards.length === 0) {
-                    groups[i].style.display = "none";
-                } else {
-                    groups[i].style.display = "";
-                }
-            }
-        }
-    </script>
 </head>
 <body>
     @include('partials.header')
@@ -192,12 +149,8 @@
             <h1>База знань Garage24</h1>
             <p>Інструкції, поради та відповіді на часті запитання.</p>
 
-            <div class="search-container">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
-                </svg>
-                <input type="text" id="searchInput" onkeyup="filterDocs()" class="search-input" placeholder="Що ви шукаєте? (наприклад: водії, uklon...)">
-            </div>
+            <!-- Підключаємо пошук -->
+            @include('partials.docs-search')
         </div>
 
         @foreach($menu as $group)
@@ -206,7 +159,6 @@
                 <div class="docs-grid">
                     @foreach($group['items'] as $item)
                         <a href="/docs/{{ $item['slug'] }}" class="doc-card">
-                            <!-- Іконка залежно від розділу (можна додати логіку, але поки заглушка) -->
                             <div class="doc-icon">
                                 @if($group['title'] == 'Початок роботи') 🚀
                                 @elseif($group['title'] == 'Основний функціонал') ⚙️
@@ -218,7 +170,6 @@
 
                             <h3>{{ $item['title'] }}</h3>
                             <div class="doc-desc">
-                                <!-- Тут можна було б виводити короткий опис, якщо він є в json -->
                                 Детальна інструкція по розділу "{{ $item['title'] }}".
                             </div>
 

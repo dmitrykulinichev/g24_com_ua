@@ -8,7 +8,7 @@ $app->get('/', 'App\Controllers\LandingController@index');
 // Можливості
 $app->get('/features', 'App\Controllers\FeaturesController@index');
 
-// Кому підійде (Target)
+// Кому підійде
 $app->get('/target', 'App\Controllers\TargetController@index');
 
 // Тарифи
@@ -20,6 +20,9 @@ $app->get('/contacts', 'App\Controllers\ContactsController@index');
 // Документація
 $app->get('/docs', 'App\Controllers\DocsController@index');
 $app->get('/docs/{slug}', 'App\Controllers\DocsController@show');
+
+// Пошук по документації
+$app->get('/api/docs/search', 'App\Controllers\SearchController@search');
 
 // Блог
 $app->get('/blog', 'App\Controllers\BlogController@index');
