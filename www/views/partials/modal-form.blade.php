@@ -59,8 +59,6 @@
                         captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
                     } catch (e) {}
 
-                    // Якщо ключ не заданий (локалка), пропускаємо перевірку токена на клієнті
-                    // Але якщо ключ є, то вимагаємо токен
                     @if(($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== '' && ($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== 'YOUR_SITE_KEY')
                         if (!captchaToken) {
                             this.error = 'Будь ласка, пройдіть перевірку "Я не робот".';
@@ -188,10 +186,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        /* Додаємо прокрутку для всього оверлею, якщо модалка не влазить */
+        overflow-y: auto;
+        padding: 1rem;
     }
 
     .modal-backdrop {
-        position: absolute;
+        position: fixed; /* Змінено на fixed, щоб фон не прокручувався */
         top: 0;
         left: 0;
         width: 100%;
@@ -210,8 +211,8 @@
         z-index: 1001;
         box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         animation: modalSlideIn 0.3s ease-out;
-        max-height: 90vh;
-        overflow-y: auto;
+        /* Видалено max-height та overflow-y */
+        margin: auto; /* Центрування, якщо контент менший за екран */
     }
 
     @keyframes modalSlideIn {

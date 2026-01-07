@@ -14,6 +14,9 @@
 <title>{{ $pageTitle }}</title>
 <meta name="description" content="{{ $pageDesc }}">
 
+<!-- ЗАБОРОНА ІНДЕКСАЦІЇ (Тимчасово) -->
+<meta name="robots" content="noindex, nofollow">
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{ $pageTitle }}">
@@ -41,11 +44,14 @@
             </button>
 
             <div class="nav-links" :class="{ 'mobile-open': isOpen }">
-                <a href="/features" @click="isOpen = false">Можливості</a> <!-- Змінено -->
+                <a href="/features" @click="isOpen = false">Можливості</a>
                 <a href="/pricing" @click="isOpen = false">Тарифи</a>
                 <a href="/blog" @click="isOpen = false">Блог</a>
                 <a href="/contacts" @click="isOpen = false">Контакти</a>
                 <a href="/docs" @click="isOpen = false">Документація</a>
+
+                <!-- Кнопка входу в додаток -->
+                <a href="https://app.g24.com.ua/login" class="btn-login" target="_blank">Вхід</a>
             </div>
         </nav>
     </div>
