@@ -3,6 +3,7 @@
         "title": "Початок роботи",
         "items": [
             { "title": "Вступ", "slug": "intro" },
+            { "title": "Швидкий старт", "slug": "onboarding" },
             { "title": "Встановлення", "slug": "installation" }
         ]
     },
@@ -20,6 +21,7 @@
         "items": [
             { "title": "Технічне обслуговування", "slug": "maintenance" },
             { "title": "Фінанси", "slug": "finance" },
+            { "title": "Аналітика", "slug": "analytics" },
             { "title": "Інтеграції", "slug": "integrations" }
         ]
     },
@@ -28,6 +30,13 @@
         "items": [
             { "title": "Налаштування та Безпека", "slug": "admin" },
             { "title": "Мобільність", "slug": "mobile" }
+        ]
+    },
+    {
+        "title": "Додатково",
+        "items": [
+            { "title": "FAQ", "slug": "faq" },
+            { "title": "Roadmap", "slug": "roadmap" }
         ]
     }
 ]

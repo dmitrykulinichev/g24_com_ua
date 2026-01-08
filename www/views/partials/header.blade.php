@@ -32,7 +32,11 @@
 <header x-data="{ isOpen: false }">
     <div class="container">
         <nav>
-            <a href="/" class="logo">Garage24</a>
+            <!-- Логотип + Назва -->
+            <a href="/" class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
+                <img src="/assets/img/logo.jpg" alt="Garage24 Logo" style="height: 40px; width: auto; border-radius: 6px;">
+                <span>Garage24</span>
+            </a>
 
             <button class="mobile-menu-btn" @click="isOpen = !isOpen" aria-label="Меню">
                 <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
@@ -45,7 +49,7 @@
 
             <div class="nav-links" :class="{ 'mobile-open': isOpen }">
                 <a href="/features" @click="isOpen = false">Можливості</a>
-                <a href="/target" @click="isOpen = false">Клієнти</a>
+                <a href="/target" @click="isOpen = false">Для кого</a> <!-- Змінено -->
                 <a href="/pricing" @click="isOpen = false">Тарифи</a>
                 <a href="/blog" @click="isOpen = false">Блог</a>
                 <a href="/contacts" @click="isOpen = false">Контакти</a>

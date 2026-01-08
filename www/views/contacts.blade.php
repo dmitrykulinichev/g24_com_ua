@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <style>
         .contacts-header {
             text-align: center;
@@ -28,77 +29,80 @@
             z-index: 10;
         }
 
-        .contacts-card {
+        .contacts-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+        }
+
+        /* Картка для нових клієнтів (Форма) */
+        .lead-card {
             background: var(--white);
             border-radius: 1rem;
-            padding: 3rem;
+            padding: 2.5rem;
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             border: 1px solid var(--border-color);
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
         }
 
-        .contact-info h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
+        /* Картка для існуючих клієнтів */
+        .client-card {
+            background: #f8fafc;
+            border-radius: 1rem;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            height: fit-content;
+        }
+
+        .client-card h3 {
+            font-size: 1.25rem;
             color: var(--secondary-color);
-        }
-
-        .info-item {
+            margin-bottom: 1rem;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .client-card p {
+            font-size: 0.95rem;
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        /* Form Styles */
+        .form-group {
             margin-bottom: 1.5rem;
         }
-
-        .info-icon {
-            font-size: 1.5rem;
-            margin-right: 1rem;
-            color: var(--primary-color);
-        }
-
-        .info-content h4 {
-            font-size: 1.1rem;
-            margin-bottom: 0.25rem;
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
             color: var(--secondary-color);
         }
-
-        .info-content p, .info-content a {
-            color: var(--text-color);
-            text-decoration: none;
-            line-height: 1.5;
-        }
-
-        .info-content a:hover {
-            color: var(--primary-color);
-        }
-
-        .map-container {
-            border-radius: 0.5rem;
-            overflow: hidden;
-            height: 100%;
-            min-height: 300px;
-            background-color: #f3f4f6;
-        }
-
-        .map-container iframe {
+        .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            height: 100%;
-            border: 0;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-family: inherit;
         }
-
-        .cta-section {
-            text-align: center;
-            margin-top: 3rem;
+        .form-group input:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         @media (max-width: 768px) {
-            .contacts-card {
+            .contacts-grid {
                 grid-template-columns: 1fr;
-                padding: 2rem;
             }
-            .map-container {
-                min-height: 250px;
+            .contacts-grid > :first-child {
+                order: 2;
+            }
+            .contacts-grid > :last-child {
+                order: 1;
+                margin-bottom: 2rem;
             }
         }
     </style>
@@ -107,51 +111,153 @@
     @include('partials.header')
 
     <div class="contacts-header">
-        <h1>Контакти</h1>
-        <p>Ми завжди раді допомогти вам. Зв'яжіться з нами будь-яким зручним способом.</p>
+        <h1>Зв'яжіться з нами</h1>
+        <p>Оберіть зручний спосіб комунікації залежно від вашого запиту.</p>
     </div>
 
     <div class="contacts-container">
-        <div class="contacts-card">
-            <div class="contact-info">
-                <h3>Наші координати</h3>
+        <div class="contacts-grid">
 
-                <div class="info-item">
-                    <div class="info-icon">📍</div>
-                    <div class="info-content">
-                        <h4>Адреса</h4>
-                        <p>Україна, м. Київ<br>вул. Хрещатик, 1</p>
-                    </div>
+            <!-- Блок для нових клієнтів (Форма) -->
+            <div class="lead-card" x-data="{
+                formData: { name: '', email: '', phone: '', message: '' },
+                loading: false,
+                success: false,
+                error: null,
+                captchaWidgetId: null,
+
+                init() {
+                    setTimeout(() => {
+                        if (typeof grecaptcha !== 'undefined') {
+                            try {
+                                this.captchaWidgetId = grecaptcha.render('contact-recaptcha', {
+                                    'sitekey': '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? 'YOUR_SITE_KEY' }}'
+                                });
+                            } catch (e) {
+                                console.error('Captcha render error:', e);
+                            }
+                        }
+                    }, 500);
+                },
+
+                submitForm() {
+                    let captchaToken = '';
+                    if (typeof grecaptcha !== 'undefined') {
+                        try {
+                            captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
+                        } catch (e) {}
+
+                        @if(($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== '' && ($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== 'YOUR_SITE_KEY')
+                            if (!captchaToken) {
+                                this.error = 'Будь ласка, пройдіть перевірку &quot;Я не робот&quot;.';
+                                return;
+                            }
+                        @endif
+                    }
+
+                    this.loading = true;
+                    this.error = null;
+
+                    let payload = {
+                        name: this.formData.name,
+                        email: this.formData.email,
+                        phone: this.formData.phone,
+                        company: 'Питання з сайту: ' + this.formData.message,
+                        'g-recaptcha-response': captchaToken
+                    };
+
+                    fetch('/api/lead', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        this.loading = false;
+                        if (data.status === 'success') {
+                            this.success = true;
+                            this.formData = { name: '', email: '', phone: '', message: '' };
+                            if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
+                        } else {
+                            this.error = data.errors ? Object.values(data.errors)[0] : data.message;
+                            if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
+                        }
+                    })
+                    .catch(() => {
+                        this.loading = false;
+                        this.error = 'Сталася помилка. Спробуйте пізніше.';
+                    });
+                }
+            }">
+                <h2 style="margin-bottom: 0.5rem; font-size: 1.75rem; color: var(--secondary-color);">Ще не з нами?</h2>
+                <p style="margin-bottom: 2rem; color: #6b7280;">Заповніть форму, якщо у вас є питання щодо підключення, тарифів або можливостей системи.</p>
+
+                <div x-show="success" style="background: #d1fae5; color: #065f46; padding: 1.5rem; border-radius: 0.5rem; text-align: center; margin-bottom: 1rem;">
+                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">✅</div>
+                    <strong>Повідомлення відправлено!</strong><br>
+                    Ми зв'яжемося з вами найближчим часом.
                 </div>
 
-                <div class="info-item">
-                    <div class="info-icon">📞</div>
-                    <div class="info-content">
-                        <h4>Телефон</h4>
-                        <p><a href="tel:+380000000000">+380 00 000 0000</a></p>
-                        <p style="font-size: 0.9rem; color: var(--gray);">Пн-Пт: 9:00 - 18:00</p>
-                    </div>
-                </div>
+                <div x-show="error" style="background: #fee2e2; color: #991b1b; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;" x-text="error"></div>
 
-                <div class="info-item">
-                    <div class="info-icon">✉️</div>
-                    <div class="info-content">
-                        <h4>Email</h4>
-                        <p><a href="mailto:info@g24.com.ua">info@g24.com.ua</a></p>
-                        <p><a href="mailto:support@g24.com.ua">support@g24.com.ua</a></p>
+                <form x-show="!success" @submit.prevent="submitForm">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label>Ваше ім'я</label>
+                            <input type="text" x-model="formData.name" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" x-model="formData.email" required>
+                        </div>
                     </div>
-                </div>
 
-                <div class="cta-section">
-                    <p style="margin-bottom: 1rem;">Маєте запитання?</p>
-                    <button @click="$dispatch('open-order-modal', {})" class="btn-primary" style="width: 100%;">Написати нам</button>
+                    <div class="form-group">
+                        <label>Телефон</label>
+                        <input type="tel" x-model="formData.phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ваше питання</label>
+                        <textarea x-model="formData.message" rows="4" required placeholder="Наприклад: Чи є інтеграція з Bolt?"></textarea>
+                    </div>
+
+                    <div class="form-group" style="margin-bottom: 1.5rem;">
+                        <div id="contact-recaptcha"></div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" :disabled="loading" style="width: 100%;">
+                        <span x-show="!loading">Відправити запит</span>
+                        <span x-show="loading">Відправка...</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Блок для існуючих клієнтів -->
+            <div class="client-card">
+                <h3>
+                    <span style="font-size: 1.5rem;">🔑</span>
+                    Вже клієнт Garage24?
+                </h3>
+                <p>
+                    Ця форма призначена для загальних питань.
+                    Для швидкого вирішення технічних проблем, будь ласка, створіть тікет у вашому особистому кабінеті.
+                </p>
+                <p>
+                    Там ми бачимо історію вашого парку і зможемо допомогти набагато швидше.
+                </p>
+
+                <a href="https://app.g24.com.ua/support" target="_blank" class="btn-primary" style="width: 100%; text-align: center; background-color: var(--white); color: var(--primary-color); border: 1px solid var(--primary-color);">
+                    Перейти в гараж
+                </a>
+
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e5e7eb;">
+                    <div style="font-weight: 600; color: var(--secondary-color); margin-bottom: 0.5rem;">Інші контакти:</div>
+                    <div style="margin-bottom: 0.5rem;"><a href="mailto:support@g24.com.ua" style="color: var(--primary-color);">support@g24.com.ua</a></div>
+                    <div style="color: #6b7280; font-size: 0.9rem;">Пн-Пт: 10:00 - 18:00</div>
                 </div>
             </div>
 
-            <div class="map-container">
-                <!-- Google Maps Embed (Київ, центр) -->
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2540.517847563668!2d30.52086337689253!3d50.45005898737526!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x40d4ce50f8b6e3c3%3A0xb528f13296e9298!2z0JzQsNC50LTQsNC9INCd0LXQt9Cw0LvQtdC20L3QvtGB0YLRliwg0JrQuNGX0LIsIDAyMDAw!5e0!3m2!1suk!2sua!4v1700000000000!5m2!1suk!2sua" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-            </div>
         </div>
     </div>
 

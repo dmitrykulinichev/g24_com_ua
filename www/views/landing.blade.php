@@ -19,6 +19,7 @@
                 <h1>Забудь про Excel.<br>Наведи порядок у графіках та авто.</h1>
                 <p>Проста система для таксопарків, яка збирає всю інформацію в одному місці.<br>Без хаосу, без складних налаштувань, без втрати даних.</p>
                 <a href="/pricing" class="btn-primary">Навести порядок</a>
+                <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.8; color: #4b5563;">🚀 Імпорт ваших авто та водіїв з Excel або Uklon за 2 хвилини</p>
             </div>
         </section>
 
@@ -318,7 +319,7 @@
                     <div class="step-card">
                         <div class="step-number">2</div>
                         <h3>Налаштування</h3>
-                        <p>Допоможемо імпортувати ваші авто та водіїв з Excel.</p>
+                        <p><strong>Імпортуємо ваші авто та водіїв з Excel або Uklon.</strong></p>
                     </div>
                     <div class="step-card">
                         <div class="step-number">3</div>

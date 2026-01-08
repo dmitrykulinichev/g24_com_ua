@@ -50,6 +50,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
+            margin-bottom: 3rem;
         }
 
         .plan-card {
@@ -242,12 +243,69 @@
             margin-left: 0.5rem;
         }
 
+        /* Enterprise Block */
+        .enterprise-block {
+            background-color: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 1rem;
+            padding: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+
+        .enterprise-content {
+            text-align: left;
+            flex: 1;
+        }
+
+        .enterprise-content h3 {
+            font-size: 1.25rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.75rem;
+        }
+
+        .enterprise-content p {
+            color: #6b7280;
+            margin-bottom: 0.5rem;
+        }
+
+        .enterprise-list {
+            list-style: none;
+            margin-bottom: 1rem;
+            color: #4b5563;
+        }
+        .enterprise-list li {
+            margin-bottom: 0.25rem;
+            padding-left: 1rem;
+            position: relative;
+        }
+        .enterprise-list li::before {
+            content: "•";
+            color: var(--primary-color);
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             .plan-card.popular {
                 transform: none;
             }
             .pricing-container {
                 margin-top: 2rem;
+            }
+            .enterprise-block {
+                flex-direction: column;
+                text-align: center;
+            }
+            .enterprise-content {
+                text-align: center;
+            }
+            .enterprise-list {
+                text-align: left;
+                display: inline-block;
             }
         }
     </style>
@@ -311,6 +369,24 @@
                     </div>
                 @endforeach
             </div>
+
+            <!-- Enterprise Block -->
+            <div class="enterprise-block">
+                <div class="enterprise-content">
+                    <h3>Не підходить жоден тариф?</h3>
+                    <p>Якщо у вас:</p>
+                    <ul class="enterprise-list">
+                        <li>більше авто</li>
+                        <li>нестандартна схема роботи</li>
+                        <li>кілька міст / СТО / диспетчерів</li>
+                    </ul>
+                    <p style="color: var(--secondary-color); font-weight: 500;">Ми підберемо конфігурацію без зайвого і без переплати.</p>
+                </div>
+                <button @click="$dispatch('open-order-modal', { plan: 'Індивідуальний' })" class="btn-primary" style="background-color: var(--secondary-color); white-space: nowrap;">
+                    Обговорити варіант
+                </button>
+            </div>
+
         </div>
     </div>
 
