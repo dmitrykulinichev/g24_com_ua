@@ -117,8 +117,14 @@ nav {
 
 /* Hero Section */
 .hero {
-    padding: 8rem 0 6rem;
-    background: linear-gradient(135deg, #eff6ff 0%, #ffffff 100%);
+    padding: 10rem 0 8rem;
+    /* Ваше локальне зображення + Градієнт для читабельності тексту */
+    background-image:
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6)),
+        url('../img/openart-image_hmp_kyur_1767826263185_raw.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
     text-align: center;
     position: relative;
     overflow: hidden;
