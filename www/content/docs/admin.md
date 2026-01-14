@@ -3,19 +3,28 @@
 
 Інструменти для налаштування системи під специфіку конкретного бізнесу.
 
-![Скріншот: Панель налаштувань](/assets/img/docs/admin-settings.png)
+![Скріншот: Глобальні налаштування](/assets/img/docs/admin_global_settings.png)
 
 ## Управління користувачами (Park Users)
 *   **ParkUserFormModal:** Додавання співробітників (диспетчерів, механіків).
 *   **Ролі:** Призначення прав доступу (Manager, Mechanic, Accountant).
+
+![Скріншот: Співробітники парку](/assets/img/docs/admin_park_users.png)
 
 ## Глобальні налаштування (Settings Tabs)
 *   **Appearance:** Налаштування логотипу та кольорів.
 *   **Notifications:** Налаштування системних сповіщень (Email, Telegram).
 *   **Privacy:** Налаштування політики конфіденційності.
 
+![Скріншот: Налаштування Telegram](/assets/img/docs/telegram_settings.png)
+
 ## Діагностика (Debug Page)
 Інструменти для технічних спеціалістів:
 *   Тестування API з'єднань.
 *   Перевірка часових поясів.
 *   Логи помилок (BetterStack).
+
+![Скріншот: Логи повідомлень](/assets/img/docs/telegram_logs.png)
+
+## Профіль користувача
+![Скріншот: Профіль користувача](/assets/img/docs/user_profile.png)
