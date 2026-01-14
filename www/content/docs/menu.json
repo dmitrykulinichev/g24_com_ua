@@ -2,41 +2,41 @@
     {
         "title": "Початок роботи",
         "items": [
-            { "title": "Вступ", "slug": "intro" },
-            { "title": "Швидкий старт", "slug": "onboarding" },
-            { "title": "Встановлення", "slug": "installation" }
+            { "title": "Вступ", "slug": "intro", "image": "dashboard_main.png" },
+            { "title": "Швидкий старт", "slug": "onboarding", "image": "fleet_add_vehicle_form.png" },
+            { "title": "Встановлення", "slug": "installation", "image": "auth_login_screen.png" }
         ]
     },
     {
         "title": "Основний функціонал",
         "items": [
-            { "title": "Головна панель", "slug": "dashboard" },
-            { "title": "Автопарк", "slug": "fleet" },
-            { "title": "Водії та HR", "slug": "drivers" },
-            { "title": "Розумний графік", "slug": "schedule" }
+            { "title": "Головна панель", "slug": "dashboard", "image": "dashboard_main.png" },
+            { "title": "Автопарк", "slug": "fleet", "image": "fleet_vehicles_list.png" },
+            { "title": "Водії та HR", "slug": "drivers", "image": "drivers_list.png" },
+            { "title": "Розумний графік", "slug": "schedule", "image": "schedule_matrix_view.png" }
         ]
     },
     {
         "title": "Фінанси та Обслуговування",
         "items": [
-            { "title": "Технічне обслуговування", "slug": "maintenance" },
-            { "title": "Фінанси", "slug": "finance" },
-            { "title": "Аналітика", "slug": "analytics" },
-            { "title": "Інтеграції", "slug": "integrations" }
+            { "title": "Технічне обслуговування", "slug": "maintenance", "image": "maintenance_records_log.png" },
+            { "title": "Фінанси", "slug": "finance", "image": "finance_transactions_log.png" },
+            { "title": "Аналітика", "slug": "analytics", "image": "analytics_general_stats.png" },
+            { "title": "Інтеграції", "slug": "integrations", "image": "uklon_settings.png" }
         ]
     },
     {
         "title": "Адміністрування",
         "items": [
-            { "title": "Налаштування та Безпека", "slug": "admin" },
-            { "title": "Мобільність", "slug": "mobile" }
+            { "title": "Налаштування та Безпека", "slug": "admin", "image": "admin_global_settings.png" },
+            { "title": "Мобільність", "slug": "mobile", "image": "dashboard_main.png" }
         ]
     },
     {
         "title": "Додатково",
         "items": [
-            { "title": "FAQ", "slug": "faq" },
-            { "title": "Roadmap", "slug": "roadmap" }
+            { "title": "FAQ", "slug": "faq", "image": "marketing_materials_qr.png" },
+            { "title": "Roadmap", "slug": "roadmap", "image": "schedule_actual_shifts.png" }
         ]
     }
 ]
