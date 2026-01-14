@@ -118,6 +118,7 @@ nav {
 /* Hero Section */
 .hero {
     padding: 10rem 0 8rem;
+    /* Повернули старий фон */
     background-image:
         linear-gradient(to bottom, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6)),
         url('../img/openart-image_hmp_kyur_1767826263185_raw.png');
@@ -163,6 +164,28 @@ nav {
 
 .btn-primary:hover {
     background-color: var(--primary-hover);
+}
+
+/* CTA Screenshot Styles */
+.cta-image-wrapper {
+    margin-top: 4rem;
+    position: relative;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.cta-screenshot {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0,0,0,0.05);
+    background: #fff;
+    transition: transform 0.3s ease;
+}
+
+.cta-screenshot:hover {
+    transform: translateY(-5px);
 }
 
 /* Section Common */
@@ -437,6 +460,8 @@ section {
     margin-bottom: 0.75rem;
     padding-left: 1.5rem;
     position: relative;
+    font-size: 0.95rem;
+    color: #4b5563;
 }
 
 .product-card li::before {
