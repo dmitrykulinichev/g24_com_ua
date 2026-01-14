@@ -3,15 +3,15 @@
 
 Модуль дозволяє вести повний облік транспортних засобів, перетворюючи хаотичні дані на структуровану картотеку активів.
 
-![Скріншот: Список автомобілів](/assets/img/docs/fleet_vehicles_list.png)
+{{screenshot file="fleet_vehicles_list.png" title="Fleet Vehicles List"}}
 
 ## Електронна картка автомобіля
 *   **Основні дані:** Держ. номер, VIN, Марка, Модель, Рік випуску.
 *   **Характеристики:** Тип палива, Колір, Тип кузова.
 
-![Скріншот: Картка автомобіля](/assets/img/docs/fleet_vehicle_card_modal.png)
+{{screenshot file="fleet_vehicle_card_modal.png" title="Vehicle Card Modal"}}
 
-![Скріншот: Документи парку](/assets/img/docs/fleet_documents_list.png)
+{{screenshot file="fleet_documents_list.png" title="Fleet Documents"}}
 
 ## Доступні дії (Модальні вікна)
 Система надає швидкий доступ до ключових операцій прямо зі списку авто:
@@ -21,7 +21,7 @@
 *   **Quick Maintenance:** Швидке створення запису про ТО.
 *   **Print QR:** Перегляд та друк унікального QR-коду автомобіля.
 
-![Скріншот: Оновлення пробігу](/assets/img/docs/fleet_update_mileage_modal.png)
+{{screenshot file="fleet_update_mileage_modal.png" title="Update Mileage Modal"}}
 
 ## Життєвий цикл
 *   **Vehicle Assignments:** Повна історія закріплення водіїв (хто керував авто в конкретний день).

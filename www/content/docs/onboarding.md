@@ -24,4 +24,4 @@
 ## 4. Генерація QR-кодів
 У розділі **"Матеріали"** ви можете згенерувати та роздрукувати QR-коди для кожного авто. Це дозволить водіям швидко повідомляти про проблеми.
 
-![Скріншот: Матеріали (QR-коди)](/assets/img/docs/marketing_materials_qr.png)
+{{screenshot file="marketing_materials_qr.png" title="Marketing Materials (QR Codes)"}}

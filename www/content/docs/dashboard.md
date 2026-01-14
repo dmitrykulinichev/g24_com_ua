@@ -3,7 +3,7 @@
 
 Центральний хаб управління, який агрегує важливу інформацію для миттєвого прийняття рішень.
 
-![Скріншот: Головний дашборд системи](/assets/img/docs/dashboard_main.png)
+{{screenshot file="dashboard_main.png" title="Dashboard - Main View"}}
 
 ## Ключові віджети
 
@@ -13,14 +13,14 @@
 *   В роботі.
 *   В ремонті.
 
-![Скріншот: Віджет статусів авто](/assets/img/docs/dashboard_widget_vehicle_status.png)
+{{screenshot file="dashboard_widget_vehicle_status.png" title="Widget: Vehicle Status"}}
 
 ### 2. Критичне ТО (Critical Maintenance)
 Список автомобілів, які потребують обслуговування.
 *   **Терміново (Червоний):** Пробіг перевищив регламент.
 *   **Скоро (Жовтий):** Залишилося менше 500 км.
 
-![Скріншот: Віджет критичного ТО](/assets/img/docs/dashboard_widget_maintenance.png)
+{{screenshot file="dashboard_widget_maintenance.png" title="Widget: Critical Maintenance"}}
 
 ### 3. Проблеми з документами (Document Issues)
 Моніторинг термінів дії страхових полісів та ліцензій. Сповіщення про закінчення терміну дії.

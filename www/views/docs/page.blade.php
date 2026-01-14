@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Title та Meta тепер у header.blade.php -->
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/style.css?v={{ time() }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
@@ -201,7 +201,7 @@
                     <a href="/docs/{{ $prev['slug'] }}" class="nav-item nav-prev">
                         <span class="nav-label">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px; margin-right: 0.5rem;">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l-7.5-7.5M3 12h18" />
                             </svg>
                             Попередня
                         </span>
@@ -225,6 +225,9 @@
     </div>
 
     @include('partials.footer')
+
+    <!-- Скрипт для Lightbox (збільшення зображень) -->
+    <script src="/assets/js/docs.js?v={{ time() }}"></script>
 
     <!-- Скрипт для підсвічування тексту -->
     <script>

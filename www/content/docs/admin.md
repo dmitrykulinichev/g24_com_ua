@@ -3,20 +3,20 @@
 
 Інструменти для налаштування системи під специфіку конкретного бізнесу.
 
-![Скріншот: Глобальні налаштування](/assets/img/docs/admin_global_settings.png)
+{{screenshot file="admin_global_settings.png" title="Global Settings"}}
 
 ## Управління користувачами (Park Users)
 *   **ParkUserFormModal:** Додавання співробітників (диспетчерів, механіків).
 *   **Ролі:** Призначення прав доступу (Manager, Mechanic, Accountant).
 
-![Скріншот: Співробітники парку](/assets/img/docs/admin_park_users.png)
+{{screenshot file="admin_park_users.png" title="Park Users Management"}}
 
 ## Глобальні налаштування (Settings Tabs)
 *   **Appearance:** Налаштування логотипу та кольорів.
 *   **Notifications:** Налаштування системних сповіщень (Email, Telegram).
 *   **Privacy:** Налаштування політики конфіденційності.
 
-![Скріншот: Налаштування Telegram](/assets/img/docs/telegram_settings.png)
+{{screenshot file="telegram_settings.png" title="Telegram Settings"}}
 
 ## Діагностика (Debug Page)
 Інструменти для технічних спеціалістів:
@@ -24,7 +24,8 @@
 *   Перевірка часових поясів.
 *   Логи помилок (BetterStack).
 
-![Скріншот: Логи повідомлень](/assets/img/docs/telegram_logs.png)
+{{screenshot file="telegram_logs.png" title="Telegram Logs"}}
 
 ## Профіль користувача
-![Скріншот: Профіль користувача](/assets/img/docs/user_profile.png)
+
+{{screenshot file="user_profile.png" title="User Profile"}}

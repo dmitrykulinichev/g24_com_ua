@@ -3,7 +3,7 @@
 
 Фінансове ядро системи для обліку взаєморозрахунків з водіями та операційних витрат парку.
 
-![Скріншот: Журнал транзакцій](/assets/img/docs/finance_transactions_log.png)
+{{screenshot file="finance_transactions_log.png" title="Transactions Log"}}
 
 ## Управління транзакціями
 
@@ -13,7 +13,7 @@
 *   **Категорія:** Вибір зі списку (Паливо, Ремонт, Оренда, Зарплата).
 *   **Суб'єкт:** Прив'язка до Водія або Автомобіля.
 
-![Скріншот: Ручні поїздки](/assets/img/docs/finance_manual_trips.png)
+{{screenshot file="finance_manual_trips.png" title="Manual Trips"}}
 
 ### Фільтрація та Пошук
 Потужний `FiltersModal` дозволяє знайти будь-яку транзакцію за:
@@ -25,11 +25,14 @@
 ## Баланси водіїв
 Система автоматично розраховує баланс кожного водія на основі всіх його транзакцій (поїздки Uklon + ручні нарахування - списання).
 
-![Скріншот: Заробіток водіїв](/assets/img/docs/finance_driver_payroll.png)
-![Скріншот: Налаштування схем оплати](/assets/img/docs/finance_payment_schemes.png)
+{{screenshot file="finance_driver_payroll.png" title="Driver Payroll"}}
+
+{{screenshot file="finance_payment_schemes.png" title="Payment Schemes"}}
 
 ## Ефективність авто
-![Скріншот: Ефективність авто](/assets/img/docs/finance_vehicle_economics.png)
+
+{{screenshot file="finance_vehicle_economics.png" title="Vehicle Economics"}}
 
 ## Налаштування фінансів
-![Скріншот: Налаштування фінансів](/assets/img/docs/finance_global_settings.png)
+
+{{screenshot file="finance_global_settings.png" title="Finance Settings"}}

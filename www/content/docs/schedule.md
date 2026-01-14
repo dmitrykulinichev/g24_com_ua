@@ -3,7 +3,7 @@
 
 Інтерактивний інструмент для диспетчерів, що дозволяє розподіляти водіїв по автомобілях у часі. Це серце операційної діяльності парку.
 
-![Скріншот: Матриця планування](/assets/img/docs/schedule_matrix_view.png)
+{{screenshot file="schedule_matrix_view.png" title="Schedule Matrix"}}
 
 ## Матриця планування
 *   **Візуалізація:** Сітка (Gantt Chart style), де по вертикалі — автомобілі, по горизонталі — дати.
@@ -17,7 +17,7 @@
 *   **Split Slot:** Розділення довгої зміни на дві частини.
 *   **Lock Past Editing:** Захист історії від випадкових змін минулих періодів.
 
-![Скріншот: Створення зміни](/assets/img/docs/schedule_create_slot_modal.png)
+{{screenshot file="schedule_create_slot_modal.png" title="Create Slot Modal"}}
 
 ## Захист від колізій (Conflict Detection)
 Алгоритм системи перевіряє конфлікти в реальному часі:
@@ -32,7 +32,7 @@
 ## Фактичні дані (ActualShiftDetailsModal)
 Відображення "Actual Shifts" (фактичних виходів) поруч з плановими. Дозволяє порівняти план і факт (коли реально виїхав і повернувся).
 
-![Скріншот: Фактичні зміни](/assets/img/docs/schedule_actual_shifts.png)
+{{screenshot file="schedule_actual_shifts.png" title="Actual Shifts"}}
 
 ## Експорт
 Генерація .xlsx (Excel) файлу з графіком для друку або звітності.

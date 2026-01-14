@@ -3,7 +3,7 @@
 
 Система має глибоку двосторонню інтеграцію з Uklon Fleet API, що дозволяє автоматизувати рутинні процеси обміну даними.
 
-![Скріншот: Налаштування інтеграції](/assets/img/docs/uklon_settings.png)
+{{screenshot file="uklon_settings.png" title="Uklon Integration Settings"}}
 
 ## Реалізований функціонал
 
@@ -12,20 +12,21 @@
 *   **sync-orders:** Команда для поточної синхронізації.
 *   **backfill-orders:** Завантаження історії за минулі періоди.
 
-![Скріншот: Список замовлень](/assets/img/docs/uklon_orders_list.png)
-![Скріншот: Деталі замовлення](/assets/img/docs/uklon_order_details_modal.png)
+{{screenshot file="uklon_orders_list.png" title="Uklon Orders List"}}
+
+{{screenshot file="uklon_order_details_modal.png" title="Order Details"}}
 
 ### 2. Синхронізація Автопарку (Fleet Sync)
 *   **Link Fleet:** Функціонал для зв'язування автомобілів у локальній базі з автомобілями в кабінеті Uklon.
 *   **Імпорт:** Завантаження даних про автомобілі з Uklon (`uklon-vehicles`).
 
-![Скріншот: Синхронізація авто](/assets/img/docs/uklon_vehicles_sync.png)
+{{screenshot file="uklon_vehicles_sync.png" title="Fleet Synchronization"}}
 
 ### 3. Синхронізація Водіїв (Driver Sync)
 *   Отримання списку водіїв (`uklon-drivers`).
 *   Моніторинг статусу водія в агрегаторі.
 
-![Скріншот: Синхронізація водіїв](/assets/img/docs/uklon_drivers_sync.png)
+{{screenshot file="uklon_drivers_sync.png" title="Driver Synchronization"}}
 
 ## Технічні особливості
 *   **Refresh Token:** Автоматичне оновлення токенів доступу.
@@ -35,5 +36,6 @@
 ### Контроль ефективності
 Порівняння планових показників з фактичними даними від агрегатора. Виявлення "лівих" поїздок.
 
-![Скріншот: Звіти Uklon](/assets/img/docs/uklon_reports_dashboard.png)
-![Скріншот: Рейтинг водіїв](/assets/img/docs/uklon_reports_drivers.png)
+{{screenshot file="uklon_reports_dashboard.png" title="Uklon Reports Dashboard"}}
+
+{{screenshot file="uklon_reports_drivers.png" title="Driver Ratings"}}

@@ -3,7 +3,7 @@
 
 Модуль для контролю технічного стану та аналізу вартості володіння (TCO - Total Cost of Ownership).
 
-![Скріншот: Журнал ТО](/assets/img/docs/maintenance_records_log.png)
+{{screenshot file="maintenance_records_log.png" title="Maintenance Records Log"}}
 
 ## Журнал робіт (Service History)
 Хронологія всіх заїздів на СТО. Ви завжди знаєте, коли останній раз міняли гальмівні колодки на конкретному авто.
@@ -15,7 +15,7 @@
 3.  **Рішення:** Менеджер приймає рішення (`IssueReportActionsModal`) — перевести в ремонт або відхилити.
 4.  **Задача:** Якщо проблема складна, вона перетворюється на Задачу (`TaskInfoModal`).
 
-![Скріншот: Список несправностей](/assets/img/docs/maintenance_issues_list.png)
+{{screenshot file="maintenance_issues_list.png" title="Issue Reports List"}}
 
 ## Журнал обслуговування (Maintenance Records)
 Фіксація виконаних робіт через `VehicleMaintenanceRecordFormModal`.
@@ -30,4 +30,4 @@
 ## Налаштування регламентів
 Вкладка `MaintenanceTab` в налаштуваннях дозволяє створити правила (наприклад, "Заміна мастила кожні 10 000 км"), і система сама нагадуватиме про них.
 
-![Скріншот: Налаштування регламентів](/assets/img/docs/maintenance_settings_rules.png)
+{{screenshot file="maintenance_settings_rules.png" title="Maintenance Rules Settings"}}

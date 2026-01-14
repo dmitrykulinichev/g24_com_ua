@@ -13,9 +13,9 @@
 ### Топ автомобілів
 Рейтинг автомобілів за ефективністю використання. Допомагає виявити найкращі та найгірші активи.
 
-![Скріншот: Ефективність авто](/assets/img/docs/finance_vehicle_economics.png)
+{{screenshot file="finance_vehicle_economics.png" title="Vehicle Economics Report"}}
 
 ### Звіт по регламентних роботах
 Стан технічного обслуговування по всьому парку. Які авто потребують уваги найближчим часом.
 
-![Скріншот: Журнал ТО](/assets/img/docs/maintenance_records_log.png)
+{{screenshot file="maintenance_records_log.png" title="Maintenance Report"}}

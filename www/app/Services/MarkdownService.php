@@ -87,10 +87,50 @@ class MarkdownService
     }
 
     /**
+     * Обробляє шорткоди перед рендерингом
+     */
+    protected static function processShortcodes($text)
+    {
+        // Шорткод для скріншотів: {{screenshot file="image.png" title="Caption"}}
+        $text = preg_replace_callback('/\{\{screenshot\s+file="([^"]+)"\s*(?:title="([^"]+)")?\}\}/', function ($matches) {
+            $file = $matches[1];
+            $title = $matches[2] ?? 'Screenshot';
+            
+            // Формуємо шляхи
+            $desktopPath = "/assets/img/docs/{$file}";
+            $mobilePath = "/assets/img/docs/mobile/{$file}";
+            
+            return <<<HTML
+<div class="screenshot-container">
+    <div class="screenshot-header">
+        <div class="screenshot-dots">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+        </div>
+        <div class="screenshot-title">{$title}</div>
+    </div>
+    <div class="screenshot-content">
+        <picture>
+            <source media="(max-width: 767px)" srcset="{$mobilePath}">
+            <img src="{$desktopPath}" alt="{$title}">
+        </picture>
+    </div>
+</div>
+HTML;
+        }, $text);
+
+        return $text;
+    }
+
+    /**
      * Рендерить Markdown в HTML
      */
     public static function render($content)
     {
+        // Спочатку обробляємо шорткоди
+        $content = self::processShortcodes($content);
+
         $Parsedown = new Parsedown();
         return $Parsedown->text($content);
     }
