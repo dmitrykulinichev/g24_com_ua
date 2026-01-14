@@ -21,6 +21,8 @@
 *   **Quick Maintenance:** Швидке створення запису про ТО.
 *   **Print QR:** Перегляд та друк унікального QR-коду автомобіля.
 
+{{screenshot file="fleet_add_vehicle_form.png" title="Add Vehicle Form"}}
+
 {{screenshot file="fleet_update_mileage_modal.png" title="Update Mileage Modal"}}
 
 ## Життєвий цикл
@@ -34,3 +36,5 @@
 
 ## Інтеграція
 Модальне вікно `VehicleIntegrationModal` дозволяє налаштувати зв'язок з Uklon для синхронізації даних.
+
+{{screenshot file="fleet_vehicle_integration_modal.png" title="Vehicle Integration Modal"}}

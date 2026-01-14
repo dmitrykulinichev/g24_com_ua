@@ -17,6 +17,8 @@
 
 {{screenshot file="maintenance_issues_list.png" title="Issue Reports List"}}
 
+{{screenshot file="maintenance_issue_actions_modal.png" title="Issue Actions Modal"}}
+
 ## Журнал обслуговування (Maintenance Records)
 Фіксація виконаних робіт через `VehicleMaintenanceRecordFormModal`.
 *   **Категоризація:** Розділення на "Регламентне ТО" та "Ремонт".
