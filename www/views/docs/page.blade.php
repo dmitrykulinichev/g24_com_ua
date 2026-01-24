@@ -122,25 +122,29 @@
             text-decoration: none;
             padding: 1.25rem 1.5rem;
             border-radius: 0.75rem;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
             /* Темний стиль */
-            background-color: #1f2937; /* Темно-сірий/синій */
+            background-color: #1f2937;
             color: white;
             border: none;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
-        .nav-item:hover {
-            background-color: #374151; /* Світліший при наведенні */
+        .nav-item:hover, .nav-item.active-press {
+            background-color: #374151;
             transform: translateY(-3px);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        .nav-item.active-press {
+            transform: translateY(1px); /* Ефект натискання */
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
         }
         .nav-label {
             display: flex;
             align-items: center;
             font-size: 0.85rem;
-            color: #9ca3af; /* Світло-сірий текст */
+            color: #9ca3af;
             margin-bottom: 0.5rem;
             font-weight: 500;
         }
@@ -165,28 +169,64 @@
         .nav-prev:only-child { grid-column: 1; }
         .nav-next:only-child { grid-column: 2; }
 
-        /* Toast Notification */
-        .toast-notification {
+        /* Ghost Button Animation */
+        .nav-ghost {
             position: fixed;
             bottom: 2rem;
-            /* Позиція left/right буде задаватися через JS */
+            z-index: 1000;
             background-color: rgba(31, 41, 55, 0.95);
             color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            font-size: 0.9rem;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            z-index: 1000;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1.25rem 1.5rem; /* Розміри як у реальної кнопки */
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            min-width: 200px;
             pointer-events: none;
-            white-space: nowrap;
+            animation: ghostJump 0.6s ease-out forwards;
         }
 
-        .toast-notification.show {
-            opacity: 1;
-            transform: translateY(0);
+        .nav-ghost.ghost-left {
+            text-align: left;
+        }
+
+        .nav-ghost.ghost-right {
+            text-align: right;
+            align-items: flex-end;
+        }
+
+        .nav-ghost .nav-label {
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .nav-ghost .nav-title {
+            font-weight: 600;
+            color: white;
+            font-size: 1.1rem;
+        }
+
+        @keyframes ghostJump {
+            0% {
+                opacity: 0;
+                transform: translateY(100%);
+            }
+            20% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            70% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
         }
 
         @media (max-width: 768px) {
@@ -211,6 +251,9 @@
                 grid-column: 1;
                 text-align: center;
                 align-items: center;
+            }
+            .nav-ghost {
+                display: none;
             }
         }
     </style>
@@ -283,11 +326,6 @@
         </article>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="navToast" class="toast-notification">
-        <span id="toastMessage"></span>
-    </div>
-
     @include('partials.footer')
 
     <!-- Скрипт для Lightbox (збільшення зображень) -->
@@ -327,64 +365,89 @@
                 }
             }
 
-            // Функція показу тоста
-            function showToast(message, targetBtn, direction) {
-                const toast = document.getElementById('navToast');
-                const msg = document.getElementById('toastMessage');
-                msg.textContent = message;
+            // Перевірка видимості елемента
+            function isElementInViewport(el) {
+                const rect = el.getBoundingClientRect();
+                return (
+                    rect.top >= 0 &&
+                    rect.left >= 0 &&
+                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+                );
+            }
 
-                // Скидаємо попередні стилі позиціонування
-                toast.style.left = 'auto';
-                toast.style.right = 'auto';
-                toast.style.transform = 'translateY(10px)'; // Початкова позиція для анімації
+            // Функція створення Ghost Button
+            function triggerGhostNav(direction, title, xPos) {
+                const ghost = document.createElement('div');
+                ghost.className = `nav-ghost ghost-${direction}`;
 
-                if (targetBtn) {
-                    const rect = targetBtn.getBoundingClientRect();
-
-                    if (direction === 'left') {
-                        // Вирівнюємо по лівому краю кнопки
-                        toast.style.left = rect.left + 'px';
-                    } else {
-                        // Вирівнюємо по правому краю кнопки
-                        // Вираховуємо right відносно ширини вікна
-                        const rightPos = document.documentElement.clientWidth - rect.right;
-                        toast.style.right = rightPos + 'px';
-                    }
+                // Встановлюємо горизонтальну позицію
+                if (direction === 'left') {
+                    ghost.style.left = xPos + 'px';
                 } else {
-                    // Фолбек, якщо кнопки немає (наприклад, мобільний або прихована)
-                    if (direction === 'left') {
-                        toast.style.left = '2rem';
-                    } else {
-                        toast.style.right = '2rem';
-                    }
+                    // Для правої кнопки ми отримали rect.right, але CSS right працює від правого краю
+                    // Тому: windowWidth - rect.right
+                    const rightPos = document.documentElement.clientWidth - xPos;
+                    ghost.style.right = rightPos + 'px';
                 }
 
-                // Запускаємо анімацію
-                requestAnimationFrame(() => {
-                    toast.classList.add('show');
-                });
+                let arrowHtml = '';
+                if (direction === 'left') {
+                    arrowHtml = `<span class="nav-label"><span style="margin-right: 0.5rem; font-size: 1.2em;">←</span> Попередня</span>`;
+                } else {
+                    arrowHtml = `<span class="nav-label">Наступна <span style="margin-left: 0.5rem; font-size: 1.2em;">→</span></span>`;
+                }
+
+                ghost.innerHTML = `${arrowHtml}<span class="nav-title">${title}</span>`;
+
+                document.body.appendChild(ghost);
 
                 setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 1500);
+                    ghost.remove();
+                }, 600);
             }
 
             // Навігація стрілками
             document.addEventListener('keydown', function(event) {
-                // Ігноруємо, якщо фокус в полі вводу
                 if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
 
                 if (event.key === 'ArrowLeft') {
                     const prevLink = document.querySelector('.nav-prev');
                     if (prevLink) {
-                        showToast('← Попередня сторінка', prevLink, 'left');
-                        setTimeout(() => prevLink.click(), 300);
+                        if (isElementInViewport(prevLink)) {
+                            // Якщо кнопка видима - просто клікаємо з ефектом
+                            prevLink.classList.add('active-press');
+                            setTimeout(() => prevLink.classList.remove('active-press'), 200);
+                            setTimeout(() => prevLink.click(), 100);
+                        } else {
+                            // Якщо не видима - показуємо привида
+                            const title = prevLink.querySelector('.nav-title').innerText;
+                            // Вираховуємо позицію відносно контейнера навігації, щоб було рівно
+                            const navContainer = document.querySelector('.docs-nav');
+                            const rect = navContainer.getBoundingClientRect();
+
+                            triggerGhostNav('left', title, rect.left);
+                            setTimeout(() => prevLink.click(), 300);
+                        }
                     }
                 } else if (event.key === 'ArrowRight') {
                     const nextLink = document.querySelector('.nav-next');
                     if (nextLink) {
-                        showToast('Наступна сторінка →', nextLink, 'right');
-                        setTimeout(() => nextLink.click(), 300);
+                        if (isElementInViewport(nextLink)) {
+                            // Якщо кнопка видима
+                            nextLink.classList.add('active-press');
+                            setTimeout(() => nextLink.classList.remove('active-press'), 200);
+                            setTimeout(() => nextLink.click(), 100);
+                        } else {
+                            // Якщо не видима
+                            const title = nextLink.querySelector('.nav-title').innerText;
+                            const navContainer = document.querySelector('.docs-nav');
+                            const rect = navContainer.getBoundingClientRect();
+
+                            // Передаємо rect.right для правої кнопки
+                            triggerGhostNav('right', title, rect.right);
+                            setTimeout(() => nextLink.click(), 300);
+                        }
                     }
                 }
             });
