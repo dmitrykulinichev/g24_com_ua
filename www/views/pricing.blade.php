@@ -5,390 +5,240 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Title та Meta тепер у header.blade.php -->
     <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- Підключення Tailwind CSS (через CDN для розробки) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb', // blue-600
+                        secondary: '#1e293b', // slate-800
+                        accent: '#10b981', // emerald-500
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .pricing-header {
-            text-align: center;
-            padding: 4rem 2rem;
-            background-color: var(--secondary-color);
-            color: var(--white);
-        }
-        .pricing-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
-        .pricing-header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        /* Trial Badge */
-        .trial-badge {
-            display: inline-block;
-            background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            color: #60a5fa; /* Світло-блакитний */
-        }
-
-        .pricing-container {
-            max-width: 1000px;
-            margin: -3rem auto 4rem;
-            padding: 0 2rem;
-            position: relative;
-            z-index: 10;
-        }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .plan-card {
-            background: var(--white);
-            border-radius: 1rem;
-            padding: 2rem;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: transform 0.3s;
-        }
-
-        .plan-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .plan-card.popular {
-            border: 2px solid var(--primary-color);
-            transform: scale(1.05);
-            z-index: 2;
-        }
-
-        .popular-badge {
-            position: absolute;
-            top: -12px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.25rem 1rem;
-            border-radius: 1rem;
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
-
-        .plan-name {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        .plan-desc {
-            text-align: center;
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-bottom: 1.5rem;
-            min-height: 2.5em;
-        }
-
-        .plan-price {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .price-amount {
-            font-size: 3rem;
-            font-weight: 800;
-            color: var(--secondary-color);
-        }
-
-        .price-currency {
-            font-size: 1.5rem;
-            vertical-align: top;
-        }
-
-        .price-period {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-
-        .plan-features {
-            list-style: none;
-            margin-bottom: 2rem;
-            flex-grow: 1;
-        }
-
-        .plan-features li {
-            margin-bottom: 0.75rem;
-            padding-left: 1.5rem;
-            position: relative;
-            color: var(--text-color);
-            font-size: 0.95rem;
-        }
-
-        .plan-features li::before {
-            content: "✓";
-            color: var(--accent-green);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        .plan-btn {
-            display: block;
-            text-align: center;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            text-decoration: none;
-            font-weight: 600;
-            transition: background 0.2s;
-            cursor: pointer;
-            border: none;
-            width: 100%;
-            font-size: 1rem;
-        }
-
-        .plan-btn.primary {
-            background-color: var(--primary-color);
-            color: white;
-        }
-        .plan-btn.primary:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .plan-btn.outline {
-            border: 2px solid var(--primary-color);
-            color: var(--primary-color);
-            background: transparent;
-        }
-        .plan-btn.outline:hover {
-            background-color: #eff6ff;
-        }
-
-        /* Toggle Switch */
-        .billing-toggle {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 1rem;
-            color: var(--white);
-        }
-
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 50px;
-            height: 26px;
-            margin: 0 1rem;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: rgba(255,255,255,0.3);
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(24px);
-        }
-
-        .save-badge {
-            background-color: var(--accent-green);
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            margin-left: 0.5rem;
-        }
-
-        /* Enterprise Block */
-        .enterprise-block {
-            background-color: #f8fafc;
-            border: 1px solid #e5e7eb;
-            border-radius: 1rem;
-            padding: 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 2rem;
-        }
-
-        .enterprise-content {
-            text-align: left;
-            flex: 1;
-        }
-
-        .enterprise-content h3 {
-            font-size: 1.25rem;
-            color: var(--secondary-color);
-            margin-bottom: 0.75rem;
-        }
-
-        .enterprise-content p {
-            color: #6b7280;
-            margin-bottom: 0.5rem;
-        }
-
-        .enterprise-list {
-            list-style: none;
-            margin-bottom: 1rem;
-            color: #4b5563;
-        }
-        .enterprise-list li {
-            margin-bottom: 0.25rem;
-            padding-left: 1rem;
-            position: relative;
-        }
-        .enterprise-list li::before {
-            content: "•";
-            color: var(--primary-color);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .plan-card.popular {
-                transform: none;
-            }
-            .pricing-container {
-                margin-top: 2rem;
-            }
-            .enterprise-block {
-                flex-direction: column;
-                text-align: center;
-            }
-            .enterprise-content {
-                text-align: center;
-            }
-            .enterprise-list {
-                text-align: left;
-                display: inline-block;
-            }
-        }
+        body { font-family: 'Inter', sans-serif; }
     </style>
 </head>
-<body>
+<!-- Додаємо x-data, щоб Alpine працював на всій сторінці -->
+<body class="text-slate-800 antialiased bg-white" x-data>
     @include('partials.header')
 
-    <div x-data="{ yearly: false }">
-        <div class="pricing-header">
-            <h1>Тарифні плани</h1>
-            <p>Оберіть рішення, яке найкраще підходить для вашого бізнесу.</p>
+    <main>
+        <!-- Hero Section -->
+        <section class="relative pt-24 pb-20 bg-slate-900 text-white overflow-hidden">
+            <!-- Декоративний фон -->
+            <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
 
-            <div class="trial-badge">
-                🎁 14 днів безкоштовного доступу до будь-якого тарифу
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+                <div class="inline-block bg-blue-600/30 border border-blue-500/50 rounded-full px-4 py-1 mb-6 text-blue-200 text-sm font-medium">
+                    Новий підхід до SaaS
+                </div>
+                <h1 class="text-4xl font-extrabold sm:text-6xl mb-6 leading-tight">
+                    Спочатку користуєтесь — <br class="hidden sm:block">
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">потім платите</span>
+                </h1>
+                <p class="text-xl text-slate-300 max-w-2xl mx-auto mb-10">
+                    Ми скасували передплату і складні тарифи. Реєструйтеся, наводьте порядок у парку, а рахунок ми виставимо лише в кінці місяця.
+                </p>
             </div>
+        </section>
 
-            <div class="billing-toggle" style="margin-top: 2rem;">
-                <span :class="{ 'font-bold': !yearly }">Щомісяця</span>
-                <label class="toggle-switch">
-                    <input type="checkbox" x-model="yearly">
-                    <span class="slider"></span>
-                </label>
-                <span :class="{ 'font-bold': yearly }">Щорічно <span class="save-badge">-20%</span></span>
-            </div>
-        </div>
+        <!-- Pricing Formula Card -->
+        <section class="relative -mt-16 pb-20">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
+                    <div class="p-8 sm:p-12">
+                        <div class="text-center mb-10">
+                            <h2 class="text-2xl font-bold text-slate-900">Проста арифметика вашого успіху</h2>
+                            <p class="text-slate-500">Ви платите тільки за те, що реально приносить гроші.</p>
+                        </div>
 
-        <div class="pricing-container">
-            <div class="pricing-grid">
-                @foreach($plans as $plan)
-                    <div class="plan-card {{ $plan['is_popular'] ? 'popular' : '' }}">
-                        @if($plan['is_popular'])
-                            <div class="popular-badge">Найпопулярніший</div>
-                        @endif
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-12 relative">
+                            <!-- Base Price -->
+                            <div class="flex-1 text-center p-6 bg-slate-50 rounded-2xl border border-slate-100 w-full">
+                                <div class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">База</div>
+                                <div class="text-5xl font-extrabold text-slate-900 mb-2">{{ $model['base_price'] }} <span class="text-2xl font-medium text-slate-400">грн</span></div>
+                                <div class="text-slate-600 font-medium">Щомісячна абонплата</div>
+                                <div class="text-xs text-slate-400 mt-2">за доступ до системи та сервер</div>
+                            </div>
 
-                        <div class="plan-name">{{ $plan['name'] }}</div>
-                        <div class="plan-desc">{{ $plan['description'] }}</div>
+                            <!-- Plus Sign -->
+                            <div class="text-4xl text-slate-300 font-light hidden md:block">+</div>
 
-                        <div class="plan-price">
-                            <span class="price-currency">{{ $plan['currency'] }}</span>
-                            <!-- Ціна змінюється залежно від перемикача -->
-                            <span class="price-amount" x-text="yearly ? {{ round($plan['price_yearly'] / 12) }} : {{ $plan['price_monthly'] }}">
-                                {{ $plan['price_monthly'] }}
-                            </span>
-                            <span class="price-period">/ міс</span>
-
-                            <div x-show="yearly" style="font-size: 0.85rem; color: var(--accent-green); margin-top: 0.5rem;">
-                                Сплачується {{ $plan['price_yearly'] }} {{ $plan['currency'] }} / рік
+                            <!-- Car Price -->
+                            <div class="flex-1 text-center p-6 bg-blue-50 rounded-2xl border border-blue-100 w-full relative overflow-hidden">
+                                <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">Pay-as-you-go</div>
+                                <div class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-2">Масштаб</div>
+                                <div class="text-5xl font-extrabold text-primary mb-2">{{ $model['car_price'] }} <span class="text-2xl font-medium text-blue-300">грн</span></div>
+                                <div class="text-slate-600 font-medium">За активне авто</div>
+                                <div class="text-xs text-slate-400 mt-2">в місяць</div>
                             </div>
                         </div>
 
-                        <ul class="plan-features">
-                            @foreach($plan['features'] as $feature)
-                                <li>{{ $feature }}</li>
-                            @endforeach
-                        </ul>
+                        <!-- Active Car Explanation -->
+                        <div class="bg-yellow-50 rounded-xl p-6 border border-yellow-100 flex gap-4 items-start">
+                            <div class="flex-shrink-0 w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center text-yellow-600 text-xl">💡</div>
+                            <div>
+                                <h3 class="font-bold text-yellow-900 mb-1">Що таке "Активне авто"?</h3>
+                                <p class="text-yellow-800 text-sm leading-relaxed">
+                                    Ми вважаємо автомобіль активним, тільки якщо він відпрацював <strong>мінімум {{ $model['active_condition'] }}</strong> за звітний місяць.
+                                    Якщо машина стояла в ремонті, чекала водія або була продана — <strong>ви за неї не платите.</strong>
+                                </p>
+                            </div>
+                        </div>
 
-                        <!-- Кнопка відкриває модалку -->
-                        <button @click="$dispatch('open-order-modal', { plan: '{{ $plan['name'] }}' })" class="plan-btn {{ $plan['is_popular'] ? 'primary' : 'outline' }}">
-                            {{ $plan['button_text'] }}
-                        </button>
+                        <div class="mt-10 text-center">
+                            <button @click="$dispatch('open-order-modal', { type: 'monthly' })" class="inline-block bg-primary text-white font-bold text-lg px-12 py-4 rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:shadow-blue-600/40 transition duration-300 transform hover:-translate-y-1 w-full sm:w-auto">
+                                Почати роботу зараз
+                            </button>
+                            <p class="mt-4 text-sm text-slate-400">
+                                <span class="inline-flex items-center gap-1"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Без прив'язки картки</span>
+                                <span class="mx-2">•</span>
+                                <span>Рахунок прийде через 30 днів</span>
+                            </p>
+                        </div>
                     </div>
-                @endforeach
-            </div>
-
-            <!-- Enterprise Block -->
-            <div class="enterprise-block">
-                <div class="enterprise-content">
-                    <h3>Не підходить жоден тариф?</h3>
-                    <p>Якщо у вас:</p>
-                    <ul class="enterprise-list">
-                        <li>більше авто</li>
-                        <li>нестандартна схема роботи</li>
-                        <li>кілька міст / СТО / диспетчерів</li>
-                    </ul>
-                    <p style="color: var(--secondary-color); font-weight: 500;">Ми підберемо конфігурацію без зайвого і без переплати.</p>
                 </div>
-                <button @click="$dispatch('open-order-modal', { plan: 'Індивідуальний' })" class="btn-primary" style="background-color: var(--secondary-color); white-space: nowrap;">
-                    Обговорити варіант
+            </div>
+        </section>
+
+        <!-- Why it's better -->
+        <section class="py-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Чому це вигідніше за звичайні тарифи?</h2>
+                </div>
+
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                        <div class="text-3xl mb-4">📉</div>
+                        <h3 class="font-bold text-lg mb-2">Економія на простої</h3>
+                        <p class="text-slate-600 text-sm">У вас 20 машин, але 5 в ремонті? В інших системах ви платите за пакет "до 20". У нас — тільки за 15 працюючих.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                        <div class="text-3xl mb-4">🚀</div>
+                        <h3 class="font-bold text-lg mb-2">Легкий старт</h3>
+                        <p class="text-slate-600 text-sm">Не потрібно платити 5000 грн наперед, щоб просто спробувати. Почніть з малого, платіть з прибутку.</p>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-slate-50 border border-slate-100">
+                        <div class="text-3xl mb-4">🔓</div>
+                        <h3 class="font-bold text-lg mb-2">Жодних лімітів</h3>
+                        <p class="text-slate-600 text-sm">Ми не обмежуємо вас у функціях. Ви отримуєте повний доступ до всіх модулів, навіть якщо у вас всього 3 машини.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- All Included List -->
+        <section class="py-20 bg-slate-900 text-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col md:flex-row gap-12 items-start">
+                    <div class="md:w-1/3">
+                        <h2 class="text-3xl font-bold mb-6">Все включено</h2>
+                        <p class="text-slate-400 mb-8">
+                            Ми не ділимо клієнтів на сорти. Ви отримуєте повний функціонал одразу, включаючи майбутні оновлення.
+                        </p>
+                        <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
+                            <div class="text-yellow-400 font-bold mb-2">Бонус за довіру</div>
+                            <p class="text-sm text-slate-300 mb-4">Оплатіть абонплату (базу) на рік вперед і отримайте знижку.</p>
+                            <div class="text-2xl font-bold text-white mb-4">-100 грн <span class="text-sm font-normal text-slate-400">/ авто щомісяця</span></div>
+                            <button @click="$dispatch('open-order-modal', { type: 'yearly' })" class="w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold py-2 px-4 rounded-lg transition text-sm">
+                                Оформити річну підписку
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="md:w-2/3 grid sm:grid-cols-2 gap-6">
+                        @foreach($model['features'] as $feature)
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                                    <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                </div>
+                                <span class="text-lg text-slate-200">{{ $feature }}</span>
+                            </div>
+                        @endforeach
+                        <!-- Додаткові фічі -->
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-lg text-slate-200">Безкоштовні оновлення системи</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="flex-shrink-0 w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center mt-0.5">
+                                <svg class="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                            </div>
+                            <span class="text-lg text-slate-200">Персональний онбординг</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-3xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Питання про оплату</h2>
+                </div>
+
+                <div class="space-y-4" x-data="{ active: null }">
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 1 ? null : 1)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition">
+                            <span>Як виставляється рахунок?</span>
+                            <span x-text="active === 1 ? '−' : '+'" class="text-xl text-slate-400"></span>
+                        </button>
+                        <div x-show="active === 1" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
+                            Першого числа кожного місяця ми формуємо рахунок на основі активності вашого парку за минулий місяць. Ви отримуєте його на email та в кабінеті. У вас є 5 днів на оплату.
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 2 ? null : 2)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition">
+                            <span>Що якщо я додав авто в кінці місяця?</span>
+                            <span x-text="active === 2 ? '−' : '+'" class="text-xl text-slate-400"></span>
+                        </button>
+                        <div x-show="active === 2" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
+                            Якщо авто відпрацювало менше 5 змін (або днів) до кінця місяця, плата за нього не стягується в цьому періоді.
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 3 ? null : 3)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition">
+                            <span>Чи можу я платити як ФОП/ТОВ?</span>
+                            <span x-text="active === 3 ? '−' : '+'" class="text-xl text-slate-400"></span>
+                        </button>
+                        <div x-show="active === 3" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
+                            Так, ми працюємо офіційно і надаємо всі необхідні документи для бухгалтерії.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enterprise Link -->
+        <section class="py-12 bg-slate-50 border-t border-slate-200">
+            <div class="container mx-auto px-4 text-center">
+                <p class="text-slate-500 mb-2">У вас великий парк (50+ авто) і потрібні особливі умови?</p>
+                <button @click="$dispatch('open-order-modal', { type: 'enterprise' })" class="text-primary font-semibold hover:text-blue-700 transition flex items-center justify-center gap-2 mx-auto">
+                    Зв'яжіться з нами для індивідуальної пропозиції
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
                 </button>
             </div>
-
-        </div>
-    </div>
+        </section>
+    </main>
 
     @include('partials.footer')
 </body>

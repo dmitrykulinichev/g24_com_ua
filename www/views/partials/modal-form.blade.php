@@ -6,8 +6,8 @@
     document.addEventListener('alpine:init', () => {
         Alpine.data('orderForm', () => ({
             showModal: false,
-            selectedPlan: '',
-            formData: { name: '', email: '', company: '', phone: '', plan: '', agreement: true },
+            orderType: 'monthly', // monthly, yearly, enterprise
+            formData: { name: '', email: '', company: '', phone: '', agreement: true },
             loading: false,
             success: false,
             error: null,
@@ -16,8 +16,7 @@
             init() {
                 window.addEventListener('open-order-modal', (event) => {
                     this.showModal = true;
-                    this.selectedPlan = event.detail.plan || '';
-                    this.formData.plan = this.selectedPlan;
+                    this.orderType = event.detail.type || 'monthly';
                     this.success = false;
                     this.error = null;
                     this.formData.agreement = true;
@@ -47,6 +46,17 @@
                 }
             },
 
+            get modalTitle() {
+                if (this.orderType === 'enterprise') return 'Індивідуальні умови';
+                return 'Почати роботу';
+            },
+
+            get buttonText() {
+                if (this.loading) return 'Відправка...';
+                if (this.orderType === 'enterprise') return 'Замовити консультацію';
+                return 'Зареєструватися';
+            },
+
             submitForm() {
                 if (!this.formData.agreement) {
                     this.error = 'Будь ласка, підтвердіть згоду з правилами.';
@@ -70,7 +80,11 @@
                 this.loading = true;
                 this.error = null;
 
-                let payload = { ...this.formData, 'g-recaptcha-response': captchaToken };
+                let payload = {
+                    ...this.formData,
+                    plan: this.orderType, // Передаємо тип замовлення як план
+                    'g-recaptcha-response': captchaToken
+                };
 
                 fetch('/api/lead', {
                     method: 'POST',
@@ -82,7 +96,7 @@
                     this.loading = false;
                     if (data.status === 'success') {
                         this.success = true;
-                        this.formData = { name: '', email: '', company: '', phone: '', plan: '', agreement: true };
+                        this.formData = { name: '', email: '', company: '', phone: '', agreement: true };
                         if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                         setTimeout(() => { this.showModal = false; }, 3000);
                     } else {
@@ -110,23 +124,34 @@
     <div class="modal-content">
         <button class="modal-close" @click="showModal = false">&times;</button>
 
-        <h2 class="modal-title">
-            <span x-show="!success">Заявка на підключення</span>
-            <span x-show="success">Успішно!</span>
-        </h2>
-
-        <p class="modal-subtitle" x-show="!success && selectedPlan">
-            Обраний тариф: <strong x-text="selectedPlan" style="color: var(--primary-color);"></strong>
-        </p>
+        <h2 class="modal-title" x-text="modalTitle"></h2>
 
         <div x-show="success" class="success-message">
             <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
             <p>Дякуємо! Ваша заявка прийнята.</p>
-            <p>Ми зв'яжемося з вами найближчим часом.</p>
+            <p>Ми надішлемо деталі на ваш Email.</p>
         </div>
 
         <form x-show="!success" @submit.prevent="submitForm">
             <div x-show="error" class="error-message" x-text="error"></div>
+
+            <!-- Вибір типу оплати (тільки якщо не Enterprise) -->
+            <div x-show="orderType !== 'enterprise'" class="payment-type-selector">
+                <label class="radio-label" :class="{ 'checked': orderType === 'monthly' }">
+                    <input type="radio" name="orderType" value="monthly" x-model="orderType">
+                    <div class="radio-content">
+                        <span class="radio-title">Щомісячна оплата</span>
+                        <span class="radio-desc">Оплата по факту в кінці місяця</span>
+                    </div>
+                </label>
+                <label class="radio-label" :class="{ 'checked': orderType === 'yearly' }">
+                    <input type="radio" name="orderType" value="yearly" x-model="orderType">
+                    <div class="radio-content">
+                        <span class="radio-title">Річна передплата</span>
+                        <span class="radio-desc badge-green">-100 грн/авто знижка</span>
+                    </div>
+                </label>
+            </div>
 
             <div class="form-group">
                 <label>Ваше ім'я</label>
@@ -160,17 +185,12 @@
                         Я погоджуюсь з
                         <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Політика конфіденційності', slug: 'privacy' })">Політикою конфіденційності</a>
                         та
-                        <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Угода користувача', slug: 'terms' })">Умовами використання</a>
+                        <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Публічна оферта', slug: 'offer' })">Публічною офертою</a>
                     </span>
                 </label>
             </div>
 
-            <input type="hidden" x-model="formData.plan">
-
-            <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading || !formData.agreement">
-                <span x-show="!loading">Відправити заявку</span>
-                <span x-show="loading">Відправка...</span>
-            </button>
+            <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading || !formData.agreement" x-text="buttonText"></button>
         </form>
     </div>
 </div>
@@ -186,13 +206,12 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        /* Додаємо прокрутку для всього оверлею, якщо модалка не влазить */
         overflow-y: auto;
         padding: 1rem;
     }
 
     .modal-backdrop {
-        position: fixed; /* Змінено на fixed, щоб фон не прокручувався */
+        position: fixed;
         top: 0;
         left: 0;
         width: 100%;
@@ -209,10 +228,9 @@
         max-width: 500px;
         position: relative;
         z-index: 1001;
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
         animation: modalSlideIn 0.3s ease-out;
-        /* Видалено max-height та overflow-y */
-        margin: auto; /* Центрування, якщо контент менший за екран */
+        margin: auto;
     }
 
     @keyframes modalSlideIn {
@@ -234,15 +252,95 @@
 
     .modal-title {
         font-size: 1.5rem;
-        margin-bottom: 0.5rem;
+        margin-bottom: 1.5rem;
         text-align: center;
         color: var(--secondary-color);
+        font-weight: 700;
     }
 
-    .modal-subtitle {
-        text-align: center;
+    /* Payment Type Selector */
+    .payment-type-selector {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
         margin-bottom: 1.5rem;
+    }
+
+    .radio-label {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .radio-label:hover {
+        border-color: var(--primary-color);
+        background-color: #f9fafb;
+    }
+
+    .radio-label.checked {
+        border-color: var(--primary-color);
+        background-color: #eff6ff;
+        box-shadow: 0 0 0 1px var(--primary-color);
+    }
+
+    .radio-label input {
+        margin-right: 1rem;
+        accent-color: var(--primary-color);
+        width: 1.2rem;
+        height: 1.2rem;
+    }
+
+    .radio-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .radio-title {
+        font-weight: 600;
+        color: var(--secondary-color);
+        font-size: 0.95rem;
+    }
+
+    .radio-desc {
+        font-size: 0.85rem;
         color: #6b7280;
+    }
+
+    .badge-green {
+        color: #059669;
+        font-weight: 500;
+    }
+
+    /* Form Styles */
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.4rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        color: #374151;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
     }
 
     .success-message {
@@ -270,16 +368,15 @@
         display: flex !important;
         align-items: flex-start;
         font-weight: 400 !important;
-        font-size: 0.9rem;
-        color: var(--text-color);
+        font-size: 0.85rem;
+        color: #4b5563;
         cursor: pointer;
     }
 
     .checkbox-label input {
         width: auto !important;
         margin-right: 0.75rem;
-        margin-top: 0.25rem;
-        cursor: pointer;
+        margin-top: 0.2rem;
     }
 
     .checkbox-label a {
