@@ -37,8 +37,7 @@
 
     <main>
         <!-- Hero Section -->
-        <!-- Змінено оверлей на темний, щоб білий текст хедера читався -->
-        <section class="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28 bg-cover bg-center" style="background-image: url('/assets/img/openart-image_hmp_kyur_1767826263185_raw.png');">
+        <section class="relative overflow-hidden pt-32 pb-16 lg:pt-40 lg:pb-20 bg-cover bg-center" style="background-image: url('/assets/img/openart-image_hmp_kyur_1767826263185_raw.png');">
             <!-- Темний оверлей -->
             <div class="absolute inset-0 bg-slate-900/80"></div>
             <!-- Градієнт для глибини -->
@@ -54,14 +53,8 @@
                         Замініть Excel, блокноти та хаос у чатах на єдину цифрову екосистему.
                         Автоматизуйте графіки, фінанси та ремонти в одному вікні.
                     </p>
-                    <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="/pricing" class="btn-primary text-lg px-8 py-4 shadow-lg shadow-blue-500/30 border border-transparent">
-                            Почати роботу
-                        </a>
-                        <a href="/target" class="inline-flex items-center justify-center px-8 py-4 border border-slate-500 text-lg font-medium rounded-lg text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm transition duration-300">
-                            Кому підійде
-                        </a>
-                    </div>
+
+                    <!-- Кнопки перенесено нижче, за межі Hero -->
 
                     <!-- Key Benefits (Інтегровано в Hero) -->
                     <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left max-w-4xl mx-auto">
@@ -94,6 +87,23 @@
                     <img src="/assets/img/docs/dashboard_main.png" alt="Інтерфейс Garage24" class="w-full h-auto opacity-90">
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent pointer-events-none"></div>
                 </div>
+            </div>
+        </section>
+
+        <!-- CTA Buttons Section (Винесено з Hero) -->
+        <section class="py-10 bg-white border-b border-slate-100">
+            <div class="container mx-auto px-4 text-center">
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/pricing" class="btn-primary text-lg px-10 py-4 shadow-lg shadow-blue-500/30">
+                        Почати роботу
+                    </a>
+                    <a href="/target" class="inline-flex items-center justify-center px-10 py-4 border border-slate-300 text-lg font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition duration-300 shadow-sm">
+                        Кому підійде
+                    </a>
+                </div>
+                <p class="mt-4 text-sm text-slate-500">
+                    Налаштування займає менше 15 хвилин. Безкоштовний старт.
+                </p>
             </div>
         </section>
 
