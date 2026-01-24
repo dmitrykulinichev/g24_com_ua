@@ -15,9 +15,10 @@ class ContactsController
     {
         $meta = [
             'title' => 'Контакти',
-            'description' => 'Зв\'яжіться з нами: телефон, email, адреса офісу Garage24 у Києві.'
+            'description' => 'Зв\'яжіться з нами для консультації або технічної підтримки. Ми завжди на зв\'язку.'
         ];
 
-        echo $this->blade->make('contacts', ['meta' => $meta])->render();
+        // Передаємо darkBg = true
+        echo $this->blade->make('contacts', ['meta' => $meta, 'darkBg' => true])->render();
     }
 }

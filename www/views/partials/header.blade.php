@@ -12,6 +12,9 @@
 
     // Визначення активного пункту меню
     $currentUri = $_SERVER['REQUEST_URI'];
+
+    // Чи є темний фон під хедером (передається з view)
+    $isDarkBg = $darkBg ?? false;
 @endphp
 
 <title>{{ $pageTitle }}</title>
@@ -35,12 +38,17 @@
 <header
     x-data="{
         isOpen: false,
-        scrolled: false
+        scrolled: false,
+        isDarkBg: {{ $isDarkBg ? 'true' : 'false' }}
     }"
     @scroll.window="scrolled = (window.pageYOffset > 20)"
-    :class="{ 'bg-white/90 backdrop-blur-md shadow-sm': scrolled, 'bg-white': !scrolled && isOpen, 'bg-transparent': !scrolled && !isOpen }"
-    class="fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent"
-    :class="{ 'border-slate-100': scrolled }"
+    class="fixed top-0 w-full z-50 transition-all duration-300 border-b"
+    :class="{
+        'bg-white/90 backdrop-blur-md shadow-sm border-slate-100': scrolled,
+        'bg-white border-transparent': !scrolled && isOpen,
+        'bg-transparent border-transparent': !scrolled && !isOpen && isDarkBg,
+        'bg-white border-slate-100': !scrolled && !isOpen && !isDarkBg
+    }"
 >
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <nav class="flex items-center justify-between h-20">
@@ -49,7 +57,15 @@
                 <div class="relative overflow-hidden rounded-lg shadow-sm group-hover:shadow-md transition-all duration-300">
                     <img src="/assets/img/logo.jpg" alt="Garage24 Logo" class="h-10 w-auto transform group-hover:scale-105 transition-transform duration-500">
                 </div>
-                <span class="font-bold text-xl text-slate-800 tracking-tight group-hover:text-primary transition-colors duration-300">Garage24</span>
+                <span
+                    class="font-bold text-xl tracking-tight transition-colors duration-300"
+                    :class="{
+                        'text-slate-800': scrolled || isOpen || !isDarkBg,
+                        'text-white': !scrolled && !isOpen && isDarkBg
+                    }"
+                >
+                    Garage24
+                </span>
             </a>
 
             <!-- Десктопне меню -->
@@ -64,22 +80,31 @@
                         ['url' => '/contacts', 'title' => 'Контакти'],
                     ] as $item)
                         <a href="{{ $item['url'] }}"
-                           class="relative px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200
-                                  {{ str_starts_with($currentUri, $item['url']) ? 'text-primary bg-blue-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}">
+                           class="relative px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200"
+                           :class="{
+                               'text-primary bg-blue-50': '{{ $currentUri }}'.startsWith('{{ $item['url'] }}') && (scrolled || !isDarkBg),
+                               'text-white bg-white/10': '{{ $currentUri }}'.startsWith('{{ $item['url'] }}') && !scrolled && isDarkBg,
+                               'text-slate-600 hover:text-slate-900 hover:bg-slate-50': !'{{ $currentUri }}'.startsWith('{{ $item['url'] }}') && (scrolled || !isDarkBg),
+                               'text-white/80 hover:text-white hover:bg-white/10': !'{{ $currentUri }}'.startsWith('{{ $item['url'] }}') && !scrolled && isDarkBg
+                           }"
+                        >
                             {{ $item['title'] }}
-                            @if(str_starts_with($currentUri, $item['url']))
-                                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full opacity-0"></span>
-                            @endif
                         </a>
                     @endforeach
                 </div>
 
                 <!-- Розділювач -->
-                <div class="h-6 w-px bg-slate-200"></div>
+                <div class="h-6 w-px transition-colors duration-300"
+                     :class="{ 'bg-slate-200': scrolled || !isDarkBg, 'bg-white/20': !scrolled && isDarkBg }"></div>
 
                 <!-- Кнопка входу -->
                 <a href="https://app.g24.com.ua/login" target="_blank"
-                   class="group flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-full hover:bg-slate-50 hover:text-primary hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow">
+                   class="group flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full transition-all duration-300 shadow-sm hover:shadow"
+                   :class="{
+                       'text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 hover:text-primary hover:border-primary/30': scrolled || !isDarkBg,
+                       'text-white bg-white/10 border border-white/30 hover:bg-white/20 hover:border-white/50': !scrolled && isDarkBg
+                   }"
+                >
                     <span>В гараж</span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
@@ -88,7 +113,9 @@
             </div>
 
             <!-- Мобільна кнопка -->
-            <button class="lg:hidden p-2 text-slate-600 hover:text-slate-900 focus:outline-none" @click="isOpen = !isOpen" aria-label="Меню">
+            <button class="lg:hidden p-2 focus:outline-none transition-colors duration-300"
+                :class="{ 'text-slate-600 hover:text-slate-900': scrolled || isOpen || !isDarkBg, 'text-white hover:text-white/80': !scrolled && !isOpen && isDarkBg }"
+                @click="isOpen = !isOpen" aria-label="Меню">
                 <div class="w-6 h-6 relative flex flex-col justify-center gap-1.5">
                     <span class="block w-full h-0.5 bg-current rounded-full transition-all duration-300" :class="{ 'rotate-45 translate-y-2': isOpen }"></span>
                     <span class="block w-full h-0.5 bg-current rounded-full transition-all duration-300" :class="{ 'opacity-0': isOpen }"></span>
@@ -140,9 +167,6 @@
     </div>
 </header>
 
-<!-- Відступ для контенту, щоб не ховався під фіксованим хедером -->
-<!-- Цей блок потрібен тільки якщо хедер fixed і прозорий спочатку, але ми використовуємо padding-top в body/main -->
 <style>
-    /* Додаткові стилі, якщо Tailwind не підтягнеться */
     .backdrop-blur-md { backdrop-filter: blur(12px); }
 </style>

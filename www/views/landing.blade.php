@@ -36,60 +36,63 @@
     @include('partials.header')
 
     <main>
-        <!-- Hero Section (Збільшено padding-top ще більше) -->
+        <!-- Hero Section -->
+        <!-- Змінено оверлей на темний, щоб білий текст хедера читався -->
         <section class="relative overflow-hidden pt-32 pb-20 lg:pt-40 lg:pb-28 bg-cover bg-center" style="background-image: url('/assets/img/openart-image_hmp_kyur_1767826263185_raw.png');">
-            <!-- Оверлей для читабельності тексту -->
-            <div class="absolute inset-0 bg-white/90"></div>
+            <!-- Темний оверлей -->
+            <div class="absolute inset-0 bg-slate-900/80"></div>
+            <!-- Градієнт для глибини -->
+            <div class="absolute inset-0 bg-gradient-to-b from-slate-900/50 via-transparent to-slate-900/90"></div>
 
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center max-w-4xl mx-auto">
-                    <h1 class="text-4xl tracking-tight font-extrabold text-slate-900 sm:text-5xl md:text-6xl mb-6">
+                    <h1 class="text-4xl tracking-tight font-extrabold text-white sm:text-5xl md:text-6xl mb-6">
                         Операційна система для<br>
-                        <span class="text-primary">сучасного таксопарку</span>
+                        <span class="text-blue-400">сучасного таксопарку</span>
                     </h1>
-                    <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-500 mb-8">
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-300 mb-8">
                         Замініть Excel, блокноти та хаос у чатах на єдину цифрову екосистему.
                         Автоматизуйте графіки, фінанси та ремонти в одному вікні.
                     </p>
                     <div class="flex flex-col sm:flex-row justify-center gap-4">
-                        <a href="/pricing" class="btn-primary text-lg px-8 py-4 shadow-lg shadow-blue-500/30">
+                        <a href="/pricing" class="btn-primary text-lg px-8 py-4 shadow-lg shadow-blue-500/30 border border-transparent">
                             Почати роботу
                         </a>
-                        <a href="/target" class="inline-flex items-center justify-center px-8 py-4 border border-slate-300 text-lg font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition duration-300">
+                        <a href="/target" class="inline-flex items-center justify-center px-8 py-4 border border-slate-500 text-lg font-medium rounded-lg text-white bg-white/10 hover:bg-white/20 backdrop-blur-sm transition duration-300">
                             Кому підійде
                         </a>
                     </div>
 
                     <!-- Key Benefits (Інтегровано в Hero) -->
                     <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left max-w-4xl mx-auto">
-                        <div class="flex items-start gap-3 p-4 rounded-lg bg-blue-50/50 border border-blue-100 backdrop-blur-sm">
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-white/10 border border-white/20 backdrop-blur-md text-white">
                             <div class="text-2xl">🤝</div>
                             <div>
-                                <h3 class="font-bold text-slate-900 text-sm">Оплата по факту</h3>
-                                <p class="text-slate-500 text-xs mt-1">Спочатку користуєтесь місяць, потім платите. Жодних передплат.</p>
+                                <h3 class="font-bold text-white text-sm">Оплата по факту</h3>
+                                <p class="text-slate-300 text-xs mt-1">Спочатку користуєтесь місяць, потім платите. Жодних передплат.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3 p-4 rounded-lg bg-green-50/50 border border-green-100 backdrop-blur-sm">
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-white/10 border border-white/20 backdrop-blur-md text-white">
                             <div class="text-2xl">🔓</div>
                             <div>
-                                <h3 class="font-bold text-slate-900 text-sm">Все включено</h3>
-                                <p class="text-slate-500 text-xs mt-1">Один тариф. Всі функції доступні одразу. Жодних "Pro" версій.</p>
+                                <h3 class="font-bold text-white text-sm">Все включено</h3>
+                                <p class="text-slate-300 text-xs mt-1">Один тариф. Всі функції доступні одразу. Жодних "Pro" версій.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3 p-4 rounded-lg bg-purple-50/50 border border-purple-100 backdrop-blur-sm">
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-white/10 border border-white/20 backdrop-blur-md text-white">
                             <div class="text-2xl">📉</div>
                             <div>
-                                <h3 class="font-bold text-slate-900 text-sm">Платіть за активних</h3>
-                                <p class="text-slate-500 text-xs mt-1">Машина в ремонті? Ви за неї не платите. Рахуємо тільки працюючі авто.</p>
+                                <h3 class="font-bold text-white text-sm">Платіть за активних</h3>
+                                <p class="text-slate-300 text-xs mt-1">Машина в ремонті? Ви за неї не платите. Рахуємо тільки працюючі авто.</p>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Hero Image -->
-                <div class="mt-16 relative rounded-xl shadow-2xl border border-slate-200 bg-slate-50 overflow-hidden">
-                    <img src="/assets/img/docs/dashboard_main.png" alt="Інтерфейс Garage24" class="w-full h-auto">
-                    <div class="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent pointer-events-none"></div>
+                <div class="mt-16 relative rounded-xl shadow-2xl border border-slate-700 bg-slate-800 overflow-hidden">
+                    <img src="/assets/img/docs/dashboard_main.png" alt="Інтерфейс Garage24" class="w-full h-auto opacity-90">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900/50 to-transparent pointer-events-none"></div>
                 </div>
             </div>
         </section>

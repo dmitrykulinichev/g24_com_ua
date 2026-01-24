@@ -33,7 +33,7 @@
 <body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
 
-    <main class="pt-24 lg:pt-28 pb-20">
+    <main class="pt-32 lg:pt-40 pb-20">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12 bg-gradient-to-br from-blue-50 to-white p-10 rounded-3xl border border-blue-100">
                 <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">База знань Garage24</h1>

@@ -197,6 +197,7 @@ class FeaturesController
             'description' => 'Детальний опис функціоналу Garage24: від обліку авто до фінансової аналітики та інтеграцій.'
         ];
 
-        echo $this->blade->make('features', ['features' => $features, 'meta' => $meta])->render();
+        // Передаємо darkBg = true
+        echo $this->blade->make('features', ['features' => $features, 'meta' => $meta, 'darkBg' => true])->render();
     }
 }

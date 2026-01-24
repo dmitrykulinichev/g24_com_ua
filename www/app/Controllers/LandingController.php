@@ -19,6 +19,7 @@ class LandingController
             'image' => '/assets/img/landing/og-image.jpg'
         ];
 
-        echo $this->blade->make('landing', ['meta' => $meta])->render();
+        // Передаємо darkBg = true, бо на головній є картинка в Hero
+        echo $this->blade->make('landing', ['meta' => $meta, 'darkBg' => true])->render();
     }
 }

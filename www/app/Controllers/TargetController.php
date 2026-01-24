@@ -15,9 +15,10 @@ class TargetController
     {
         $meta = [
             'title' => 'Кому підійде Garage24',
-            'description' => 'Рішення для власників автопарків, інвесторів та керуючих. Дізнайтеся, як ми вирішуємо ваші специфічні проблеми.'
+            'description' => 'Рішення для власників, партнерів та інвесторів автопарків. Дізнайтеся, як ми вирішуємо ваші проблеми.'
         ];
 
-        echo $this->blade->make('target', ['meta' => $meta])->render();
+        // Передаємо darkBg = true
+        echo $this->blade->make('target', ['meta' => $meta, 'darkBg' => true])->render();
     }
 }

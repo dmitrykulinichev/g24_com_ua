@@ -47,10 +47,15 @@
 <body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
 
-    <!-- Додано padding-top для компенсації фіксованого хедера -->
-    <main class="pt-24 lg:pt-28">
-        <div class="bg-slate-900 text-white py-16 lg:py-24 text-center">
-            <div class="container mx-auto px-4">
+    <!-- Прибрано pt-32 з main -->
+    <main>
+        <!-- Hero Section: Додано pt-32 lg:pt-40 та декоративний фон -->
+        <div class="relative bg-slate-900 text-white pt-32 pb-16 lg:pt-40 lg:pb-24 text-center overflow-hidden">
+            <!-- Декоративний фон -->
+            <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
+            <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
+
+            <div class="container mx-auto px-4 relative z-10">
                 <h1 class="text-4xl font-extrabold sm:text-5xl mb-6">Можливості системи</h1>
                 <p class="text-xl text-slate-300 max-w-2xl mx-auto">Garage24 — це комплексне рішення, яке закриває всі потреби сучасного автопарку.</p>
             </div>

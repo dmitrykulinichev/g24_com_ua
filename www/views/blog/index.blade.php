@@ -74,7 +74,7 @@
 <body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
 
-    <main class="pt-24 lg:pt-28 pb-20">
+    <main class="pt-32 lg:pt-40 pb-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">Блог розробників</h1>
