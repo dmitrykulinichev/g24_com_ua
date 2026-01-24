@@ -109,7 +109,7 @@
             border-radius: 0.2rem;
         }
 
-        /* Навігація між статтями (Оновлено під стиль тостів) */
+        /* Навігація між статтями (Оновлено: світліший стиль з контрастним ховером) */
         .docs-nav {
             margin-top: 4rem;
             padding-top: 2rem;
@@ -125,33 +125,51 @@
             transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
-            /* Темний стиль */
-            background-color: #1f2937;
-            color: white;
-            border: none;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            /* Світлий стиль за замовчуванням */
+            background-color: #fff;
+            border: 1px solid #e5e7eb;
+            color: #1f2937;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
+
+        /* Контрастний стиль при наведенні або активності */
         .nav-item:hover, .nav-item.active-press {
-            background-color: #374151;
-            transform: translateY(-3px);
+            background-color: #1f2937; /* Темний фон */
+            border-color: #1f2937;
+            color: white; /* Білий текст */
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            transform: translateY(-3px);
         }
+
         .nav-item.active-press {
             transform: translateY(1px); /* Ефект натискання */
-            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
         }
+
         .nav-label {
             display: flex;
             align-items: center;
             font-size: 0.85rem;
-            color: #9ca3af;
+            color: #6b7280; /* Сірий */
             margin-bottom: 0.5rem;
             font-weight: 500;
+            transition: color 0.2s ease;
         }
+
+        /* Зміна кольору лейблу при наведенні */
+        .nav-item:hover .nav-label, .nav-item.active-press .nav-label {
+            color: #9ca3af; /* Світло-сірий */
+        }
+
         .nav-title {
             font-weight: 600;
-            color: white;
+            color: var(--secondary-color); /* Темно-синій */
             font-size: 1.1rem;
+            transition: color 0.2s ease;
+        }
+
+        /* Зміна кольору заголовка при наведенні */
+        .nav-item:hover .nav-title, .nav-item.active-press .nav-title {
+            color: white;
         }
 
         /* Вирівнювання */
@@ -169,14 +187,14 @@
         .nav-prev:only-child { grid-column: 1; }
         .nav-next:only-child { grid-column: 2; }
 
-        /* Ghost Button Animation */
+        /* Ghost Button Animation (Залишаємо темним для контрасту) */
         .nav-ghost {
             position: fixed;
             bottom: 2rem;
             z-index: 1000;
             background-color: rgba(31, 41, 55, 0.95);
             color: white;
-            padding: 1.25rem 1.5rem; /* Розміри як у реальної кнопки */
+            padding: 1.25rem 1.5rem;
             border-radius: 0.75rem;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
             display: flex;
