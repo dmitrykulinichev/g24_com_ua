@@ -43,8 +43,8 @@
     @include('partials.header')
 
     <main>
-        <!-- Hero Section -->
-        <section class="relative pt-24 pb-20 bg-slate-900 text-white overflow-hidden">
+        <!-- Hero Section (Збільшено padding-top) -->
+        <section class="relative pt-32 pb-20 lg:pt-40 bg-slate-900 text-white overflow-hidden">
             <!-- Декоративний фон -->
             <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
             <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
@@ -137,7 +137,7 @@
                             </button>
                             <div class="mt-4 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-slate-400">
                                 <span class="inline-flex items-center gap-1"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Без прив'язки картки</span>
-                                <span class="hidden sm:inline">•</span>
+                                <span class="mx-2">•</span>
                                 <span>Рахунок прийде через 30 днів</span>
                             </div>
                             <div class="mt-2">

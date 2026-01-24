@@ -5,40 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Блог - Garage24</title>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- Підключення Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e293b',
+                        accent: '#10b981',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .blog-container {
-            max-width: 900px; /* Трохи ширше для горизонтальних карток */
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            min-height: 60vh;
-        }
-        .blog-header {
-            text-align: center;
-            margin-bottom: 4rem;
-        }
-        .blog-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: var(--secondary-color);
-        }
-        .post-card {
-            background: #fff;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.75rem;
-            margin-bottom: 2rem;
-            transition: box-shadow 0.2s;
-            overflow: hidden;
-            padding: 0;
-            display: flex; /* Горизонтальне розташування */
-            flex-direction: row;
-            align-items: stretch; /* Розтягуємо на всю висоту */
-        }
-        .post-card:hover {
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-        }
+        body { font-family: 'Inter', sans-serif; }
 
         /* Стилі для зображення */
         .post-image {
@@ -64,55 +53,6 @@
             transform: scale(1.05);
         }
 
-        .post-content {
-            padding: 1.5rem 2rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center; /* Центруємо контент вертикально, якщо тексту мало */
-        }
-
-        .post-date {
-            color: #6b7280;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-        }
-        .post-title {
-            font-size: 1.4rem;
-            margin-bottom: 0.75rem;
-            line-height: 1.3;
-        }
-        .post-title a {
-            color: var(--secondary-color);
-            text-decoration: none;
-        }
-        .post-title a:hover {
-            color: var(--primary-color);
-        }
-        .post-preview {
-            color: #4b5563;
-            margin-bottom: 1.25rem;
-            line-height: 1.6;
-            font-size: 0.95rem;
-            /* Обмеження кількості рядків (опціонально) */
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-        .read-more {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 500;
-            display: inline-flex;
-            align-items: center;
-            font-size: 0.9rem;
-            margin-top: auto; /* Притискаємо до низу */
-        }
-        .read-more:hover {
-            text-decoration: underline;
-        }
-
         /* Мобільна адаптація */
         @media (max-width: 768px) {
             .post-card {
@@ -128,53 +68,54 @@
                 position: static; /* Повертаємо звичайну поведінку */
                 height: 100%;
             }
-            .post-content {
-                padding: 1.5rem;
-            }
         }
     </style>
 </head>
-<body>
+<body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
 
-    <main class="blog-container">
-        <div class="blog-header">
-            <h1>Блог розробників</h1>
-            <p>Новини, оновлення та корисні поради щодо використання Garage24.</p>
+    <main class="pt-24 lg:pt-28 pb-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">Блог розробників</h1>
+                <p class="text-lg text-slate-600">Новини, оновлення та корисні поради щодо використання Garage24.</p>
 
-            <!-- Пошук по блогу -->
-            <div style="max-width: 500px; margin: 2rem auto 0;">
-                @include('partials.blog-search')
+                <!-- Пошук по блогу -->
+                <div class="max-w-lg mx-auto mt-8">
+                    @include('partials.blog-search')
+                </div>
             </div>
+
+            @if(count($posts) > 0)
+                <div class="space-y-8">
+                    @foreach($posts as $post)
+                        <article class="post-card bg-white border border-slate-200 rounded-xl overflow-hidden flex shadow-sm hover:shadow-md transition-shadow duration-300">
+                            @if(!empty($post['image']))
+                                <a href="/blog/{{ $post['slug'] }}" class="post-image">
+                                    <img src="{{ $post['image'] }}" alt="{{ $post['title'] }}" loading="lazy">
+                                </a>
+                            @endif
+
+                            <div class="flex flex-col flex-grow p-6 sm:p-8">
+                                <div class="text-sm text-slate-500 mb-2">{{ date('d.m.Y', $post['date']) }}</div>
+                                <h2 class="text-xl font-bold text-slate-900 mb-3 leading-tight">
+                                    <a href="/blog/{{ $post['slug'] }}" class="hover:text-primary transition-colors">{{ $post['title'] }}</a>
+                                </h2>
+                                <p class="text-slate-600 mb-6 line-clamp-3 flex-grow">{{ $post['preview'] }}</p>
+                                <a href="/blog/{{ $post['slug'] }}" class="inline-flex items-center text-primary font-medium hover:underline mt-auto">
+                                    Читати далі
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 ml-1">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @else
+                <p class="text-center text-slate-500 py-12">Поки що немає новин.</p>
+            @endif
         </div>
-
-        @if(count($posts) > 0)
-            @foreach($posts as $post)
-                <article class="post-card">
-                    @if(!empty($post['image']))
-                        <a href="/blog/{{ $post['slug'] }}" class="post-image">
-                            <img src="{{ $post['image'] }}" alt="{{ $post['title'] }}" loading="lazy">
-                        </a>
-                    @endif
-
-                    <div class="post-content">
-                        <div class="post-date">{{ date('d.m.Y', $post['date']) }}</div>
-                        <h2 class="post-title">
-                            <a href="/blog/{{ $post['slug'] }}">{{ $post['title'] }}</a>
-                        </h2>
-                        <p class="post-preview">{{ $post['preview'] }}</p>
-                        <a href="/blog/{{ $post['slug'] }}" class="read-more">
-                            Читати далі
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" style="width: 16px; height: 16px; margin-left: 4px;">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-                            </svg>
-                        </a>
-                    </div>
-                </article>
-            @endforeach
-        @else
-            <p style="text-align: center; color: #6b7280;">Поки що немає новин.</p>
-        @endif
     </main>
 
     @include('partials.footer')

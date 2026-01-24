@@ -5,37 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Блог - Garage24</title>
     <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- Підключення Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb',
+                        secondary: '#1e293b',
+                        accent: '#10b981',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        .article-container {
-            max-width: 700px;
-            margin: 0 auto;
-            padding: 4rem 2rem;
-            min-height: 60vh;
-        }
-        .article-meta {
-            color: #6b7280;
-            margin-bottom: 2rem;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 1rem;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 2rem;
-            color: var(--primary-color);
-            text-decoration: none;
-        }
+        body { font-family: 'Inter', sans-serif; }
 
-        /* Стилі контенту */
-        .content h1 { font-size: 2.5rem; margin-bottom: 1rem; line-height: 1.2; color: var(--secondary-color); }
-        .content h2 { margin-top: 2rem; margin-bottom: 1rem; font-size: 1.75rem; color: var(--secondary-color); }
-        .content h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; font-size: 1.25rem; }
-        .content p { margin-bottom: 1.25rem; line-height: 1.8; color: #374151; font-size: 1.1rem; }
-        .content ul, .content ol { margin-bottom: 1.5rem; padding-left: 1.5rem; }
-        .content li { margin-bottom: 0.5rem; }
-        .content img { max-width: 100%; border-radius: 0.5rem; margin: 2rem 0; border: 1px solid #e5e7eb; }
+        /* Стилі контенту (Prose) */
+        .content h1 { @apply text-3xl sm:text-4xl font-bold text-slate-900 mb-6 mt-8 leading-tight; }
+        .content h2 { @apply text-2xl font-bold text-slate-800 mb-4 mt-8 border-b border-slate-200 pb-2; }
+        .content h3 { @apply text-xl font-bold text-slate-800 mb-3 mt-6; }
+        .content p { @apply text-lg text-slate-700 mb-6 leading-relaxed; }
+        .content ul { @apply list-disc list-outside ml-6 mb-6 text-slate-700; }
+        .content ol { @apply list-decimal list-outside ml-6 mb-6 text-slate-700; }
+        .content li { @apply mb-2; }
+        .content img { @apply rounded-xl border border-slate-200 my-8 w-full h-auto shadow-sm; }
+        .content blockquote { @apply border-l-4 border-primary pl-4 italic text-slate-600 bg-slate-50 p-4 rounded-r-lg my-6; }
+        .content code { @apply bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-sm font-mono; }
+        .content pre { @apply bg-slate-800 text-slate-100 p-4 rounded-lg overflow-x-auto mb-6; }
+        .content pre code { @apply bg-transparent text-inherit p-0; }
 
         /* Стиль для підсвічування */
         mark {
@@ -45,27 +51,34 @@
         }
     </style>
 </head>
-<body>
+<body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
 
-    <main class="article-container">
-        <a href="/blog" class="back-link">← Всі новини</a>
+    <main class="pt-24 lg:pt-28 pb-20">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <a href="/blog" class="inline-flex items-center text-primary font-medium hover:underline mb-8 transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+                </svg>
+                Всі новини
+            </a>
 
-        <div class="article-meta">
-            Опубліковано: {{ date('d.m.Y', $meta['date']) }}
+            <div class="text-sm text-slate-500 mb-4 border-b border-slate-100 pb-4">
+                Опубліковано: {{ date('d.m.Y', $meta['date']) }}
+            </div>
+
+            <article class="content" id="blogContent">
+                {!! $content !!}
+
+                <!-- Навігація блогу (через компонент) -->
+                @include('partials.navigation-buttons', [
+                    'prevLink' => $older ? "/blog/{$older['slug']}" : null,
+                    'prevTitle' => $older['title'] ?? null,
+                    'nextLink' => $newer ? "/blog/{$newer['slug']}" : null,
+                    'nextTitle' => $newer['title'] ?? null
+                ])
+            </article>
         </div>
-
-        <article class="content" id="blogContent">
-            {!! $content !!}
-
-            <!-- Навігація блогу (через компонент) -->
-            @include('partials.navigation-buttons', [
-                'prevLink' => $older ? "/blog/{$older['slug']}" : null,
-                'prevTitle' => $older['title'] ?? null,
-                'nextLink' => $newer ? "/blog/{$newer['slug']}" : null,
-                'nextTitle' => $newer['title'] ?? null
-            ])
-        </article>
     </main>
 
     @include('partials.footer')
