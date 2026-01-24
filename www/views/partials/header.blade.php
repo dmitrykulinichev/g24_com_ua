@@ -9,6 +9,9 @@
     }
     $pageDesc = $meta['description'] ?? 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.';
     $pageImage = $meta['image'] ?? '/assets/img/landing/og-image.jpg';
+
+    // Визначення активного пункту меню
+    $currentUri = $_SERVER['REQUEST_URI'];
 @endphp
 
 <title>{{ $pageTitle }}</title>
@@ -29,41 +32,117 @@
 <meta property="twitter:description" content="{{ $pageDesc }}">
 <meta property="twitter:image" content="{{ $pageImage }}">
 
-<header x-data="{ isOpen: false }">
-    <div class="container">
-        <nav>
-            <!-- Логотип + Назва -->
-            <a href="/" class="logo" style="display: flex; align-items: center; gap: 0.75rem;">
-                <img src="/assets/img/logo.jpg" alt="Garage24 Logo" style="height: 40px; width: auto; border-radius: 6px;">
-                <span>Garage24</span>
+<header
+    x-data="{
+        isOpen: false,
+        scrolled: false
+    }"
+    @scroll.window="scrolled = (window.pageYOffset > 20)"
+    :class="{ 'bg-white/90 backdrop-blur-md shadow-sm': scrolled, 'bg-white': !scrolled && isOpen, 'bg-transparent': !scrolled && !isOpen }"
+    class="fixed top-0 w-full z-50 transition-all duration-300 border-b border-transparent"
+    :class="{ 'border-slate-100': scrolled }"
+>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <nav class="flex items-center justify-between h-20">
+            <!-- Логотип -->
+            <a href="/" class="flex items-center gap-3 group">
+                <div class="relative overflow-hidden rounded-lg shadow-sm group-hover:shadow-md transition-all duration-300">
+                    <img src="/assets/img/logo.jpg" alt="Garage24 Logo" class="h-10 w-auto transform group-hover:scale-105 transition-transform duration-500">
+                </div>
+                <span class="font-bold text-xl text-slate-800 tracking-tight group-hover:text-primary transition-colors duration-300">Garage24</span>
             </a>
 
-            <button class="mobile-menu-btn" @click="isOpen = !isOpen" aria-label="Меню">
-                <svg x-show="!isOpen" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                </svg>
-                <svg x-show="isOpen" style="display: none;" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+            <!-- Десктопне меню -->
+            <div class="hidden lg:flex items-center gap-8">
+                <div class="flex items-center gap-1">
+                    @foreach([
+                        ['url' => '/features', 'title' => 'Можливості'],
+                        ['url' => '/target', 'title' => 'Для кого'],
+                        ['url' => '/pricing', 'title' => 'Тарифи'],
+                        ['url' => '/blog', 'title' => 'Блог'],
+                        ['url' => '/docs', 'title' => 'Документація'],
+                        ['url' => '/contacts', 'title' => 'Контакти'],
+                    ] as $item)
+                        <a href="{{ $item['url'] }}"
+                           class="relative px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200
+                                  {{ str_starts_with($currentUri, $item['url']) ? 'text-primary bg-blue-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50' }}">
+                            {{ $item['title'] }}
+                            @if(str_starts_with($currentUri, $item['url']))
+                                <span class="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-full opacity-0"></span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
 
-            <div class="nav-links" :class="{ 'mobile-open': isOpen }">
-                <a href="/features" @click="isOpen = false">Можливості</a>
-                <a href="/target" @click="isOpen = false">Для кого</a> <!-- Змінено -->
-                <a href="/pricing" @click="isOpen = false">Тарифи</a>
-                <a href="/blog" @click="isOpen = false">Блог</a>
-                <a href="/contacts" @click="isOpen = false">Контакти</a>
-                <a href="/docs" @click="isOpen = false">Документація</a>
+                <!-- Розділювач -->
+                <div class="h-6 w-px bg-slate-200"></div>
 
-                <!-- Кнопка входу в додаток -->
-                <a href="https://app.g24.com.ua/login" class="btn-login" target="_blank">
-                    <!-- Іконка входу (стрілка входить у двері) -->
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 1 18 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 12 21h6a2.25 2.25 0 0 0 2.25-2.25V15m-3 0 3-3m0 0-3-3m3 3H9" />
-                    </svg>
+                <!-- Кнопка входу -->
+                <a href="https://app.g24.com.ua/login" target="_blank"
+                   class="group flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 rounded-full hover:bg-slate-50 hover:text-primary hover:border-primary/30 transition-all duration-300 shadow-sm hover:shadow">
                     <span>В гараж</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
                 </a>
             </div>
+
+            <!-- Мобільна кнопка -->
+            <button class="lg:hidden p-2 text-slate-600 hover:text-slate-900 focus:outline-none" @click="isOpen = !isOpen" aria-label="Меню">
+                <div class="w-6 h-6 relative flex flex-col justify-center gap-1.5">
+                    <span class="block w-full h-0.5 bg-current rounded-full transition-all duration-300" :class="{ 'rotate-45 translate-y-2': isOpen }"></span>
+                    <span class="block w-full h-0.5 bg-current rounded-full transition-all duration-300" :class="{ 'opacity-0': isOpen }"></span>
+                    <span class="block w-full h-0.5 bg-current rounded-full transition-all duration-300" :class="{ '-rotate-45 -translate-y-2': isOpen }"></span>
+                </div>
+            </button>
         </nav>
     </div>
+
+    <!-- Мобільне меню (Slide Down) -->
+    <div
+        x-show="isOpen"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-4"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-4"
+        class="lg:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-lg"
+        style="display: none;"
+    >
+        <div class="container mx-auto px-4 py-6 flex flex-col gap-2">
+            @foreach([
+                ['url' => '/features', 'title' => 'Можливості'],
+                ['url' => '/target', 'title' => 'Для кого'],
+                ['url' => '/pricing', 'title' => 'Тарифи'],
+                ['url' => '/blog', 'title' => 'Блог'],
+                ['url' => '/docs', 'title' => 'Документація'],
+                ['url' => '/contacts', 'title' => 'Контакти'],
+            ] as $item)
+                <a href="{{ $item['url'] }}"
+                   class="block px-4 py-3 rounded-lg text-base font-medium transition-colors
+                          {{ str_starts_with($currentUri, $item['url']) ? 'bg-blue-50 text-primary' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
+                   @click="isOpen = false">
+                    {{ $item['title'] }}
+                </a>
+            @endforeach
+
+            <div class="mt-4 pt-4 border-t border-slate-100">
+                <a href="https://app.g24.com.ua/login" target="_blank"
+                   class="flex items-center justify-center gap-2 w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors">
+                    <span>Увійти в кабінет</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
 </header>
+
+<!-- Відступ для контенту, щоб не ховався під фіксованим хедером -->
+<!-- Цей блок потрібен тільки якщо хедер fixed і прозорий спочатку, але ми використовуємо padding-top в body/main -->
+<style>
+    /* Додаткові стилі, якщо Tailwind не підтягнеться */
+    .backdrop-blur-md { backdrop-filter: blur(12px); }
+</style>

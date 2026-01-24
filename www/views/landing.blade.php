@@ -36,8 +36,8 @@
     @include('partials.header')
 
     <main>
-        <!-- Hero Section -->
-        <section class="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-28 bg-cover bg-center" style="background-image: url('/assets/img/openart-image_hmp_kyur_1767826263185_raw.png');">
+        <!-- Hero Section (Збільшено padding-top) -->
+        <section class="relative overflow-hidden pt-28 pb-20 lg:pt-32 lg:pb-28 bg-cover bg-center" style="background-image: url('/assets/img/openart-image_hmp_kyur_1767826263185_raw.png');">
             <!-- Оверлей для читабельності тексту -->
             <div class="absolute inset-0 bg-white/90"></div>
 
