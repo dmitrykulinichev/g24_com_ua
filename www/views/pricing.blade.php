@@ -102,7 +102,7 @@
                             <!-- Car Price -->
                             <div class="flex-1 text-center p-6 bg-blue-50 rounded-2xl border border-blue-100 w-full relative overflow-hidden transition-all duration-300" :class="yearly ? 'bg-green-50 border-green-200' : ''">
                                 <div class="absolute top-0 right-0 text-white text-xs font-bold px-2 py-1 rounded-bl-lg transition-colors duration-300" :class="yearly ? 'bg-green-500' : 'bg-blue-500'" x-text="yearly ? 'Супер ціна' : 'Оплата за фактом'"></div>
-                                <div class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-2 transition-colors duration-300" :class="yearly ? 'text-green-500' : 'text-blue-400'">Масштаб</div>
+                                <div class="text-sm font-bold uppercase tracking-wider mb-2 transition-colors duration-300" :class="yearly ? 'text-green-500' : 'text-blue-400'">Масштаб</div>
 
                                 <div class="mb-2 h-12 flex items-center justify-center">
                                     <div x-show="!yearly" class="text-5xl font-extrabold text-primary transition-all duration-300">
@@ -245,7 +245,7 @@
                             <span x-text="active === 1 ? '−' : '+'" class="text-xl text-slate-400"></span>
                         </button>
                         <div x-show="active === 1" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
-                            Першого числа кожного місяця ми формуємо рахунок на основі активності вашого парку за минулий місяць. Ви отримуєте його на email та в кабінеті. У вас є 5 днів на оплату.
+                            Рахунок формується автоматично на наступний день після завершення вашого розрахункового періоду (місяць з дати реєстрації). Ви отримуєте його на email та в кабінеті. У вас є 5 днів на оплату.
                         </div>
                     </div>
 
@@ -255,7 +255,7 @@
                             <span x-text="active === 2 ? '−' : '+'" class="text-xl text-slate-400"></span>
                         </button>
                         <div x-show="active === 2" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
-                            Якщо авто відпрацювало менше 5 змін (або днів) до кінця місяця, плата за нього не стягується в цьому періоді.
+                            У нас немає поняття "кінець календарного місяця". Ми рахуємо активність авто протягом <strong>вашого персонального розрахункового періоду</strong> (місяць з дати реєстрації). Якщо за цей час авто відпрацювало менше 5 змін, плата за нього не стягується.
                         </div>
                     </div>
 
@@ -266,6 +266,27 @@
                         </button>
                         <div x-show="active === 3" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
                             Так, ми працюємо офіційно і надаємо всі необхідні документи для бухгалтерії.
+                        </div>
+                    </div>
+
+                    <!-- Нове питання про автосписання -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 4 ? null : 4)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition">
+                            <span>Чи можна налаштувати автосписання?</span>
+                            <span x-text="active === 4 ? '−' : '+'" class="text-xl text-slate-400"></span>
+                        </button>
+                        <div x-show="active === 4" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
+                            Так. Ви можете прив'язати картку для автоматичної оплати. Ми попередимо вас про суму списання за 24 години, а після оплати надішлемо квитанцію.
+                        </div>
+                    </div>
+
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 5 ? null : 5)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition">
+                            <span>Кому НЕ підходить Garage24?</span>
+                            <span x-text="active === 5 ? '−' : '+'" class="text-xl text-slate-400"></span>
+                        </button>
+                        <div x-show="active === 5" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
+                            Garage24 не підійде, якщо у вас немає власних авто (ви працюєте тільки як диспетчерська) або якщо ви шукаєте складну ERP-систему для великої логістичної компанії. Ми фокусуємося на таксопарках.
                         </div>
                     </div>
                 </div>
