@@ -63,25 +63,58 @@
         .sidebar li {
             margin-bottom: 0.1rem;
         }
+
+        /* Стилі посилань сайдбару */
         .sidebar a {
             text-decoration: none;
             color: #4b5563;
             display: block;
             padding: 0.25rem 0.5rem;
             border-radius: 0.375rem;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             font-size: 0.9rem;
             line-height: 1.4;
+            position: relative;
+            overflow: hidden;
+            border-left: 3px solid transparent;
         }
+
         .sidebar a:hover {
             color: var(--primary-color);
             background-color: #f3f4f6;
+            padding-left: 0.75rem;
         }
+
+        /* Активний стан з анімацією */
         .sidebar a.active {
             color: var(--primary-color);
             background-color: #eff6ff;
             font-weight: 600;
+            animation: activeItemSlide 0.4s ease-out forwards;
         }
+
+        .sidebar a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: var(--primary-color);
+            border-radius: 0 2px 2px 0;
+            animation: activeMarkerGrow 0.3s ease-out forwards;
+        }
+
+        @keyframes activeItemSlide {
+            0% { background-color: transparent; padding-left: 0.5rem; }
+            100% { background-color: #eff6ff; padding-left: 0.85rem; }
+        }
+
+        @keyframes activeMarkerGrow {
+            0% { height: 0; top: 50%; opacity: 0; }
+            100% { height: 100%; top: 0; opacity: 1; }
+        }
+
         .content {
             flex: 1;
             min-width: 0;
@@ -109,145 +142,8 @@
             border-radius: 0.2rem;
         }
 
-        /* Навігація між статтями */
-        .docs-nav {
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-        }
-        .nav-item {
-            text-decoration: none;
-            padding: 1rem 1.5rem;
-            border-radius: 2rem; /* Pill shape */
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center; /* Центрування по вертикалі */
-            gap: 0.75rem;
-            /* Світлий стиль */
-            background-color: #fff;
-            border: 1px solid #e5e7eb;
-            color: #1f2937;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            width: fit-content; /* Ширина по контенту */
-        }
-
-        .nav-item:hover, .nav-item.active-press {
-            background-color: #1f2937;
-            border-color: #1f2937;
-            color: white;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
-            transform: translateY(-3px);
-        }
-
-        .nav-item.active-press {
-            transform: translateY(1px);
-        }
-
-        .nav-arrow {
-            font-size: 1.2em;
-            line-height: 1;
-            color: #9ca3af;
-            transition: color 0.2s ease;
-        }
-
-        .nav-item:hover .nav-arrow, .nav-item.active-press .nav-arrow {
-            color: white;
-        }
-
-        .nav-title {
-            font-weight: 600;
-            color: var(--secondary-color);
-            font-size: 1rem;
-            transition: color 0.2s ease;
-            margin: 0;
-        }
-
-        .nav-item:hover .nav-title, .nav-item.active-press .nav-title {
-            color: white;
-        }
-
-        /* Вирівнювання */
-        .nav-prev {
-            grid-column: 1;
-            justify-self: start; /* Притискаємо вліво */
-        }
-        .nav-next {
-            grid-column: 2;
-            justify-self: end; /* Притискаємо вправо */
-            /* align-items: flex-end; <--- ВИДАЛЕНО, це ламало верстку */
-        }
-
-        /* Якщо тільки одна кнопка */
-        .nav-prev:only-child { grid-column: 1; }
-        .nav-next:only-child { grid-column: 2; }
-
-        /* Ghost Button Animation */
-        .nav-ghost {
-            position: fixed;
-            bottom: 2rem;
-            z-index: 1000;
-            background-color: rgba(31, 41, 55, 0.95);
-            color: white;
-            padding: 1rem 1.5rem;
-            border-radius: 2rem;
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            gap: 0.75rem;
-            min-width: auto;
-            pointer-events: none;
-            animation: ghostJump 0.6s ease-out forwards;
-            white-space: nowrap;
-        }
-
-        .nav-ghost.ghost-left {
-            text-align: left;
-        }
-
-        .nav-ghost.ghost-right {
-            text-align: right;
-        }
-
-        .nav-ghost .nav-title {
-            font-weight: 600;
-            color: white;
-            font-size: 1rem;
-            margin: 0;
-        }
-
-        .nav-ghost .nav-arrow {
-            font-size: 1.2em;
-            line-height: 1;
-            color: #9ca3af;
-        }
-
-        @keyframes ghostJump {
-            0% {
-                opacity: 0;
-                transform: translateY(100%);
-            }
-            20% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            70% {
-                opacity: 1;
-                transform: translateY(0);
-            }
-            100% {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-        }
-
         @media (max-width: 768px) {
-            .docs-container {
-                display: block;
-            }
+            .docs-container { display: block; }
             .sidebar {
                 width: 100%;
                 border-right: none;
@@ -258,19 +154,6 @@
                 position: static;
                 height: auto;
             }
-            .docs-nav {
-                grid-template-columns: 1fr;
-                gap: 1rem;
-            }
-            .nav-prev, .nav-next {
-                grid-column: 1;
-                justify-self: center;
-                width: 100%;
-                justify-content: center;
-            }
-            .nav-ghost {
-                display: none;
-            }
         }
     </style>
 </head>
@@ -280,20 +163,14 @@
     <div class="docs-container">
         <!-- Сайдбар з Alpine.js -->
         <aside class="sidebar" x-data="{ docsMenuOpen: false }">
-
-            <!-- Кнопка для мобільного (видима тільки через CSS на малих екранах) -->
             <button class="docs-menu-toggle" @click="docsMenuOpen = !docsMenuOpen">
                 <span>Зміст розділу</span>
-                <!-- Стрілка вниз/вгору -->
                 <svg :class="{'rotate-180': docsMenuOpen}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
             </button>
 
-            <!-- Контент меню (на мобільному ховається, на десктопі завжди видно) -->
             <div class="sidebar-content" :class="{ 'mobile-hidden': !docsMenuOpen }">
-
-                <!-- Пошук у сайдбарі -->
                 <div style="margin-bottom: 1.5rem;">
                     @include('partials.docs-search')
                 </div>
@@ -318,155 +195,45 @@
         <article class="content" id="docsContent">
             {!! $content !!}
 
-            <div class="docs-nav">
-                @if($prev)
-                    <a href="/docs/{{ $prev['slug'] }}" class="nav-item nav-prev">
-                        <span class="nav-arrow">←</span>
-                        <span class="nav-title">{{ $prev['title'] }}</span>
-                    </a>
-                @endif
-
-                @if($next)
-                    <a href="/docs/{{ $next['slug'] }}" class="nav-item nav-next">
-                        <span class="nav-title">{{ $next['title'] }}</span>
-                        <span class="nav-arrow">→</span>
-                    </a>
-                @endif
-            </div>
+            <!-- Підключення компонента навігації -->
+            @include('partials.navigation-buttons', [
+                'prevLink' => $prev ? "/docs/{$prev['slug']}" : null,
+                'prevTitle' => $prev['title'] ?? null,
+                'nextLink' => $next ? "/docs/{$next['slug']}" : null,
+                'nextTitle' => $next['title'] ?? null
+            ])
         </article>
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="navToast" class="toast-notification">
-        <span id="toastMessage"></span>
     </div>
 
     @include('partials.footer')
 
-    <!-- Скрипт для Lightbox (збільшення зображень) -->
+    <!-- Скрипт для Lightbox -->
     <script src="/assets/js/docs.js?v={{ time() }}"></script>
 
-    <!-- Скрипт для підсвічування тексту та навігації -->
+    <!-- Скрипт для підсвічування тексту -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Підсвічування тексту
             const urlParams = new URLSearchParams(window.location.search);
             const query = urlParams.get('highlight');
 
             if (query) {
                 const searchInput = document.getElementById('searchInput');
-                if (searchInput) {
-                    searchInput.value = query;
-                }
+                if (searchInput) { searchInput.value = query; }
 
                 const content = document.getElementById('docsContent');
                 if (content) {
                     const regex = new RegExp(`(${query})`, 'gi');
                     const walk = document.createTreeWalker(content, NodeFilter.SHOW_TEXT, null, false);
                     let node;
-                    const nodesToReplace = [];
-
                     while (node = walk.nextNode()) {
                         if (node.nodeValue.match(regex)) {
-                            nodesToReplace.push(node);
-                        }
-                    }
-
-                    nodesToReplace.forEach(node => {
-                        const span = document.createElement('span');
-                        span.innerHTML = node.nodeValue.replace(regex, '<mark>$1</mark>');
-                        node.parentNode.replaceChild(span, node);
-                    });
-                }
-            }
-
-            // Перевірка видимості елемента
-            function isElementInViewport(el) {
-                const rect = el.getBoundingClientRect();
-                return (
-                    rect.top >= 0 &&
-                    rect.left >= 0 &&
-                    rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
-                    rect.right <= (window.innerWidth || document.documentElement.clientWidth)
-                );
-            }
-
-            // Функція створення Ghost Button
-            function triggerGhostNav(direction, title, xPos) {
-                const ghost = document.createElement('div');
-                ghost.className = `nav-ghost ghost-${direction}`;
-
-                // Встановлюємо горизонтальну позицію
-                if (direction === 'left') {
-                    ghost.style.left = xPos + 'px';
-                } else {
-                    // Для правої кнопки ми отримали rect.right, але CSS right працює від правого краю
-                    // Тому: windowWidth - rect.right
-                    const rightPos = document.documentElement.clientWidth - xPos;
-                    ghost.style.right = rightPos + 'px';
-                }
-
-                // Формуємо контент: Стрілка + Назва
-                let contentHtml = '';
-                if (direction === 'left') {
-                    contentHtml = `<span class="nav-arrow">←</span><span class="nav-title">${title}</span>`;
-                } else {
-                    contentHtml = `<span class="nav-title">${title}</span><span class="nav-arrow">→</span>`;
-                }
-
-                ghost.innerHTML = contentHtml;
-
-                document.body.appendChild(ghost);
-
-                setTimeout(() => {
-                    ghost.remove();
-                }, 600);
-            }
-
-            // Навігація стрілками
-            document.addEventListener('keydown', function(event) {
-                if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
-
-                if (event.key === 'ArrowLeft') {
-                    const prevLink = document.querySelector('.nav-prev');
-                    if (prevLink) {
-                        if (isElementInViewport(prevLink)) {
-                            // Якщо кнопка видима - просто клікаємо з ефектом
-                            prevLink.classList.add('active-press');
-                            setTimeout(() => prevLink.classList.remove('active-press'), 200);
-                            setTimeout(() => prevLink.click(), 100);
-                        } else {
-                            // Якщо не видима - показуємо привида
-                            const title = prevLink.querySelector('.nav-title').innerText;
-                            // Вираховуємо позицію відносно контейнера навігації, щоб було рівно
-                            const navContainer = document.querySelector('.docs-nav');
-                            const rect = navContainer.getBoundingClientRect();
-
-                            triggerGhostNav('left', title, rect.left);
-                            setTimeout(() => prevLink.click(), 300);
-                        }
-                    }
-                } else if (event.key === 'ArrowRight') {
-                    const nextLink = document.querySelector('.nav-next');
-                    if (nextLink) {
-                        if (isElementInViewport(nextLink)) {
-                            // Якщо кнопка видима
-                            nextLink.classList.add('active-press');
-                            setTimeout(() => nextLink.classList.remove('active-press'), 200);
-                            setTimeout(() => nextLink.click(), 100);
-                        } else {
-                            // Якщо не видима
-                            const title = nextLink.querySelector('.nav-title').innerText;
-                            const navContainer = document.querySelector('.docs-nav');
-                            const rect = navContainer.getBoundingClientRect();
-
-                            // Передаємо rect.right для правої кнопки
-                            triggerGhostNav('right', title, rect.right);
-                            setTimeout(() => nextLink.click(), 300);
+                            const span = document.createElement('span');
+                            span.innerHTML = node.nodeValue.replace(regex, '<mark>$1</mark>');
+                            node.parentNode.replaceChild(span, node);
                         }
                     }
                 }
-            });
+            }
         });
     </script>
 </body>

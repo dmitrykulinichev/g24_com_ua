@@ -43,47 +43,6 @@
             padding: 0.1rem 0.2rem;
             border-radius: 0.2rem;
         }
-
-        /* Навігація блогу */
-        .blog-nav {
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-        }
-        .nav-item {
-            text-decoration: none;
-            padding: 1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            width: 48%;
-            transition: all 0.2s;
-        }
-        .nav-item:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        .nav-label {
-            display: block;
-            font-size: 0.85rem;
-            color: #6b7280;
-            margin-bottom: 0.25rem;
-        }
-        .nav-title {
-            display: block;
-            font-weight: 600;
-            color: var(--primary-color);
-            /* Обрізаємо довгі заголовки */
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .nav-newer {
-            text-align: right;
-            margin-left: auto;
-        }
     </style>
 </head>
 <body>
@@ -99,21 +58,13 @@
         <article class="content" id="blogContent">
             {!! $content !!}
 
-            <div class="blog-nav">
-                @if($older)
-                    <a href="/blog/{{ $older['slug'] }}" class="nav-item nav-older">
-                        <span class="nav-label">← Старіша</span>
-                        <span class="nav-title">{{ $older['title'] }}</span>
-                    </a>
-                @endif
-
-                @if($newer)
-                    <a href="/blog/{{ $newer['slug'] }}" class="nav-item nav-newer">
-                        <span class="nav-label">Новіша →</span>
-                        <span class="nav-title">{{ $newer['title'] }}</span>
-                    </a>
-                @endif
-            </div>
+            <!-- Навігація блогу (через компонент) -->
+            @include('partials.navigation-buttons', [
+                'prevLink' => $older ? "/blog/{$older['slug']}" : null,
+                'prevTitle' => $older['title'] ?? null,
+                'nextLink' => $newer ? "/blog/{$newer['slug']}" : null,
+                'nextTitle' => $newer['title'] ?? null
+            ])
         </article>
     </main>
 
