@@ -102,7 +102,7 @@
                             <!-- Car Price -->
                             <div class="flex-1 text-center p-6 bg-blue-50 rounded-2xl border border-blue-100 w-full relative overflow-hidden transition-all duration-300" :class="yearly ? 'bg-green-50 border-green-200' : ''">
                                 <div class="absolute top-0 right-0 text-white text-xs font-bold px-2 py-1 rounded-bl-lg transition-colors duration-300" :class="yearly ? 'bg-green-500' : 'bg-blue-500'" x-text="yearly ? 'Супер ціна' : 'Оплата за фактом'"></div>
-                                <div class="text-sm font-bold uppercase tracking-wider mb-2 transition-colors duration-300" :class="yearly ? 'text-green-500' : 'text-blue-400'">Масштаб</div>
+                                <div class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-2 transition-colors duration-300" :class="yearly ? 'text-green-500' : 'text-blue-400'">Масштаб</div>
 
                                 <div class="mb-2 h-12 flex items-center justify-center">
                                     <div x-show="!yearly" class="text-5xl font-extrabold text-primary transition-all duration-300">
@@ -135,14 +135,16 @@
                             <button @click="$dispatch('open-order-modal', { type: yearly ? 'yearly' : 'monthly' })" class="inline-block bg-primary text-white font-bold text-lg px-12 py-4 rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:shadow-blue-600/40 transition duration-300 transform hover:-translate-y-1 w-full sm:w-auto">
                                 <span x-text="yearly ? 'Оформити річну підписку' : 'Почати роботу зараз'"></span>
                             </button>
-                            <p class="mt-4 text-sm text-slate-400" x-show="!yearly">
+                            <div class="mt-4 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-slate-400">
                                 <span class="inline-flex items-center gap-1"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Без прив'язки картки</span>
-                                <span class="mx-2">•</span>
+                                <span class="hidden sm:inline">•</span>
                                 <span>Рахунок прийде через 30 днів</span>
-                            </p>
-                            <p class="mt-4 text-sm text-slate-400" x-show="yearly" style="display: none;">
-                                <span class="inline-flex items-center gap-1"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Економія 1200 грн на кожному авто</span>
-                            </p>
+                            </div>
+                            <div class="mt-2">
+                                <a href="/blog/how-billing-works" class="text-primary hover:text-blue-700 text-sm font-medium underline decoration-dashed underline-offset-4">
+                                    Детальніше про те, як ми нараховуємо оплату →
+                                </a>
+                            </div>
 
                             <!-- Trust Block -->
                             <div class="mt-8 pt-8 border-t border-slate-100 max-w-2xl mx-auto">
@@ -192,6 +194,14 @@
                         <p class="text-slate-400 mb-8">
                             Ми не ділимо клієнтів на сорти. Ви отримуєте повний функціонал одразу, включаючи майбутні оновлення.
                         </p>
+                        <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
+                            <div class="text-yellow-400 font-bold mb-2">Бонус за довіру</div>
+                            <p class="text-sm text-slate-300 mb-4">Оплатіть абонплату (базу) на рік вперед і отримайте знижку.</p>
+                            <div class="text-2xl font-bold text-white mb-4">-100 грн <span class="text-sm font-normal text-slate-400">/ авто щомісяця</span></div>
+                            <button @click="$dispatch('open-order-modal', { type: 'yearly' })" class="w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold py-2 px-4 rounded-lg transition text-sm">
+                                Оформити річну підписку
+                            </button>
+                        </div>
                     </div>
 
                     <div class="md:w-2/3 grid sm:grid-cols-2 gap-6">
@@ -251,11 +261,11 @@
 
                     <div class="border border-slate-200 rounded-lg overflow-hidden">
                         <button @click="active = (active === 3 ? null : 3)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition">
-                            <span>Кому НЕ підходить Garage24?</span>
+                            <span>Чи можу я платити як ФОП/ТОВ?</span>
                             <span x-text="active === 3 ? '−' : '+'" class="text-xl text-slate-400"></span>
                         </button>
                         <div x-show="active === 3" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
-                            Garage24 не підійде, якщо у вас немає власних авто (ви працюєте тільки як диспетчерська) або якщо ви шукаєте складну ERP-систему для великої логістичної компанії. Ми фокусуємося на таксопарках.
+                            Так, ми працюємо офіційно і надаємо всі необхідні документи для бухгалтерії.
                         </div>
                     </div>
                 </div>
