@@ -63,25 +63,75 @@
         .sidebar li {
             margin-bottom: 0.1rem;
         }
+
+        /* Стилі посилань сайдбару */
         .sidebar a {
             text-decoration: none;
             color: #4b5563;
             display: block;
             padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem;
-            transition: all 0.2s;
+            border-radius: 0.375rem; /* Трохи скруглені кути */
+            transition: all 0.2s ease;
             font-size: 0.9rem;
             line-height: 1.4;
+            position: relative;
+            overflow: hidden; /* Щоб маркер не вилазив */
+            border-left: 3px solid transparent; /* Резервуємо місце під бордер, щоб не стрибало */
         }
+
         .sidebar a:hover {
             color: var(--primary-color);
             background-color: #f3f4f6;
+            padding-left: 0.75rem; /* Легкий зсув при наведенні */
         }
+
+        /* Активний стан з анімацією */
         .sidebar a.active {
             color: var(--primary-color);
             background-color: #eff6ff;
             font-weight: 600;
+            /* Анімація появи фону та зсуву тексту */
+            animation: activeItemSlide 0.4s ease-out forwards;
         }
+
+        /* Маркер активного пункту (смужка зліва) */
+        .sidebar a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background-color: var(--primary-color);
+            border-radius: 0 2px 2px 0;
+            /* Анімація "виростання" смужки */
+            animation: activeMarkerGrow 0.3s ease-out forwards;
+        }
+
+        @keyframes activeItemSlide {
+            0% {
+                background-color: transparent;
+                padding-left: 0.5rem;
+            }
+            100% {
+                background-color: #eff6ff;
+                padding-left: 0.85rem; /* Фінальний зсув */
+            }
+        }
+
+        @keyframes activeMarkerGrow {
+            0% {
+                height: 0;
+                top: 50%;
+                opacity: 0;
+            }
+            100% {
+                height: 100%;
+                top: 0;
+                opacity: 1;
+            }
+        }
+
         .content {
             flex: 1;
             min-width: 0;
@@ -342,6 +392,11 @@
                 @endif
             </div>
         </article>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="navToast" class="toast-notification">
+        <span id="toastMessage"></span>
     </div>
 
     @include('partials.footer')
