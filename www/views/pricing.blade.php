@@ -28,10 +28,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Inter', sans-serif; }
+        /* Toggle Switch Styles */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #2563eb;
+        }
+        .toggle-checkbox:checked + .toggle-label {
+            background-color: #2563eb;
+        }
     </style>
 </head>
 <!-- Додаємо x-data, щоб Alpine працював на всій сторінці -->
-<body class="text-slate-800 antialiased bg-white" x-data>
+<body class="text-slate-800 antialiased bg-white" x-data="{ yearly: false }">
     @include('partials.header')
 
     <main>
@@ -60,28 +68,52 @@
             <div class="container mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="max-w-5xl mx-auto bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden">
                     <div class="p-8 sm:p-12">
-                        <div class="text-center mb-10">
+                        <div class="text-center mb-8">
                             <h2 class="text-2xl font-bold text-slate-900">Проста арифметика вашого успіху</h2>
-                            <p class="text-slate-500">Ви платите тільки за те, що реально приносить гроші.</p>
+                            <p class="text-slate-500 mb-6">Ви платите тільки за те, що реально приносить гроші.</p>
+
+                            <!-- Toggle Switch -->
+                            <div class="flex items-center justify-center gap-4 mb-8">
+                                <span class="text-sm font-medium" :class="!yearly ? 'text-slate-900' : 'text-slate-500'">Щомісячна оплата</span>
+                                <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+                                    <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer transition-all duration-300" :class="yearly ? 'right-0 border-primary' : 'left-0 border-slate-300'" @click="yearly = !yearly"/>
+                                    <label for="toggle" class="toggle-label block overflow-hidden h-6 rounded-full cursor-pointer transition-colors duration-300" :class="yearly ? 'bg-primary' : 'bg-slate-300'"></label>
+                                </div>
+                                <span class="text-sm font-medium" :class="yearly ? 'text-slate-900' : 'text-slate-500'">
+                                    Річна передплата
+                                    <span class="ml-1 inline-block bg-green-100 text-green-700 text-xs px-2 py-0.5 rounded-full font-bold">-50% на авто</span>
+                                </span>
+                            </div>
                         </div>
 
                         <div class="flex flex-col md:flex-row items-center justify-center gap-8 mb-12 relative">
                             <!-- Base Price -->
-                            <div class="flex-1 text-center p-6 bg-slate-50 rounded-2xl border border-slate-100 w-full">
+                            <div class="flex-1 text-center p-6 bg-slate-50 rounded-2xl border border-slate-100 w-full transition-all duration-300" :class="yearly ? 'ring-2 ring-primary/20' : ''">
                                 <div class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">База</div>
                                 <div class="text-5xl font-extrabold text-slate-900 mb-2">{{ $model['base_price'] }} <span class="text-2xl font-medium text-slate-400">грн</span></div>
                                 <div class="text-slate-600 font-medium">Щомісячна абонплата</div>
-                                <div class="text-xs text-slate-400 mt-2">за доступ до системи та сервер</div>
+                                <div class="text-xs text-slate-400 mt-2" x-show="!yearly">за доступ до системи та сервер</div>
+                                <div class="text-xs text-primary font-bold mt-2" x-show="yearly" style="display: none;">сплачується за 12 місяців</div>
                             </div>
 
                             <!-- Plus Sign -->
                             <div class="text-4xl text-slate-300 font-light hidden md:block">+</div>
 
                             <!-- Car Price -->
-                            <div class="flex-1 text-center p-6 bg-blue-50 rounded-2xl border border-blue-100 w-full relative overflow-hidden">
-                                <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">Оплата за фактом</div>
-                                <div class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-2">Масштаб</div>
-                                <div class="text-5xl font-extrabold text-primary mb-2">{{ $model['car_price'] }} <span class="text-2xl font-medium text-blue-300">грн</span></div>
+                            <div class="flex-1 text-center p-6 bg-blue-50 rounded-2xl border border-blue-100 w-full relative overflow-hidden transition-all duration-300" :class="yearly ? 'bg-green-50 border-green-200' : ''">
+                                <div class="absolute top-0 right-0 text-white text-xs font-bold px-2 py-1 rounded-bl-lg transition-colors duration-300" :class="yearly ? 'bg-green-500' : 'bg-blue-500'" x-text="yearly ? 'Супер ціна' : 'Оплата за фактом'"></div>
+                                <div class="text-sm font-bold uppercase tracking-wider mb-2 transition-colors duration-300" :class="yearly ? 'text-green-500' : 'text-blue-400'">Масштаб</div>
+
+                                <div class="mb-2 h-12 flex items-center justify-center">
+                                    <div x-show="!yearly" class="text-5xl font-extrabold text-primary transition-all duration-300">
+                                        {{ $model['car_price'] }} <span class="text-2xl font-medium text-blue-300">грн</span>
+                                    </div>
+                                    <div x-show="yearly" style="display: none;" class="text-5xl font-extrabold text-green-600 transition-all duration-300 flex items-center gap-2">
+                                        100 <span class="text-2xl font-medium text-green-300">грн</span>
+                                        <span class="text-lg text-slate-400 line-through decoration-2 decoration-red-400 opacity-60">200</span>
+                                    </div>
+                                </div>
+
                                 <div class="text-slate-600 font-medium">За активне авто</div>
                                 <div class="text-xs text-slate-400 mt-2">в місяць</div>
                             </div>
@@ -100,13 +132,16 @@
                         </div>
 
                         <div class="mt-10 text-center">
-                            <button @click="$dispatch('open-order-modal', { type: 'monthly' })" class="inline-block bg-primary text-white font-bold text-lg px-12 py-4 rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:shadow-blue-600/40 transition duration-300 transform hover:-translate-y-1 w-full sm:w-auto">
-                                Почати роботу зараз
+                            <button @click="$dispatch('open-order-modal', { type: yearly ? 'yearly' : 'monthly' })" class="inline-block bg-primary text-white font-bold text-lg px-12 py-4 rounded-xl shadow-lg shadow-blue-500/30 hover:bg-blue-700 hover:shadow-blue-600/40 transition duration-300 transform hover:-translate-y-1 w-full sm:w-auto">
+                                <span x-text="yearly ? 'Оформити річну підписку' : 'Почати роботу зараз'"></span>
                             </button>
-                            <p class="mt-4 text-sm text-slate-400">
+                            <p class="mt-4 text-sm text-slate-400" x-show="!yearly">
                                 <span class="inline-flex items-center gap-1"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Без прив'язки картки</span>
                                 <span class="mx-2">•</span>
                                 <span>Рахунок прийде через 30 днів</span>
+                            </p>
+                            <p class="mt-4 text-sm text-slate-400" x-show="yearly" style="display: none;">
+                                <span class="inline-flex items-center gap-1"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> Економія 1200 грн на кожному авто</span>
                             </p>
 
                             <!-- Trust Block -->
@@ -157,14 +192,6 @@
                         <p class="text-slate-400 mb-8">
                             Ми не ділимо клієнтів на сорти. Ви отримуєте повний функціонал одразу, включаючи майбутні оновлення.
                         </p>
-                        <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
-                            <div class="text-yellow-400 font-bold mb-2">Бонус за довіру</div>
-                            <p class="text-sm text-slate-300 mb-4">Оплатіть абонплату (базу) на рік вперед і отримайте знижку.</p>
-                            <div class="text-2xl font-bold text-white mb-4">-100 грн <span class="text-sm font-normal text-slate-400">/ авто щомісяця</span></div>
-                            <button @click="$dispatch('open-order-modal', { type: 'yearly' })" class="w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold py-2 px-4 rounded-lg transition text-sm">
-                                Оформити річну підписку
-                            </button>
-                        </div>
                     </div>
 
                     <div class="md:w-2/3 grid sm:grid-cols-2 gap-6">
@@ -236,13 +263,27 @@
         </section>
 
         <!-- Enterprise Link -->
-        <section class="py-12 bg-slate-50 border-t border-slate-200">
-            <div class="container mx-auto px-4 text-center">
-                <p class="text-slate-500 mb-2">У вас великий парк (50+ авто) і потрібні особливі умови?</p>
-                <button @click="$dispatch('open-order-modal', { type: 'enterprise' })" class="text-primary font-semibold hover:text-blue-700 transition flex items-center justify-center gap-2 mx-auto">
-                    Зв'яжіться з нами для індивідуальної пропозиції
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                </button>
+        <section class="py-16 bg-slate-50 border-t border-slate-200">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto bg-white rounded-2xl p-8 shadow-lg border border-slate-100 flex flex-col md:flex-row items-center gap-8">
+                    <div class="flex-1 text-center md:text-left">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Ми відкриті до партнерства</h3>
+                        <p class="text-slate-600 text-sm mb-4">
+                            Ми не просто продаємо софт, ми будуємо спільноту. Якщо вам потрібна специфічна функція, інтеграція або особливі умови — ми готові це обговорити.
+                        </p>
+                        <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">Кастомна розробка</span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">Виділений сервер</span>
+                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">White Label</span>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <button @click="$dispatch('open-order-modal', { type: 'enterprise' })" class="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-slate-800 hover:bg-slate-700 transition shadow-md">
+                            Обговорити ідеї
+                            <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </button>
+                    </div>
+                </div>
             </div>
         </section>
     </main>
