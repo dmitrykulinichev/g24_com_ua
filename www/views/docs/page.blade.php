@@ -63,75 +63,25 @@
         .sidebar li {
             margin-bottom: 0.1rem;
         }
-
-        /* Стилі посилань сайдбару */
         .sidebar a {
             text-decoration: none;
             color: #4b5563;
             display: block;
             padding: 0.25rem 0.5rem;
-            border-radius: 0.375rem; /* Трохи скруглені кути */
-            transition: all 0.2s ease;
+            border-radius: 0.375rem;
+            transition: all 0.2s;
             font-size: 0.9rem;
             line-height: 1.4;
-            position: relative;
-            overflow: hidden; /* Щоб маркер не вилазив */
-            border-left: 3px solid transparent; /* Резервуємо місце під бордер, щоб не стрибало */
         }
-
         .sidebar a:hover {
             color: var(--primary-color);
             background-color: #f3f4f6;
-            padding-left: 0.75rem; /* Легкий зсув при наведенні */
         }
-
-        /* Активний стан з анімацією */
         .sidebar a.active {
             color: var(--primary-color);
             background-color: #eff6ff;
             font-weight: 600;
-            /* Анімація появи фону та зсуву тексту */
-            animation: activeItemSlide 0.4s ease-out forwards;
         }
-
-        /* Маркер активного пункту (смужка зліва) */
-        .sidebar a.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background-color: var(--primary-color);
-            border-radius: 0 2px 2px 0;
-            /* Анімація "виростання" смужки */
-            animation: activeMarkerGrow 0.3s ease-out forwards;
-        }
-
-        @keyframes activeItemSlide {
-            0% {
-                background-color: transparent;
-                padding-left: 0.5rem;
-            }
-            100% {
-                background-color: #eff6ff;
-                padding-left: 0.85rem; /* Фінальний зсув */
-            }
-        }
-
-        @keyframes activeMarkerGrow {
-            0% {
-                height: 0;
-                top: 50%;
-                opacity: 0;
-            }
-            100% {
-                height: 100%;
-                top: 0;
-                opacity: 1;
-            }
-        }
-
         .content {
             flex: 1;
             min-width: 0;
@@ -159,7 +109,7 @@
             border-radius: 0.2rem;
         }
 
-        /* Навігація між статтями (Оновлено: світліший стиль з контрастним ховером) */
+        /* Навігація між статтями */
         .docs-nav {
             margin-top: 4rem;
             padding-top: 2rem;
@@ -170,54 +120,51 @@
         }
         .nav-item {
             text-decoration: none;
-            padding: 1.25rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 2rem; /* Pill shape */
             transition: all 0.2s ease;
             display: flex;
-            flex-direction: column;
-            /* Світлий стиль за замовчуванням */
+            align-items: center; /* Центрування по вертикалі */
+            gap: 0.75rem;
+            /* Світлий стиль */
             background-color: #fff;
             border: 1px solid #e5e7eb;
             color: #1f2937;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            width: fit-content; /* Ширина по контенту */
         }
 
-        /* Контрастний стиль при наведенні або активності */
         .nav-item:hover, .nav-item.active-press {
-            background-color: #1f2937; /* Темний фон */
+            background-color: #1f2937;
             border-color: #1f2937;
-            color: white; /* Білий текст */
+            color: white;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
         }
 
         .nav-item.active-press {
-            transform: translateY(1px); /* Ефект натискання */
+            transform: translateY(1px);
         }
 
-        .nav-label {
-            display: flex;
-            align-items: center;
-            font-size: 0.85rem;
-            color: #6b7280; /* Сірий */
-            margin-bottom: 0.5rem;
-            font-weight: 500;
+        .nav-arrow {
+            font-size: 1.2em;
+            line-height: 1;
+            color: #9ca3af;
             transition: color 0.2s ease;
         }
 
-        /* Зміна кольору лейблу при наведенні */
-        .nav-item:hover .nav-label, .nav-item.active-press .nav-label {
-            color: #9ca3af; /* Світло-сірий */
+        .nav-item:hover .nav-arrow, .nav-item.active-press .nav-arrow {
+            color: white;
         }
 
         .nav-title {
             font-weight: 600;
-            color: var(--secondary-color); /* Темно-синій */
-            font-size: 1.1rem;
+            color: var(--secondary-color);
+            font-size: 1rem;
             transition: color 0.2s ease;
+            margin: 0;
         }
 
-        /* Зміна кольору заголовка при наведенні */
         .nav-item:hover .nav-title, .nav-item.active-press .nav-title {
             color: white;
         }
@@ -225,33 +172,36 @@
         /* Вирівнювання */
         .nav-prev {
             grid-column: 1;
-            text-align: left;
+            justify-self: start; /* Притискаємо вліво */
         }
         .nav-next {
             grid-column: 2;
-            text-align: right;
-            align-items: flex-end;
+            justify-self: end; /* Притискаємо вправо */
+            /* align-items: flex-end; <--- ВИДАЛЕНО, це ламало верстку */
         }
 
         /* Якщо тільки одна кнопка */
         .nav-prev:only-child { grid-column: 1; }
         .nav-next:only-child { grid-column: 2; }
 
-        /* Ghost Button Animation (Залишаємо темним для контрасту) */
+        /* Ghost Button Animation */
         .nav-ghost {
             position: fixed;
             bottom: 2rem;
             z-index: 1000;
             background-color: rgba(31, 41, 55, 0.95);
             color: white;
-            padding: 1.25rem 1.5rem;
-            border-radius: 0.75rem;
+            padding: 1rem 1.5rem;
+            border-radius: 2rem;
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
             display: flex;
-            flex-direction: column;
-            min-width: 200px;
+            flex-direction: row;
+            align-items: center;
+            gap: 0.75rem;
+            min-width: auto;
             pointer-events: none;
             animation: ghostJump 0.6s ease-out forwards;
+            white-space: nowrap;
         }
 
         .nav-ghost.ghost-left {
@@ -260,22 +210,19 @@
 
         .nav-ghost.ghost-right {
             text-align: right;
-            align-items: flex-end;
-        }
-
-        .nav-ghost .nav-label {
-            color: #9ca3af;
-            display: flex;
-            align-items: center;
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
         }
 
         .nav-ghost .nav-title {
             font-weight: 600;
             color: white;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            margin: 0;
+        }
+
+        .nav-ghost .nav-arrow {
+            font-size: 1.2em;
+            line-height: 1;
+            color: #9ca3af;
         }
 
         @keyframes ghostJump {
@@ -317,8 +264,9 @@
             }
             .nav-prev, .nav-next {
                 grid-column: 1;
-                text-align: center;
-                align-items: center;
+                justify-self: center;
+                width: 100%;
+                justify-content: center;
             }
             .nav-ghost {
                 display: none;
@@ -373,21 +321,15 @@
             <div class="docs-nav">
                 @if($prev)
                     <a href="/docs/{{ $prev['slug'] }}" class="nav-item nav-prev">
-                        <span class="nav-label">
-                            <span style="margin-right: 0.5rem; font-size: 1.2em;">←</span>
-                            Попередня
-                        </span>
+                        <span class="nav-arrow">←</span>
                         <span class="nav-title">{{ $prev['title'] }}</span>
                     </a>
                 @endif
 
                 @if($next)
                     <a href="/docs/{{ $next['slug'] }}" class="nav-item nav-next">
-                        <span class="nav-label">
-                            Наступна
-                            <span style="margin-left: 0.5rem; font-size: 1.2em;">→</span>
-                        </span>
                         <span class="nav-title">{{ $next['title'] }}</span>
+                        <span class="nav-arrow">→</span>
                     </a>
                 @endif
             </div>
@@ -464,14 +406,15 @@
                     ghost.style.right = rightPos + 'px';
                 }
 
-                let arrowHtml = '';
+                // Формуємо контент: Стрілка + Назва
+                let contentHtml = '';
                 if (direction === 'left') {
-                    arrowHtml = `<span class="nav-label"><span style="margin-right: 0.5rem; font-size: 1.2em;">←</span> Попередня</span>`;
+                    contentHtml = `<span class="nav-arrow">←</span><span class="nav-title">${title}</span>`;
                 } else {
-                    arrowHtml = `<span class="nav-label">Наступна <span style="margin-left: 0.5rem; font-size: 1.2em;">→</span></span>`;
+                    contentHtml = `<span class="nav-title">${title}</span><span class="nav-arrow">→</span>`;
                 }
 
-                ghost.innerHTML = `${arrowHtml}<span class="nav-title">${title}</span>`;
+                ghost.innerHTML = contentHtml;
 
                 document.body.appendChild(ghost);
 
