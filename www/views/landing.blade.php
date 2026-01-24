@@ -37,8 +37,11 @@
 
     <main>
         <!-- Hero Section -->
-        <section class="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-28 bg-gradient-to-b from-slate-50 to-white">
-            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <section class="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-28 bg-cover bg-center" style="background-image: url('/assets/img/openart-image_hmp_kyur_1767826263185_raw.png');">
+            <!-- Оверлей для читабельності тексту -->
+            <div class="absolute inset-0 bg-white/90"></div>
+
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div class="text-center max-w-4xl mx-auto">
                     <h1 class="text-4xl tracking-tight font-extrabold text-slate-900 sm:text-5xl md:text-6xl mb-6">
                         Операційна система для<br>
@@ -59,21 +62,21 @@
 
                     <!-- Key Benefits (Інтегровано в Hero) -->
                     <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left max-w-4xl mx-auto">
-                        <div class="flex items-start gap-3 p-4 rounded-lg bg-blue-50/50 border border-blue-100">
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-blue-50/50 border border-blue-100 backdrop-blur-sm">
                             <div class="text-2xl">🤝</div>
                             <div>
                                 <h3 class="font-bold text-slate-900 text-sm">Оплата по факту</h3>
                                 <p class="text-slate-500 text-xs mt-1">Спочатку користуєтесь місяць, потім платите. Жодних передплат.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3 p-4 rounded-lg bg-green-50/50 border border-green-100">
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-green-50/50 border border-green-100 backdrop-blur-sm">
                             <div class="text-2xl">🔓</div>
                             <div>
                                 <h3 class="font-bold text-slate-900 text-sm">Все включено</h3>
                                 <p class="text-slate-500 text-xs mt-1">Один тариф. Всі функції доступні одразу. Жодних "Pro" версій.</p>
                             </div>
                         </div>
-                        <div class="flex items-start gap-3 p-4 rounded-lg bg-purple-50/50 border border-purple-100">
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-purple-50/50 border border-purple-100 backdrop-blur-sm">
                             <div class="text-2xl">📉</div>
                             <div>
                                 <h3 class="font-bold text-slate-900 text-sm">Платіть за активних</h3>
