@@ -47,6 +47,13 @@ class MarkdownService
             $meta['date'] = strtotime($meta['date']);
         }
 
+        // Image fallback (шукаємо перше зображення в тексті)
+        if (!isset($meta['image'])) {
+            if (preg_match('/!\[.*?\]\((.*?)\)/', $content, $imgMatches)) {
+                $meta['image'] = $imgMatches[1];
+            }
+        }
+
         // Description fallback
         if (!isset($meta['description'])) {
             $cleanText = preg_replace('/^#.*$/m', '', $content);
