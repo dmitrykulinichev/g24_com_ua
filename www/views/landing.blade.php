@@ -5,158 +5,229 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Title та Meta тепер у header.blade.php -->
     <link rel="stylesheet" href="assets/css/style.css?v={{ time() }}">
+    <!-- Підключення Tailwind CSS (через CDN для розробки) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#2563eb', // blue-600
+                        secondary: '#1e293b', // slate-800
+                        accent: '#10b981', // emerald-500
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* Тимчасові стилі для сумісності */
+        body { font-family: 'Inter', sans-serif; }
+        .btn-primary { @apply bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 inline-block text-center; }
+    </style>
 </head>
-<body>
+<body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
 
     <main>
         <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <h1>Забудь про Excel.<br>Наведи порядок у графіках та авто.</h1>
-                <p>Проста система для таксопарків, яка збирає всю інформацію в одному місці.<br>Без хаосу, без складних налаштувань, без втрати даних.</p>
-                <a href="/pricing" class="btn-primary">Навести порядок</a>
-                <p style="font-size: 0.9rem; margin-top: 1rem; opacity: 0.8; color: #4b5563;">🚀 Імпорт ваших авто та водіїв з Excel або Uklon за 2 хвилини</p>
-            </div>
-        </section>
+        <section class="relative overflow-hidden pt-16 pb-20 lg:pt-24 lg:pb-28 bg-gradient-to-b from-slate-50 to-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative">
+                <div class="text-center max-w-4xl mx-auto">
+                    <h1 class="text-4xl tracking-tight font-extrabold text-slate-900 sm:text-5xl md:text-6xl mb-6">
+                        Операційна система для<br>
+                        <span class="text-primary">сучасного таксопарку</span>
+                    </h1>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-500 mb-8">
+                        Замініть Excel, блокноти та хаос у чатах на єдину цифрову екосистему.
+                        Автоматизуйте графіки, фінанси та ремонти в одному вікні.
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4">
+                        <a href="/pricing" class="btn-primary text-lg px-8 py-4 shadow-lg shadow-blue-500/30">
+                            Почати роботу
+                        </a>
+                        <a href="/target" class="inline-flex items-center justify-center px-8 py-4 border border-slate-300 text-lg font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 transition duration-300">
+                            Кому підійде
+                        </a>
+                    </div>
 
-        <!-- Story Section (Біль) -->
-        <section class="story-section">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Впізнаєте себе?</h2>
-                    <p>Типова ситуація, з якою стикається кожен автопарк при масштабуванні.</p>
-                </div>
-
-                <div class="story-grid">
-                    <div class="story-content">
-                        <h3>Бізнес росте, а контроль зникає</h3>
-                        <p>Поки у вас було 5 машин, ви знали про кожну все. Але коли машин стало більше, почався хаос.</p>
-                        <p>Ви не розумієте, хто, коли і на якому авто працював. Графіки в голові, в чатах або на папірцях. Коли приходить штраф — ви не знаєте, з кого його списати.</p>
-
-                        <p><strong>Інформація розпорошена:</strong></p>
-                        <ul style="list-style: none; margin-bottom: 1.5rem; color: var(--text-muted);">
-                            <li style="margin-bottom: 0.5rem;">📉 <strong>Фінанси</strong> живуть в одній таблиці.</li>
-                            <li style="margin-bottom: 0.5rem;">🔧 <strong>Ремонти</strong> — в чатах з механіками.</li>
-                            <li style="margin-bottom: 0.5rem;">📅 <strong>Графіки</strong> — на папірцях або в голові диспетчера.</li>
-                        </ul>
-
-                        <p>Ви бачите рух грошей, але не бачите реального стану бізнесу.</p>
-
-                        <div class="pain-points">
-                            <div class="pain-point">
-                                <span class="pain-icon">❌</span>
-                                <span>Хто був за кермом?</span>
+                    <!-- Key Benefits (Інтегровано в Hero) -->
+                    <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 text-left max-w-4xl mx-auto">
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-blue-50/50 border border-blue-100">
+                            <div class="text-2xl">🤝</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm">Оплата по факту</h3>
+                                <p class="text-slate-500 text-xs mt-1">Спочатку користуєтесь місяць, потім платите. Жодних передплат.</p>
                             </div>
-                            <div class="pain-point">
-                                <span class="pain-icon">❌</span>
-                                <span>Графік сиплеться</span>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-green-50/50 border border-green-100">
+                            <div class="text-2xl">🔓</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm">Все включено</h3>
+                                <p class="text-slate-500 text-xs mt-1">Один тариф. Всі функції доступні одразу. Жодних "Pro" версій.</p>
                             </div>
-                            <div class="pain-point">
-                                <span class="pain-icon">❌</span>
-                                <span>Загублені документи</span>
-                            </div>
-                            <div class="pain-point">
-                                <span class="pain-icon">❌</span>
-                                <span>Ремонти "пожежами"</span>
+                        </div>
+                        <div class="flex items-start gap-3 p-4 rounded-lg bg-purple-50/50 border border-purple-100">
+                            <div class="text-2xl">📉</div>
+                            <div>
+                                <h3 class="font-bold text-slate-900 text-sm">Платіть за активних</h3>
+                                <p class="text-slate-500 text-xs mt-1">Машина в ремонті? Ви за неї не платите. Рахуємо тільки працюючі авто.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="story-quote">
-                        "Проблема не в людях і не в кількості роботи. Проблема в архітектурі управління. Excel просто не створений для цього."
-                    </div>
+                </div>
+
+                <!-- Hero Image -->
+                <div class="mt-16 relative rounded-xl shadow-2xl border border-slate-200 bg-slate-50 overflow-hidden">
+                    <img src="/assets/img/docs/dashboard_main.png" alt="Інтерфейс Garage24" class="w-full h-auto">
+                    <div class="absolute inset-0 bg-gradient-to-t from-white/10 to-transparent pointer-events-none"></div>
                 </div>
             </div>
         </section>
 
-        <!-- Value Proposition -->
-        <section style="background-color: var(--bg-surface); text-align: center; padding: 4rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
-            <div class="container">
-                <h2 style="font-size: 2.5rem; margin-bottom: 1rem;">Garage24 — це концентрація інформації в одному місці</h2>
-                <p style="font-size: 1.2rem; max-width: 800px; margin: 0 auto;">Ми не ускладнюємо життя "корпоративними ERP". Ми даємо простий інструмент, щоб ви бачили все в одному місці.</p>
+        <!-- Pain Points Section -->
+        <section class="py-20 bg-slate-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">Впізнаєте себе?</h2>
+                    <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                        Типова ситуація при масштабуванні: бізнес росте, а контроль зникає.
+                    </p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="space-y-8">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-2xl">📉</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 mb-2">Фінанси в "чорній скриньці"</h3>
+                                <p class="text-slate-600">Ви бачите рух грошей, але не знаєте реального прибутку кожного авто. Гроші губляться між таблицями та картками.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-2xl">🤯</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 mb-2">Хаос у графіках</h3>
+                                <p class="text-slate-600">Диспетчер тримає зміни в голові. Машини простоюють, бо "забули" знайти водія. Штрафи приходять не на тих людей.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-red-100 rounded-full flex items-center justify-center text-2xl">🔧</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-slate-900 mb-2">Ремонти "пожежами"</h3>
+                                <p class="text-slate-600">Про заміну мастила згадують, коли застукав двигун. Історія ремонтів живе в чатах Viber, які неможливо перевірити.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-2xl shadow-xl border border-slate-100 relative">
+                        <div class="absolute -top-4 -right-4 bg-yellow-400 text-slate-900 font-bold px-4 py-2 rounded-lg transform rotate-3 shadow-md text-sm">
+                            Реальна історія
+                        </div>
+                        <div class="prose text-slate-600 mb-6 relative z-10">
+                            <p class="mb-4">"Поки у вас було 5 машин, ви знали про кожну все. Але коли машин стало більше, почався хаос.</p>
+                            <p class="mb-4">Ви не розумієте, хто, коли і на якому авто працював. Графіки в голові, в чатах або на папірцях. Коли приходить штраф — ви не знаєте, з кого його списати.</p>
+                            <p class="mb-4">Інформація розпорошена: фінанси живуть в одній таблиці, ремонти — в чатах з механіками, а графіки — в голові диспетчера.</p>
+                            <p class="italic font-medium text-slate-800">Ви бачите рух грошей, але не бачите реального стану бізнесу."</p>
+                        </div>
+                        <div class="flex items-center gap-4 border-t border-slate-100 pt-4">
+                            <div class="w-12 h-12 bg-slate-200 rounded-full flex items-center justify-center font-bold text-slate-500">?</div>
+                            <div>
+                                <div class="font-bold text-slate-900">Власник парку</div>
+                                <div class="text-sm text-slate-500">до впровадження Garage24</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Features Grid -->
-        <section id="features" class="features-section">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Як ми наводимо порядок</h2>
-                    <p>6 кроків до прозорого автопарку</p>
+        <section id="features" class="py-24 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">Порядок замість хаосу</h2>
+                    <p class="text-lg text-slate-600 max-w-2xl mx-auto">
+                        6 модулів, які закривають 99% потреб вашого бізнесу.
+                    </p>
                 </div>
-                <div class="features-grid">
-                    <!-- 1. Графік (Пріоритет №1) -->
-                    <div class="feature-card">
-                        <div class="feature-icon">📅</div>
-                        <h3>Розумний графік</h3>
-                        <p>Планування змін без конфліктів та накладок. Ви завжди знаєте, хто на зміні.</p>
-                        <ul class="feature-list">
-                            <li>Drag & Drop календар</li>
-                            <li>Контроль "один водій на два авто"</li>
-                            <li>Історія призначень (хто був за кермом)</li>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- 1. Графік -->
+                    <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
+                        <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">📅</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Розумний графік</h3>
+                        <p class="text-slate-600 mb-4">Планування змін без конфліктів. Система не дасть поставити одного водія на дві машини.</p>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Drag & Drop календар</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Контроль перезмінок</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Історія призначень</li>
                         </ul>
                     </div>
 
-                    <!-- 2. Водії -->
-                    <div class="feature-card">
-                        <div class="feature-icon">👥</div>
-                        <h3>Водії та Дисципліна</h3>
-                        <p>Повний контроль роботи персоналу. Від найму до виходу на лінію.</p>
-                        <ul class="feature-list">
-                            <li>Швидкий онбординг за посиланням</li>
-                            <li>Telegram-бот для комунікації</li>
-                            <li>Цифрове досьє та рейтинг</li>
+                    <!-- 2. Фінанси -->
+                    <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
+                        <div class="w-12 h-12 bg-green-100 text-green-600 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">💰</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Фінанси та Payroll</h3>
+                        <p class="text-slate-600 mb-4">Автоматичний розрахунок зарплати водіїв на основі поїздок Uklon та ручних кас.</p>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Гнучкі схеми (50/50, Оренда)</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Баланси водіїв</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Unit Economics авто</li>
                         </ul>
                     </div>
 
                     <!-- 3. Автопарк -->
-                    <div class="feature-card">
-                        <div class="feature-icon">🚗</div>
-                        <h3>Повний контроль над авто</h3>
-                        <p>Цифровий паспорт кожного автомобіля. Більше ніяких паперових журналів.</p>
-                        <ul class="feature-list">
-                            <li><strong>Всі документи в хмарі</strong> (доступ 24/7)</li>
-                            <li>Історія пробігу та статусів</li>
-                            <li>QR-коди для швидкого доступу</li>
+                    <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
+                        <div class="w-12 h-12 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">🚗</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Цифровий гараж</h3>
+                        <p class="text-slate-600 mb-4">Електронна картка кожного авто. Документи, страховки та історія в одному місці.</p>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Нагадування про страховки</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> QR-коди на авто</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Облік пробігу</li>
                         </ul>
                     </div>
 
-                    <!-- 4. Фінанси -->
-                    <div class="feature-card">
-                        <div class="feature-icon">💰</div>
-                        <h3>Кожна гривня під контролем</h3>
-                        <p>Фінансове ядро системи для обліку взаєморозрахунків.</p>
-                        <ul class="feature-list">
-                            <li>Облік доходів та витрат</li>
-                            <li>Баланси водіїв (хто скільки винен)</li>
-                            <li>Інтеграція з Uklon (авто-імпорт)</li>
+                    <!-- 4. Водії -->
+                    <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
+                        <div class="w-12 h-12 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">👥</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">HR та Рекрутинг</h3>
+                        <p class="text-slate-600 mb-4">Від найму до звільнення. Зберігайте документи, контакти родичів та історію порушень.</p>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Лендінг для реєстрації</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Масовий імпорт водіїв</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Чорний список</li>
                         </ul>
                     </div>
 
                     <!-- 5. ТО -->
-                    <div class="feature-card">
-                        <div class="feature-icon">🛠️</div>
-                        <h3>Прозорі ремонти</h3>
-                        <p>Ви знаєте, куди йдуть гроші на запчастини.</p>
-                        <ul class="feature-list">
-                            <li>Нагадування про заміну мастила</li>
-                            <li>Водій повідомляє про проблему з телефону</li>
-                            <li>Фото-фіксація чеків та актів</li>
+                    <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
+                        <div class="w-12 h-12 bg-red-100 text-red-600 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">🛠️</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Сервіс та Ремонти</h3>
+                        <p class="text-slate-600 mb-4">Контроль вартості володіння. Водії повідомляють про поломки через телефон.</p>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Тікети поломок з фото</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Регламентні роботи</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Контроль витрат на СТО</li>
                         </ul>
                     </div>
 
                     <!-- 6. Безпека -->
-                    <div class="feature-card">
-                        <div class="feature-icon">🔒</div>
-                        <h3>Безпека та Аудит</h3>
-                        <p>Ви завжди знаєте, хто і що змінив у системі.</p>
-                        <ul class="feature-list">
-                            <li>Повний журнал дій (Activity Logs)</li>
-                            <li>Гнучкі права доступу (RBAC)</li>
-                            <li>Захист від видалення "незручних" даних</li>
+                    <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
+                        <div class="w-12 h-12 bg-slate-200 text-slate-700 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">🔒</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Аудит та Безпека</h3>
+                        <p class="text-slate-600 mb-4">Повний журнал дій. Ви завжди знаєте, хто змінив налаштування або видалив поїздку.</p>
+                        <ul class="space-y-2 text-sm text-slate-500">
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Activity Logs</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Ролі доступу (RBAC)</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Щоденні бекапи</li>
                         </ul>
                     </div>
                 </div>
@@ -164,190 +235,160 @@
         </section>
 
         <!-- Integration Section (Uklon) -->
-        <section style="background-color: var(--bg-card); border-top: 1px solid var(--border);">
-            <div class="container">
-                <div style="display: flex; align-items: center; justify-content: space-between; gap: 4rem; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 300px;">
-                        <h2 style="font-size: 2.5rem; margin-bottom: 1.5rem;">Офіційна інтеграція з Uklon</h2>
-                        <p style="font-size: 1.1rem; margin-bottom: 2rem;">Забудьте про ручне перенесення даних з кабінету партнера. Garage24 робить це автоматично.</p>
+        <section class="py-20 bg-slate-900 text-white overflow-hidden">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row items-center gap-12">
+                    <div class="lg:w-1/2">
+                        <div class="inline-block bg-yellow-400 text-slate-900 font-bold px-3 py-1 rounded-full text-sm mb-6">
+                            Офіційна інтеграція
+                        </div>
+                        <h2 class="text-3xl font-bold sm:text-4xl mb-6">Синхронізація з Uklon Fleet API</h2>
+                        <p class="text-slate-300 text-lg mb-8">
+                            Забудьте про ручне перенесення даних. Garage24 підключається до вашого кабінету партнера і забирає всі дані автоматично.
+                        </p>
 
-                        <ul style="list-style: none;">
-                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem; color: var(--text-main);">
-                                <span style="color: var(--accent-green); margin-right: 0.75rem; font-weight: bold;">✓</span>
-                                Автоматичний імпорт поїздок та каси
-                            </li>
-                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem; color: var(--text-main);">
-                                <span style="color: var(--accent-green); margin-right: 0.75rem; font-weight: bold;">✓</span>
-                                Синхронізація бази водіїв та авто
-                            </li>
-                            <li style="margin-bottom: 1rem; display: flex; align-items: center; font-size: 1.1rem; color: var(--text-main);">
-                                <span style="color: var(--accent-green); margin-right: 0.75rem; font-weight: bold;">✓</span>
-                                Точний розрахунок зарплати та комісії
-                            </li>
-                        </ul>
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-green-400">✓</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Імпорт поїздок та каси</h4>
+                                    <p class="text-slate-400 text-sm">Всі замовлення, бонуси та чайові автоматично потрапляють у фінансовий звіт.</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-green-400">✓</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Синхронізація бази</h4>
+                                    <p class="text-slate-400 text-sm">Завантажте своїх водіїв та авто з Uklon одним кліком (Link Fleet).</p>
+                                </div>
+                            </div>
+                            <div class="flex gap-4">
+                                <div class="flex-shrink-0 w-10 h-10 bg-slate-800 rounded-full flex items-center justify-center text-green-400">✓</div>
+                                <div>
+                                    <h4 class="font-bold text-lg">Контроль статусів</h4>
+                                    <p class="text-slate-400 text-sm">Бачте в реальному часі, хто на лінії, а хто відпочиває.</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div style="flex: 1; min-width: 300px; text-align: center;">
-                        <!-- Логотип Uklon (стилізований) -->
-                        <div style="background: #ffce00; color: #000; font-weight: 900; font-size: 3rem; padding: 2rem 4rem; border-radius: 1rem; display: inline-block; transform: rotate(-3deg); box-shadow: var(--shadow-lg);">
-                            UKLON
+                    <div class="lg:w-1/2 relative">
+                        <!-- Декоративний елемент -->
+                        <div class="absolute -inset-4 bg-yellow-400/20 rounded-full blur-3xl"></div>
+                        <img src="/assets/img/docs/uklon_reports_dashboard.png" alt="Uklon Integration" class="relative rounded-xl shadow-2xl border border-slate-700">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ecosystem Section -->
+        <section class="py-24 bg-slate-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">Екосистема Garage24</h2>
+                    <p class="text-lg text-slate-600">Два зручних інтерфейси для різних ролей у вашій команді.</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-8">
+                    <!-- Mobile App (PWA) -->
+                    <div class="bg-white rounded-2xl p-8 shadow-lg border border-slate-100 flex flex-col md:flex-row gap-8 items-center">
+                        <div class="w-full md:w-1/2">
+                            <div class="text-4xl mb-4">📱</div>
+                            <h3 class="text-2xl font-bold text-slate-900 mb-2">Мобільний офіс</h3>
+                            <p class="text-slate-600 mb-4">Для власників та менеджерів. Повноцінна PWA-система у вашому смартфоні.</p>
+                            <ul class="space-y-2 text-sm text-slate-500">
+                                <li>• Документи завжди під рукою</li>
+                                <li>• Пульс парку 24/7</li>
+                                <li>• Темна тема для нічних змін</li>
+                            </ul>
+                        </div>
+                        <div class="w-full md:w-1/2">
+                            <img src="/assets/img/docs/dashboard_main.png" alt="Mobile App" class="rounded-lg shadow-md border border-slate-200">
+                        </div>
+                    </div>
+
+                    <!-- Telegram Bot -->
+                    <div class="bg-blue-600 rounded-2xl p-8 shadow-lg text-white flex flex-col md:flex-row gap-8 items-center">
+                        <div class="w-full md:w-1/2">
+                            <div class="text-4xl mb-4">🤖</div>
+                            <h3 class="text-2xl font-bold mb-2">Telegram Бот</h3>
+                            <p class="text-blue-100 mb-4">Для водіїв. Простий інтерфейс у звичному месенджері.</p>
+                            <ul class="space-y-2 text-sm text-blue-100">
+                                <li>• Перегляд графіку змін</li>
+                                <li>• Перевірка балансу та боргів</li>
+                                <li>• Відправка фото поломок</li>
+                            </ul>
+                        </div>
+                        <div class="w-full md:w-1/2 flex justify-center">
+                            <!-- Імітація інтерфейсу бота -->
+                            <div class="bg-white text-slate-900 p-4 rounded-lg shadow-lg w-full max-w-[200px] text-xs">
+                                <div class="bg-blue-100 p-2 rounded mb-2 self-start">Привіт! Твій баланс: 1250 грн.</div>
+                                <div class="bg-blue-100 p-2 rounded mb-2 self-start">Наступна зміна: Завтра, 08:00</div>
+                                <div class="bg-blue-500 text-white p-2 rounded self-end text-right">Дякую!</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Ecosystem Section (Mobile + Telegram) -->
-        <section class="mobile-section">
-            <div class="container">
-                <div class="section-title" style="margin-bottom: 3rem;">
-                    <h2 style="color: white;">Екосистема Garage24</h2>
-                    <p style="color: rgba(255,255,255,0.8);">Два зручних інтерфейси для різних задач</p>
+        <!-- FAQ Section -->
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900">Часті запитання</h2>
                 </div>
 
-                <div class="mobile-grid">
-                    <!-- Ліва частина: Мобільний додаток (PWA) -->
-                    <div class="mobile-content">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">📱</div>
-                        <h2>Мобільний офіс</h2>
-                        <p>Для власників та менеджерів. Повноцінна система у вашому смартфоні (веб-версія).</p>
-                        <ul class="mobile-features" style="list-style: none;">
-                            <li>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                <strong>Документи завжди під рукою</strong> (навіть для поліції)
-                            </li>
-                            <li>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                Пульс парку 24/7 (хто на лінії, хто в ремонті)
-                            </li>
-                            <li>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                Швидке створення задач для механіків
-                            </li>
-                        </ul>
+                <div class="space-y-6" x-data="{ active: null }">
+                    <!-- FAQ Item 1 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 1 ? null : 1)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition duration-200">
+                            <span>Чи можу я перенести дані зі своєї старої Excel таблиці?</span>
+                            <span x-text="active === 1 ? '−' : '+'" class="text-xl"></span>
+                        </button>
+                        <div x-show="active === 1" x-collapse class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white">
+                            Так! Наш модуль "Smart Import" дозволяє завантажити тисячі водіїв та авто за кілька хвилин. Система сама підкаже, як співставити колонки.
+                        </div>
                     </div>
 
-                    <!-- Права частина: Telegram Бот -->
-                    <div class="mobile-content" style="background: rgba(255,255,255,0.1); padding: 2rem; border-radius: 1rem; border: 1px solid rgba(255,255,255,0.2);">
-                        <div style="font-size: 3rem; margin-bottom: 1rem;">🤖</div>
-                        <h2>Telegram Бот</h2>
-                        <p>Для водіїв. Простий інтерфейс у звичному месенджері.</p>
-                        <ul class="mobile-features" style="list-style: none;">
-                            <li>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                Перегляд графіку змін
-                            </li>
-                            <li>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                Перевірка балансу та боргів
-                            </li>
-                            <li>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-                                Відправка звітів про поломки (фото/відео)
-                            </li>
-                        </ul>
+                    <!-- FAQ Item 2 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 2 ? null : 2)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition duration-200">
+                            <span>Чи безпечно зберігати дані в хмарі?</span>
+                            <span x-text="active === 2 ? '−' : '+'" class="text-xl"></span>
+                        </button>
+                        <div x-show="active === 2" x-collapse class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white">
+                            Ми використовуємо шифрування даних за банківськими стандартами. Щоденні бекапи гарантують, що ви ніколи не втратите свою базу.
+                        </div>
+                    </div>
+
+                    <!-- FAQ Item 3 -->
+                    <div class="border border-slate-200 rounded-lg overflow-hidden">
+                        <button @click="active = (active === 3 ? null : 3)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition duration-200">
+                            <span>Чи потрібен мені програміст для налаштування?</span>
+                            <span x-text="active === 3 ? '−' : '+'" class="text-xl"></span>
+                        </button>
+                        <div x-show="active === 3" x-collapse class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white">
+                            Ні. Система створена для звичайних користувачів. Всі налаштування виконуються через зрозумілий інтерфейс.
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Simplicity Section (Простота) -->
-        <section style="background-color: var(--bg-surface); padding: 6rem 0;">
-            <div class="container">
-                <div class="section-title">
-                    <h2>Складно? Ні, це просто.</h2>
-                    <p>Ми прибрали все зайве. Тільки те, що потрібно для роботи.</p>
-                </div>
-
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; text-align: center;">
-                    <div style="background: var(--bg-card); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border);">
-                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--text-muted);">📊</div>
-                        <h3 style="margin-bottom: 1rem; color: var(--text-muted);">Excel</h3>
-                        <p style="color: var(--text-muted);">Просто, але хаотично. Дані губляться, формули ламаються, доступу з телефону немає.</p>
-                    </div>
-
-                    <div style="background: var(--bg-card); padding: 2rem; border-radius: 1rem; border: 2px solid var(--primary); transform: scale(1.05); box-shadow: var(--shadow-lg); z-index: 10;">
-                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--primary);">🚀</div>
-                        <h3 style="margin-bottom: 1rem; color: var(--text-main); font-weight: 800;">Garage24</h3>
-                        <p style="color: var(--text-main);">Золота середина. Простота Excel + потужність бази даних. Все працює з коробки.</p>
-                    </div>
-
-                    <div style="background: var(--bg-card); padding: 2rem; border-radius: 1rem; border: 1px solid var(--border);">
-                        <div style="font-size: 2rem; margin-bottom: 1rem; color: var(--text-muted);">🏢</div>
-                        <h3 style="margin-bottom: 1rem; color: var(--text-muted);">Складні ERP</h3>
-                        <p style="color: var(--text-muted);">Дорого, довго впроваджувати, потрібен окремий спеціаліст для обслуговування.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Stats -->
-        <section class="stats-section">
-            <div class="container">
-                <div class="stats-grid">
-                    <div>
-                        <div class="stat-number">10-100</div>
-                        <div class="stat-label">Авто в парку</div>
-                    </div>
-                    <div>
-                        <div class="stat-number">15%</div>
-                        <div class="stat-label">Економія на ремонтах</div>
-                    </div>
-                    <div>
-                        <div class="stat-number">24/7</div>
-                        <div class="stat-label">Контроль бізнесу</div>
-                    </div>
-                    <div>
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">Загублених транзакцій</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- How to start -->
-        <section>
-            <div class="container">
-                <div class="section-title">
-                    <h2>Як почати працювати?</h2>
-                </div>
-                <div class="steps-grid">
-                    <div class="step-card">
-                        <div class="step-number">1</div>
-                        <h3>Залиште заявку</h3>
-                        <p>Ми зв'яжемося з вами та проведемо коротку демонстрацію.</p>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">2</div>
-                        <h3>Налаштування</h3>
-                        <p><strong>Імпортуємо ваші авто та водіїв з Excel або Uklon.</strong></p>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">3</div>
-                        <h3>Навчання</h3>
-                        <p>Покажемо вашим диспетчерам, як працювати в системі.</p>
-                    </div>
-                    <div class="step-card">
-                        <div class="step-number">4</div>
-                        <h3>Спокій</h3>
-                        <p>Ви отримуєте контроль, а бізнес працює як годинник.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section id="contact" class="contact-section">
-            <div class="container" style="text-align: center;">
-                <div class="section-title">
-                    <h2>Порядок коштує дешевше, ніж хаос</h2>
-                    <p>Спробуйте Garage24 безкоштовно протягом 14 днів. Жодних зобов'язань.</p>
-                </div>
-                <a href="/pricing" class="btn-primary" style="font-size: 1.2rem; padding: 1rem 3rem;">Спробувати безкоштовно</a>
-
-                <!-- CTA Screenshot -->
-                <div class="cta-image-wrapper">
-                    <img src="assets/img/schedule.png" alt="Інтерфейс планувальника Garage24" class="cta-screenshot">
-                </div>
+        <!-- CTA Section -->
+        <section class="py-24 bg-primary relative overflow-hidden">
+            <div class="absolute inset-0 bg-blue-700/50"></div>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative text-center">
+                <h2 class="text-3xl font-bold text-white sm:text-4xl mb-6">Порядок коштує дешевше, ніж хаос</h2>
+                <p class="text-xl text-blue-100 mb-10 max-w-2xl mx-auto">
+                    Почніть роботу вже сьогодні. Перший рахунок прийде тільки через місяць, і тільки якщо система принесе вам користь.
+                </p>
+                <a href="/pricing" class="inline-block bg-white text-blue-600 font-bold text-lg px-10 py-4 rounded-lg shadow-xl hover:bg-blue-50 transition duration-300">
+                    Почати роботу
+                </a>
+                <p class="mt-6 text-sm text-blue-200">
+                    Без прив'язки картки. Оплата по факту.
+                </p>
             </div>
         </section>
     </main>
