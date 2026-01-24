@@ -1,23 +1,3 @@
-# Аналітика та Звітність
-**Слоган:** "Дані, що допомагають заробляти більше."
-
-Система не просто збирає дані, а перетворює їх на інсайти.
-
-## Доступні звіти
-
-### Статистика (Statistics)
-*   **Загальний пробіг:** Динаміка пробігу парку.
-*   **Витрати палива:** Аналіз споживання пального.
-*   **Ефективність:** Показники завантаженості парку.
-
-{{screenshot file="analytics_general_stats.png" title="General Statistics Dashboard"}}
-
-### Топ автомобілів
-Рейтинг автомобілів за ефективністю використання. Допомагає виявити найкращі та найгірші активи.
-
-{{screenshot file="finance_vehicle_economics.png" title="Vehicle Economics Report"}}
-
-### Звіт по регламентних роботах
-Стан технічного обслуговування по всьому парку. Які авто потребують уваги найближчим часом.
-
-{{screenshot file="maintenance_records_log.png" title="Maintenance Report"}}
+<script>window.location.href = "/docs/reports";</script>
+# Redirecting...
+Go to [Reports](/docs/reports)

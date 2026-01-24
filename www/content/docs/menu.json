@@ -21,8 +21,14 @@
         "items": [
             { "title": "Технічне обслуговування", "slug": "maintenance", "image": "maintenance_records_log.png" },
             { "title": "Фінанси", "slug": "finance", "image": "finance_transactions_log.png" },
-            { "title": "Аналітика", "slug": "analytics", "image": "analytics_general_stats.png" },
-            { "title": "Інтеграції", "slug": "integrations", "image": "uklon_settings.png" }
+            { "title": "Аналітика", "slug": "reports", "image": "analytics_general_stats.png" }
+        ]
+    },
+    {
+        "title": "Інтеграції",
+        "items": [
+            { "title": "Uklon", "slug": "uklon", "image": "uklon_settings.png" },
+            { "title": "Telegram", "slug": "telegram", "image": "telegram_settings.png" }
         ]
     },
     {

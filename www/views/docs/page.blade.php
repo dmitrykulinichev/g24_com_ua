@@ -139,6 +139,29 @@
         .nav-prev:only-child { grid-column: 1; }
         .nav-next:only-child { grid-column: 2; }
 
+        /* Toast Notification */
+        .toast-notification {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background-color: rgba(31, 41, 55, 0.9);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 2rem;
+            font-size: 0.9rem;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            pointer-events: none;
+        }
+
+        .toast-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
         @media (max-width: 768px) {
             .docs-nav {
                 grid-template-columns: 1fr;
@@ -224,14 +247,20 @@
         </article>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="navToast" class="toast-notification">
+        <span id="toastMessage"></span>
+    </div>
+
     @include('partials.footer')
 
     <!-- Скрипт для Lightbox (збільшення зображень) -->
     <script src="/assets/js/docs.js?v={{ time() }}"></script>
 
-    <!-- Скрипт для підсвічування тексту -->
+    <!-- Скрипт для підсвічування тексту та навігації -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // Підсвічування тексту
             const urlParams = new URLSearchParams(window.location.search);
             const query = urlParams.get('highlight');
 
@@ -261,6 +290,38 @@
                     });
                 }
             }
+
+            // Функція показу тоста
+            function showToast(message) {
+                const toast = document.getElementById('navToast');
+                const msg = document.getElementById('toastMessage');
+                msg.textContent = message;
+                toast.classList.add('show');
+
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 1500);
+            }
+
+            // Навігація стрілками
+            document.addEventListener('keydown', function(event) {
+                // Ігноруємо, якщо фокус в полі вводу
+                if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
+
+                if (event.key === 'ArrowLeft') {
+                    const prevLink = document.querySelector('.nav-prev');
+                    if (prevLink) {
+                        showToast('← Попередня сторінка');
+                        setTimeout(() => prevLink.click(), 300);
+                    }
+                } else if (event.key === 'ArrowRight') {
+                    const nextLink = document.querySelector('.nav-next');
+                    if (nextLink) {
+                        showToast('Наступна сторінка →');
+                        setTimeout(() => nextLink.click(), 300);
+                    }
+                }
+            });
         });
     </script>
 </body>
