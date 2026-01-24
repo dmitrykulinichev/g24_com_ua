@@ -16,21 +16,43 @@
             display: flex;
             gap: 3rem;
             min-height: 70vh;
+            position: relative;
         }
         .sidebar {
             width: 250px;
             flex-shrink: 0;
             border-right: 1px solid #e5e7eb;
             padding-right: 1rem;
+            /* Sticky Sidebar */
+            position: sticky;
+            top: 2rem;
+            height: calc(100vh - 4rem);
+            overflow-y: auto;
         }
+
+        /* Стилізація скролбару для сайдбару */
+        .sidebar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 2px;
+        }
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+
         .sidebar-group {
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
         .sidebar-title {
             font-weight: 700;
             color: #111827;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
@@ -39,16 +61,17 @@
             padding: 0;
         }
         .sidebar li {
-            margin-bottom: 0.25rem;
+            margin-bottom: 0.1rem;
         }
         .sidebar a {
             text-decoration: none;
             color: #4b5563;
             display: block;
-            padding: 0.35rem 0.5rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 0.375rem;
             transition: all 0.2s;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            line-height: 1.4;
         }
         .sidebar a:hover {
             color: var(--primary-color);
@@ -143,26 +166,40 @@
         .toast-notification {
             position: fixed;
             bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background-color: rgba(31, 41, 55, 0.9);
+            /* Позиція left/right буде задаватися через JS */
+            background-color: rgba(31, 41, 55, 0.95);
             color: white;
             padding: 0.75rem 1.5rem;
-            border-radius: 2rem;
+            border-radius: 0.5rem;
             font-size: 0.9rem;
             opacity: 0;
-            transition: all 0.3s ease;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
             z-index: 1000;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             pointer-events: none;
+            white-space: nowrap;
         }
 
         .toast-notification.show {
-            transform: translateX(-50%) translateY(0);
             opacity: 1;
+            transform: translateY(0);
         }
 
         @media (max-width: 768px) {
+            .docs-container {
+                display: block;
+            }
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e5e7eb;
+                padding-right: 0;
+                padding-bottom: 1rem;
+                margin-bottom: 2rem;
+                position: static;
+                height: auto;
+            }
             .docs-nav {
                 grid-template-columns: 1fr;
                 gap: 1rem;
@@ -195,7 +232,7 @@
             <div class="sidebar-content" :class="{ 'mobile-hidden': !docsMenuOpen }">
 
                 <!-- Пошук у сайдбарі -->
-                <div style="margin-bottom: 2rem;">
+                <div style="margin-bottom: 1.5rem;">
                     @include('partials.docs-search')
                 </div>
 
@@ -292,11 +329,41 @@
             }
 
             // Функція показу тоста
-            function showToast(message) {
+            function showToast(message, targetBtn, direction) {
                 const toast = document.getElementById('navToast');
                 const msg = document.getElementById('toastMessage');
                 msg.textContent = message;
-                toast.classList.add('show');
+
+                // Скидаємо попередні стилі позиціонування
+                toast.style.left = 'auto';
+                toast.style.right = 'auto';
+                toast.style.transform = 'translateY(10px)'; // Початкова позиція для анімації
+
+                if (targetBtn) {
+                    const rect = targetBtn.getBoundingClientRect();
+
+                    if (direction === 'left') {
+                        // Вирівнюємо по лівому краю кнопки
+                        toast.style.left = rect.left + 'px';
+                    } else {
+                        // Вирівнюємо по правому краю кнопки
+                        // Вираховуємо right відносно ширини вікна
+                        const rightPos = document.documentElement.clientWidth - rect.right;
+                        toast.style.right = rightPos + 'px';
+                    }
+                } else {
+                    // Фолбек, якщо кнопки немає (наприклад, мобільний або прихована)
+                    if (direction === 'left') {
+                        toast.style.left = '2rem';
+                    } else {
+                        toast.style.right = '2rem';
+                    }
+                }
+
+                // Запускаємо анімацію
+                requestAnimationFrame(() => {
+                    toast.classList.add('show');
+                });
 
                 setTimeout(() => {
                     toast.classList.remove('show');
@@ -311,13 +378,13 @@
                 if (event.key === 'ArrowLeft') {
                     const prevLink = document.querySelector('.nav-prev');
                     if (prevLink) {
-                        showToast('← Попередня сторінка');
+                        showToast('← Попередня сторінка', prevLink, 'left');
                         setTimeout(() => prevLink.click(), 300);
                     }
                 } else if (event.key === 'ArrowRight') {
                     const nextLink = document.querySelector('.nav-next');
                     if (nextLink) {
-                        showToast('Наступна сторінка →');
+                        showToast('Наступна сторінка →', nextLink, 'right');
                         setTimeout(() => nextLink.click(), 300);
                     }
                 }
