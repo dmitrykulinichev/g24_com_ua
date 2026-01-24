@@ -34,9 +34,9 @@
 | :---: | :--- | :--- | :---: |
 | ✅ | `drivers_list.png` | Список водіїв | |
 | ✅ | `driver_profile_modal.png` | Профіль водія | |
-| ✅ | `marketing_landing_settings.png` | Налаштування лендінгу реєстрації | |
 | ✅ | `driver_vehicle_assignments.png` | Історія закріплення авто | |
-| ✅ | `driver_telegram_connect_modal.png` | Підключення Telegram | |
+| ❌ | `driver_telegram_connect_modal.png` | Підключення Telegram | |
+| ❌ | `driver_import_modal.png` | Модалка імпорту водіїв | |
 
 ## 4. Адміністрування
 | Статус | Файл | Опис | 📱 Mobile |
@@ -63,6 +63,7 @@
 | ✅ | `fleet_update_mileage_modal.png` | Оновлення пробігу | |
 | ✅ | `fleet_add_vehicle_form.png` | Форма додавання нового авто | |
 | ✅ | `fleet_vehicle_integration_modal.png` | Модалка прив'язки до Uklon | |
+| ❌ | `fleet_import_modal.png` | Модалка імпорту авто | |
 
 ## 7. Технічне обслуговування (Maintenance)
 | Статус | Файл | Опис | 📱 Mobile |
@@ -87,6 +88,7 @@
 | Статус | Файл | Опис | 📱 Mobile |
 | :---: | :--- | :--- | :---: |
 | ✅ | `marketing_materials_qr.png` | QR-коди для авто | |
+| ✅ | `marketing_landing_settings.png` | Налаштування лендінгу реєстрації | |
 | ❌ | `auth_login_screen.png` | Екран входу в систему | |
 | ❌ | `auth_registration_screen.png` | Екран реєстрації парку | |
 

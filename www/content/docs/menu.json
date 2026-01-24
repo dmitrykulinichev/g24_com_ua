@@ -26,6 +26,12 @@
         ]
     },
     {
+        "title": "Маркетинг",
+        "items": [
+            { "title": "Маркетинг та Рекрутинг", "slug": "marketing", "image": "marketing_landing_settings.png" }
+        ]
+    },
+    {
         "title": "Адміністрування",
         "items": [
             { "title": "Налаштування та Безпека", "slug": "admin", "image": "admin_global_settings.png" },
