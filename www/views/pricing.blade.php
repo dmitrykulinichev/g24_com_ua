@@ -43,7 +43,7 @@
 
             <div class="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
                 <div class="inline-block bg-blue-600/30 border border-blue-500/50 rounded-full px-4 py-1 mb-6 text-blue-200 text-sm font-medium">
-                    Новий підхід до SaaS
+                    Новий підхід до обліку автопарку
                 </div>
                 <h1 class="text-4xl font-extrabold sm:text-6xl mb-6 leading-tight">
                     Спочатку користуєтесь — <br class="hidden sm:block">
@@ -79,7 +79,7 @@
 
                             <!-- Car Price -->
                             <div class="flex-1 text-center p-6 bg-blue-50 rounded-2xl border border-blue-100 w-full relative overflow-hidden">
-                                <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">Pay-as-you-go</div>
+                                <div class="absolute top-0 right-0 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-bl-lg">Оплата за фактом</div>
                                 <div class="text-sm font-bold text-blue-400 uppercase tracking-wider mb-2">Масштаб</div>
                                 <div class="text-5xl font-extrabold text-primary mb-2">{{ $model['car_price'] }} <span class="text-2xl font-medium text-blue-300">грн</span></div>
                                 <div class="text-slate-600 font-medium">За активне авто</div>
@@ -108,6 +108,13 @@
                                 <span class="mx-2">•</span>
                                 <span>Рахунок прийде через 30 днів</span>
                             </p>
+
+                            <!-- Trust Block -->
+                            <div class="mt-8 pt-8 border-t border-slate-100 max-w-2xl mx-auto">
+                                <p class="text-slate-500 italic text-sm">
+                                    "Ми самі керуємо автопарком. Garage24 зʼявився не як стартап, а як відповідь на реальний хаос, з яким ми стикалися щодня."
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -217,11 +224,11 @@
 
                     <div class="border border-slate-200 rounded-lg overflow-hidden">
                         <button @click="active = (active === 3 ? null : 3)" class="w-full px-6 py-4 text-left bg-slate-50 hover:bg-slate-100 flex justify-between items-center font-semibold text-slate-900 transition">
-                            <span>Чи можу я платити як ФОП/ТОВ?</span>
+                            <span>Кому НЕ підходить Garage24?</span>
                             <span x-text="active === 3 ? '−' : '+'" class="text-xl text-slate-400"></span>
                         </button>
                         <div x-show="active === 3" class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white text-sm">
-                            Так, ми працюємо офіційно і надаємо всі необхідні документи для бухгалтерії.
+                            Garage24 не підійде, якщо у вас немає власних авто (ви працюєте тільки як диспетчерська) або якщо ви шукаєте складну ERP-систему для великої логістичної компанії. Ми фокусуємося на таксопарках.
                         </div>
                     </div>
                 </div>
