@@ -10,21 +10,41 @@
             formData: { name: '', email: '', company: '', phone: '', agreement: true },
             loading: false,
             success: false,
-            error: null,
+            successMessage: '',
+            generalError: null, // Загальна помилка (наприклад, 500)
+            fieldErrors: {}, // Помилки полів (422)
             captchaWidgetId: null,
+            plans: [],
 
             init() {
+                this.fetchConfig();
+
                 window.addEventListener('open-order-modal', (event) => {
                     this.showModal = true;
                     this.orderType = event.detail.type || 'monthly';
                     this.success = false;
-                    this.error = null;
+                    this.generalError = null;
+                    this.fieldErrors = {};
                     this.formData.agreement = true;
 
                     setTimeout(() => {
                         this.renderCaptcha();
                     }, 100);
                 });
+            },
+
+            fetchConfig() {
+                fetch('/api/config')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.plans) {
+                            this.plans = data.plans;
+                        }
+                    })
+                    .catch(err => console.error('Failed to load config:', err));
             },
 
             renderCaptcha() {
@@ -48,18 +68,22 @@
 
             get modalTitle() {
                 if (this.orderType === 'enterprise') return 'Індивідуальні умови';
-                return 'Почати роботу';
+                return 'Реєстрація парку';
             },
 
             get buttonText() {
-                if (this.loading) return 'Відправка...';
+                if (this.loading) return 'Обробка...';
                 if (this.orderType === 'enterprise') return 'Замовити консультацію';
-                return 'Зареєструватися';
+                return 'Створити акаунт';
             },
 
             submitForm() {
+                // Скидаємо помилки перед відправкою
+                this.generalError = null;
+                this.fieldErrors = {};
+
                 if (!this.formData.agreement) {
-                    this.error = 'Будь ласка, підтвердіть згоду з правилами.';
+                    this.generalError = 'Будь ласка, підтвердіть згоду з правилами.';
                     return;
                 }
 
@@ -71,42 +95,87 @@
 
                     @if(($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== '' && ($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== 'YOUR_SITE_KEY')
                         if (!captchaToken) {
-                            this.error = 'Будь ласка, пройдіть перевірку "Я не робот".';
+                            this.generalError = 'Будь ласка, пройдіть перевірку "Я не робот".';
                             return;
                         }
                     @endif
                 }
 
                 this.loading = true;
-                this.error = null;
 
-                let payload = {
-                    ...this.formData,
-                    plan: this.orderType, // Передаємо тип замовлення як план
-                    'g-recaptcha-response': captchaToken
-                };
+                let url = '/api/lead';
+                let payload = {};
 
-                fetch('/api/lead', {
+                if (this.orderType === 'enterprise') {
+                    url = '/api/lead';
+                    payload = {
+                        ...this.formData,
+                        plan: this.orderType,
+                        'g-recaptcha-response': captchaToken
+                    };
+                } else {
+                    url = '/api/register';
+                    payload = {
+                        park_name: this.formData.company,
+                        owner_name: this.formData.name,
+                        owner_email: this.formData.email,
+                        phone: this.formData.phone,
+                        plan: this.orderType,
+                        'g-recaptcha-response': captchaToken
+                    };
+                }
+
+                fetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 })
-                .then(response => response.json())
-                .then(data => {
+                .then(async response => {
+                    const data = await response.json();
+
                     this.loading = false;
-                    if (data.status === 'success') {
+
+                    if (response.ok) {
+                        // Успіх (200-299)
                         this.success = true;
+                        this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
                         this.formData = { name: '', email: '', company: '', phone: '', agreement: true };
                         if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
-                        setTimeout(() => { this.showModal = false; }, 3000);
+                        setTimeout(() => { this.showModal = false; }, 5000);
                     } else {
-                        this.error = data.errors ? Object.values(data.errors)[0] : data.message;
+                        // Помилка (4xx, 5xx)
+                        if (response.status === 422 && data.errors) {
+                            // Мапінг помилок API на поля форми
+                            // API повертає: park_name, owner_name, owner_email
+                            // Форма має: company, name, email
+
+                            const apiErrors = data.errors;
+                            const mappedErrors = {};
+
+                            if (apiErrors.park_name) mappedErrors.company = apiErrors.park_name[0];
+                            if (apiErrors.owner_name) mappedErrors.name = apiErrors.owner_name[0];
+                            if (apiErrors.owner_email) mappedErrors.email = apiErrors.owner_email[0];
+                            if (apiErrors.phone) mappedErrors.phone = apiErrors.phone[0];
+
+                            // Якщо є інші помилки, які ми не замапили, покажемо їх як загальні
+                            const knownKeys = ['park_name', 'owner_name', 'owner_email', 'phone'];
+                            const unknownErrors = Object.keys(apiErrors).filter(key => !knownKeys.includes(key));
+
+                            if (unknownErrors.length > 0) {
+                                this.generalError = apiErrors[unknownErrors[0]][0];
+                            }
+
+                            this.fieldErrors = mappedErrors;
+                        } else {
+                            this.generalError = data.message || 'Сталася помилка сервера.';
+                        }
+
                         if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                     }
                 })
                 .catch(() => {
                     this.loading = false;
-                    this.error = 'Сталася помилка. Спробуйте пізніше.';
+                    this.generalError = 'Сталася помилка мережі. Спробуйте пізніше.';
                 });
             }
         }));
@@ -128,14 +197,15 @@
 
         <div x-show="success" class="success-message">
             <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
-            <p>Дякуємо! Ваша заявка прийнята.</p>
-            <p>Ми надішлемо деталі на ваш Email.</p>
+            <p x-text="successMessage"></p>
+            <p class="text-sm text-gray-500 mt-2">Перевірте вашу пошту.</p>
         </div>
 
         <form x-show="!success" @submit.prevent="submitForm">
-            <div x-show="error" class="error-message" x-text="error"></div>
+            <!-- Загальна помилка -->
+            <div x-show="generalError" class="error-message" x-text="generalError"></div>
 
-            <!-- Вибір типу оплати (тільки якщо не Enterprise) -->
+            <!-- Вибір типу оплати -->
             <div x-show="orderType !== 'enterprise'" class="payment-type-selector">
                 <label class="radio-label" :class="{ 'checked': orderType === 'monthly' }">
                     <input type="radio" name="orderType" value="monthly" x-model="orderType">
@@ -155,22 +225,26 @@
 
             <div class="form-group">
                 <label>Ваше ім'я</label>
-                <input type="text" x-model="formData.name" placeholder="Іван Іванов" required>
+                <input type="text" x-model="formData.name" placeholder="Іван Іванов" :class="{'border-red-500': fieldErrors.name}">
+                <div x-show="fieldErrors.name" x-text="fieldErrors.name" class="text-red-500 text-xs mt-1"></div>
             </div>
 
             <div class="form-group">
-                <label>Email</label>
-                <input type="email" x-model="formData.email" placeholder="email@example.com" required>
+                <label>Email (Логін)</label>
+                <input type="email" x-model="formData.email" placeholder="email@example.com" :class="{'border-red-500': fieldErrors.email}">
+                <div x-show="fieldErrors.email" x-text="fieldErrors.email" class="text-red-500 text-xs mt-1"></div>
             </div>
 
             <div class="form-group">
-                <label>Назва компанії</label>
-                <input type="text" x-model="formData.company" placeholder="ТОВ Автопарк">
+                <label>Назва парку / Компанії <span x-show="orderType !== 'enterprise'" class="text-red-500">*</span></label>
+                <input type="text" x-model="formData.company" placeholder="ТОВ Автопарк" :class="{'border-red-500': fieldErrors.company}">
+                <div x-show="fieldErrors.company" x-text="fieldErrors.company" class="text-red-500 text-xs mt-1"></div>
             </div>
 
             <div class="form-group">
                 <label>Телефон</label>
-                <input type="tel" x-model="formData.phone" placeholder="+380 ..." required>
+                <input type="tel" x-model="formData.phone" placeholder="+380 ..." :class="{'border-red-500': fieldErrors.phone}">
+                <div x-show="fieldErrors.phone" x-text="fieldErrors.phone" class="text-red-500 text-xs mt-1"></div>
             </div>
 
             <!-- Контейнер для reCAPTCHA -->
@@ -196,6 +270,20 @@
 </div>
 
 <style>
+    /* Додаємо стилі для червоної рамки помилки */
+    .border-red-500 {
+        border-color: #ef4444 !important;
+    }
+    .text-red-500 {
+        color: #ef4444;
+    }
+    .text-xs {
+        font-size: 0.75rem;
+    }
+    .mt-1 {
+        margin-top: 0.25rem;
+    }
+
     .modal-overlay {
         position: fixed;
         top: 0;

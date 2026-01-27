@@ -90,7 +90,10 @@
                             <!-- Base Price -->
                             <div class="flex-1 text-center p-6 bg-slate-50 rounded-2xl border border-slate-100 w-full transition-all duration-300" :class="yearly ? 'ring-2 ring-primary/20' : ''">
                                 <div class="text-sm font-bold text-slate-400 uppercase tracking-wider mb-2">База</div>
-                                <div class="text-5xl font-extrabold text-slate-900 mb-2">{{ $model['base_price'] }} <span class="text-2xl font-medium text-slate-400">грн</span></div>
+                                <div class="text-5xl font-extrabold text-slate-900 mb-2">
+                                    <span x-text="yearly ? '{{ $model['yearly']['base'] }}' : '{{ $model['monthly']['base'] }}'"></span>
+                                    <span class="text-2xl font-medium text-slate-400">грн</span>
+                                </div>
                                 <div class="text-slate-600 font-medium">Щомісячна абонплата</div>
                                 <div class="text-xs text-slate-400 mt-2" x-show="!yearly">за доступ до системи та сервер</div>
                                 <div class="text-xs text-primary font-bold mt-2" x-show="yearly" style="display: none;">сплачується за 12 місяців</div>
@@ -106,11 +109,11 @@
 
                                 <div class="mb-2 h-12 flex items-center justify-center">
                                     <div x-show="!yearly" class="text-5xl font-extrabold text-primary transition-all duration-300">
-                                        {{ $model['car_price'] }} <span class="text-2xl font-medium text-blue-300">грн</span>
+                                        {{ $model['monthly']['car'] }} <span class="text-2xl font-medium text-blue-300">грн</span>
                                     </div>
                                     <div x-show="yearly" style="display: none;" class="text-5xl font-extrabold text-green-600 transition-all duration-300 flex items-center gap-2">
-                                        100 <span class="text-2xl font-medium text-green-300">грн</span>
-                                        <span class="text-lg text-slate-400 line-through decoration-2 decoration-red-400 opacity-60">200</span>
+                                        {{ $model['yearly']['car'] }} <span class="text-2xl font-medium text-green-300">грн</span>
+                                        <span class="text-lg text-slate-400 line-through decoration-2 decoration-red-400 opacity-60">{{ $model['yearly']['old_car'] }}</span>
                                     </div>
                                 </div>
 
@@ -197,7 +200,7 @@
                         <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
                             <div class="text-yellow-400 font-bold mb-2">Бонус за довіру</div>
                             <p class="text-sm text-slate-300 mb-4">Оплатіть абонплату (базу) на рік вперед і отримайте знижку.</p>
-                            <div class="text-2xl font-bold text-white mb-4">-100 грн <span class="text-sm font-normal text-slate-400">/ авто щомісяця</span></div>
+                            <div class="text-2xl font-bold text-white mb-4">-{{ $model['yearly']['old_car'] - $model['yearly']['car'] }} грн <span class="text-sm font-normal text-slate-400">/ авто щомісяця</span></div>
                             <button @click="$dispatch('open-order-modal', { type: 'yearly' })" class="w-full bg-yellow-500 hover:bg-yellow-400 text-slate-900 font-bold py-2 px-4 rounded-lg transition text-sm">
                                 Оформити річну підписку
                             </button>

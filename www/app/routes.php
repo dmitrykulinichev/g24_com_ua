@@ -32,3 +32,7 @@ $app->get('/api/page/{slug}', 'App\Controllers\PageController@apiShow');
 
 // Обробка заявки (Lead)
 $app->post('/api/lead', 'App\Controllers\LeadController@submit');
+
+// Реєстрація нового парку (Proxy to SPA API)
+$app->get('/api/config', 'App\Controllers\RegistrationController@getConfig');
+$app->post('/api/register', 'App\Controllers\RegistrationController@register');

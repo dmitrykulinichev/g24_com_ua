@@ -2,21 +2,33 @@
 
 namespace App\Controllers;
 
+use App\Services\SpaApiService;
+use App\Services\Logger;
+
 class PricingController
 {
     protected $blade;
+    protected $api;
 
     public function __construct()
     {
         $this->blade = new \Jenssegers\Blade\Blade(__DIR__ . '/../../views', __DIR__ . '/../../storage/cache');
+        $this->api = new SpaApiService();
     }
 
     public function index()
     {
-        // Дані для нової моделі ціноутворення
+        // 1. Дефолтні значення (Fallback)
         $pricingModel = [
-            'base_price' => 1000,
-            'car_price' => 200,
+            'monthly' => [
+                'base' => 1000,
+                'car' => 200,
+            ],
+            'yearly' => [
+                'base' => 1000, 
+                'car' => 100,
+                'old_car' => 200
+            ],
             'currency' => 'грн',
             'active_condition' => '5 змін',
             'features' => [
@@ -31,12 +43,75 @@ class PricingController
             ]
         ];
 
+        // 2. Логіка кешування
+        $cacheFile = __DIR__ . '/../../storage/cache/pricing_data.json';
+        $cacheTtl = (int)($_ENV['PRICING_CACHE_TTL'] ?? 86400); 
+        
+        $plans = null;
+
+        if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheTtl)) {
+            $content = @file_get_contents($cacheFile);
+            if ($content) {
+                $plans = json_decode($content, true);
+            }
+        }
+
+        if (!$plans) {
+            try {
+                $response = $this->api->getLandingConfig();
+                if ($response['status'] === 200 && !empty($response['body']['plans'])) {
+                    $plans = $response['body']['plans'];
+                    if (!is_dir(dirname($cacheFile))) {
+                        mkdir(dirname($cacheFile), 0755, true);
+                    }
+                    file_put_contents($cacheFile, json_encode($plans));
+                }
+            } catch (\Throwable $e) {
+                Logger::error('Failed to fetch pricing from API', ['error' => $e->getMessage()]);
+            }
+        }
+
+        // 3. Оновлення моделі даними
+        if ($plans) {
+            $monthlyPlan = null;
+            $yearlyPlan = null;
+
+            foreach ($plans as $plan) {
+                $slug = $plan['slug'] ?? '';
+                if (strpos($slug, 'monthly') !== false) {
+                    $monthlyPlan = $plan;
+                } elseif (strpos($slug, 'yearly') !== false) {
+                    $yearlyPlan = $plan;
+                }
+            }
+
+            // Оновлюємо Місячний
+            if ($monthlyPlan) {
+                $pricingModel['monthly']['base'] = (int)($monthlyPlan['price_monthly'] ?? 1000);
+                $pricingModel['monthly']['car'] = (int)($monthlyPlan['price_per_car'] ?? 200);
+                // Оновлюємо "стару ціну" для річного (вона дорівнює звичайній місячній)
+                $pricingModel['yearly']['old_car'] = $pricingModel['monthly']['car'];
+            }
+
+            // Оновлюємо Річний
+            if ($yearlyPlan) {
+                // Якщо в API price_monthly вказано як 0 (бо платять раз на рік), 
+                // то вираховуємо місячний еквівалент: price_yearly / 12
+                $yBase = (float)($yearlyPlan['price_monthly'] ?? 0);
+                if ($yBase <= 0) {
+                    $yBase = ((float)($yearlyPlan['price_yearly'] ?? 12000)) / 12;
+                }
+                
+                $pricingModel['yearly']['base'] = (int)$yBase;
+                $pricingModel['yearly']['car'] = (int)($yearlyPlan['price_per_car'] ?? 100);
+            }
+        }
+
         $meta = [
             'title' => 'Тарифи',
             'description' => 'Чесна ціна без прихованих платежів. Оплата по факту використання. Спробуйте безкоштовно.'
         ];
 
-        // Передаємо darkBg = true
         echo $this->blade->make('pricing', [
             'model' => $pricingModel, 
             'meta' => $meta,
