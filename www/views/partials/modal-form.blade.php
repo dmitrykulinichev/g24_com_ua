@@ -1,6 +1,3 @@
-<!-- Підключення Google reCAPTCHA -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 <!-- Логіка Alpine.js винесена в скрипт -->
 <script>
     document.addEventListener('alpine:init', () => {
@@ -13,9 +10,8 @@
             successMessage: '',
             generalError: null,
             fieldErrors: {},
-            captchaWidgetId: null,
-            plans: [],
             siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}',
+            plans: [],
 
             // Конфігурація форм (Fallback)
             forms: {
@@ -42,12 +38,15 @@
             activeFormKey: 'register_park',
 
             init() {
-                // Спроба завантажити конфіг з глобальної змінної (якщо ми на сторінці Pricing)
+                // Спроба завантажити конфіг з глобальної змінної
                 if (window.landingConfig) {
                     this.applyConfig(window.landingConfig);
                 } else {
-                    // Інакше вантажимо через API
                     this.fetchConfig();
+                    // Якщо ключа немає в конфігу, беремо з .env
+                    if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                        this.loadRecaptchaV3(this.siteKey);
+                    }
                 }
 
                 window.addEventListener('open-order-modal', (event) => {
@@ -61,10 +60,6 @@
                     this.formData = { agreement: true };
 
                     this.initFormData();
-
-                    setTimeout(() => {
-                        this.renderCaptcha();
-                    }, 100);
                 });
 
                 this.$watch('orderType', (value) => {
@@ -73,6 +68,17 @@
                         this.formData.plan = value;
                     }
                 });
+            },
+
+            loadRecaptchaV3(siteKey) {
+                if (document.getElementById('recaptcha-script-modal')) return;
+                // Перевіряємо, чи вже не підключено на сторінці контактів
+                if (document.getElementById('recaptcha-script')) return;
+
+                const script = document.createElement('script');
+                script.id = 'recaptcha-script-modal';
+                script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+                document.head.appendChild(script);
             },
 
             updateActiveForm() {
@@ -101,7 +107,12 @@
 
             applyConfig(data) {
                 if (data.plans) this.plans = data.plans;
-                if (data.recaptcha_site_key) this.siteKey = data.recaptcha_site_key;
+                if (data.recaptcha_site_key) {
+                    this.siteKey = data.recaptcha_site_key;
+                    this.loadRecaptchaV3(this.siteKey);
+                } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                    this.loadRecaptchaV3(this.siteKey);
+                }
                 if (data.forms) this.forms = data.forms;
             },
 
@@ -117,25 +128,17 @@
                     .catch(err => console.error('Failed to load config:', err));
             },
 
-            renderCaptcha() {
-                const container = document.getElementById('recaptcha-container');
-                if (!this.siteKey || this.siteKey === 'YOUR_SITE_KEY') return;
+            async getRecaptchaToken() {
+                if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
 
-                if (container && !container.hasChildNodes()) {
-                    if (typeof grecaptcha !== 'undefined') {
-                        try {
-                            this.captchaWidgetId = grecaptcha.render('recaptcha-container', {
-                                'sitekey': this.siteKey
-                            });
-                        } catch (e) {
-                            console.error('Captcha render error:', e);
-                        }
-                    }
-                } else if (typeof grecaptcha !== 'undefined' && this.captchaWidgetId !== null) {
-                    try {
-                        grecaptcha.reset(this.captchaWidgetId);
-                    } catch (e) {}
-                }
+                return new Promise((resolve) => {
+                    grecaptcha.ready(() => {
+                        const action = this.activeFormKey === 'lead' ? 'lead_form' : 'register_park';
+                        grecaptcha.execute(this.siteKey, {action: action}).then((token) => {
+                            resolve(token);
+                        });
+                    });
+                });
             },
 
             get modalTitle() {
@@ -153,7 +156,7 @@
                 return this.forms[this.activeFormKey].fields;
             },
 
-            submitForm() {
+            async submitForm() {
                 this.generalError = null;
                 this.fieldErrors = {};
 
@@ -172,21 +175,14 @@
 
                 if (hasEmptyRequired) return;
 
-                let captchaToken = '';
-                if (this.siteKey && this.siteKey !== 'YOUR_SITE_KEY') {
-                    if (typeof grecaptcha !== 'undefined') {
-                        try {
-                            captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
-                        } catch (e) {}
-
-                        if (!captchaToken) {
-                            this.generalError = 'Будь ласка, пройдіть перевірку "Я не робот".';
-                            return;
-                        }
-                    }
-                }
-
                 this.loading = true;
+
+                let captchaToken = '';
+                try {
+                    captchaToken = await this.getRecaptchaToken();
+                } catch (e) {
+                    console.error('Recaptcha error:', e);
+                }
 
                 let url = this.activeFormKey === 'lead' ? '/api/lead' : '/api/register';
 
@@ -226,7 +222,6 @@
                         } else {
                             this.generalError = data.message || 'Сталася помилка сервера.';
                         }
-                        if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                     }
                 })
                 .catch(() => {
@@ -309,11 +304,6 @@
                 </div>
             </template>
 
-            <!-- Контейнер для reCAPTCHA -->
-            <div class="form-group" style="display: flex; justify-content: center; margin-bottom: 1rem;">
-                <div id="recaptcha-container"></div>
-            </div>
-
             <div class="form-group checkbox-group">
                 <label class="checkbox-label">
                     <input type="checkbox" x-model="formData.agreement" required>
@@ -327,25 +317,17 @@
             </div>
 
             <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading || !formData.agreement" x-text="buttonText"></button>
+
+            <div class="text-center text-xs text-gray-400 mt-2">
+                Цей сайт захищений reCAPTCHA і застосовуються
+                <a href="https://policies.google.com/privacy" class="underline" target="_blank">Політика конфіденційності</a> та
+                <a href="https://policies.google.com/terms" class="underline" target="_blank">Умови використання</a> Google.
+            </div>
         </form>
     </div>
 </div>
 
 <style>
-    /* Додаємо стилі для червоної рамки помилки */
-    .border-red-500 {
-        border-color: #ef4444 !important;
-    }
-    .text-red-500 {
-        color: #ef4444;
-    }
-    .text-xs {
-        font-size: 0.75rem;
-    }
-    .mt-1 {
-        margin-top: 0.25rem;
-    }
-
     .modal-overlay {
         position: fixed;
         top: 0;
@@ -478,7 +460,7 @@
         color: #374151;
     }
 
-    .form-group input, .form-group textarea {
+    .form-group input {
         width: 100%;
         padding: 0.75rem;
         border: 1px solid #d1d5db;
@@ -487,7 +469,7 @@
         transition: border-color 0.2s;
     }
 
-    .form-group input:focus, .form-group textarea:focus {
+    .form-group input:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
@@ -538,4 +520,7 @@
         opacity: 0.7;
         cursor: not-allowed;
     }
+
+    /* Приховуємо бейдж рекапчі */
+    .grecaptcha-badge { visibility: hidden; }
 </style>

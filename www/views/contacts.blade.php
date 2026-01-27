@@ -27,9 +27,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Підключення Google reCAPTCHA (Локально для цієї сторінки) -->
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
     <style>
         body { font-family: 'Inter', sans-serif; }
         /* Стилі для помилок */
@@ -37,6 +34,8 @@
         .text-red-500 { color: #ef4444; }
         .text-xs { font-size: 0.75rem; }
         .mt-1 { margin-top: 0.25rem; }
+        /* Приховуємо бейдж рекапчі */
+        .grecaptcha-badge { visibility: hidden; }
     </style>
 
     <!-- Передача конфігурації з бекенду -->
@@ -45,6 +44,17 @@
         window.landingConfig = {!! json_encode($apiConfig) !!};
     </script>
     @endif
+
+    <!-- Підключення Google reCAPTCHA v3 -->
+    <script>
+        function loadRecaptchaV3(siteKey) {
+            if (document.getElementById('recaptcha-script')) return;
+            const script = document.createElement('script');
+            script.id = 'recaptcha-script';
+            script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+            document.head.appendChild(script);
+        }
+    </script>
 </head>
 <body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
@@ -71,7 +81,6 @@
                     success: false,
                     generalError: null,
                     fieldErrors: {},
-                    captchaWidgetId: null,
                     siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}',
                     fields: [], // Поля форми
 
@@ -91,29 +100,20 @@
                         } else {
                             this.fields = this.fallbackFields;
                             this.initFormData();
-                        }
-
-                        // 2. Рендеримо капчу (чекаємо завантаження бібліотеки)
-                        this.waitForRecaptcha();
-                    },
-
-                    waitForRecaptcha() {
-                        let attempts = 0;
-                        const check = () => {
-                            if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
-                                this.renderCaptcha();
-                            } else if (attempts < 20) { // Чекаємо до 10 секунд (20 * 500мс)
-                                attempts++;
-                                setTimeout(check, 500);
-                            } else {
-                                console.warn('reCAPTCHA library not loaded');
+                            // Якщо ключа немає в конфігу, беремо з .env (вже в this.siteKey)
+                            if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                                loadRecaptchaV3(this.siteKey);
                             }
-                        };
-                        check();
+                        }
                     },
 
                     applyConfig(data) {
-                        if (data.recaptcha_site_key) this.siteKey = data.recaptcha_site_key;
+                        if (data.recaptcha_site_key) {
+                            this.siteKey = data.recaptcha_site_key;
+                            loadRecaptchaV3(this.siteKey);
+                        } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                            loadRecaptchaV3(this.siteKey);
+                        }
 
                         if (data.forms && data.forms.lead && data.forms.lead.fields) {
                             this.fields = data.forms.lead.fields;
@@ -138,24 +138,19 @@
                         });
                     },
 
-                    renderCaptcha() {
-                        const container = document.getElementById('contact-recaptcha');
-                        if (!container) return;
-                        if (!this.siteKey || this.siteKey === 'YOUR_SITE_KEY') return;
+                    async getRecaptchaToken() {
+                        if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
 
-                        // Перевіряємо, чи вже не відрендерено
-                        if (container.hasChildNodes()) return;
-
-                        try {
-                            this.captchaWidgetId = grecaptcha.render('contact-recaptcha', {
-                                'sitekey': this.siteKey
+                        return new Promise((resolve) => {
+                            grecaptcha.ready(() => {
+                                grecaptcha.execute(this.siteKey, {action: 'contact'}).then((token) => {
+                                    resolve(token);
+                                });
                             });
-                        } catch (e) {
-                            console.error('Captcha render error:', e);
-                        }
+                        });
                     },
 
-                    submitForm() {
+                    async submitForm() {
                         this.generalError = null;
                         this.fieldErrors = {};
 
@@ -168,21 +163,14 @@
                         });
                         if (hasEmptyRequired) return;
 
-                        let captchaToken = '';
-                        if (this.siteKey && this.siteKey !== 'YOUR_SITE_KEY') {
-                            if (typeof grecaptcha !== 'undefined') {
-                                try {
-                                    captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
-                                } catch (e) {}
-
-                                if (!captchaToken) {
-                                    this.generalError = 'Будь ласка, пройдіть перевірку &quot;Я не робот&quot;.';
-                                    return;
-                                }
-                            }
-                        }
-
                         this.loading = true;
+
+                        let captchaToken = '';
+                        try {
+                            captchaToken = await this.getRecaptchaToken();
+                        } catch (e) {
+                            console.error('Recaptcha error:', e);
+                        }
 
                         let payload = { ...this.formData };
                         if (captchaToken) {
@@ -202,7 +190,6 @@
                             if (response.ok) {
                                 this.success = true;
                                 this.initFormData();
-                                if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                             } else {
                                 if (response.status === 422 && data.errors) {
                                     const apiErrors = data.errors;
@@ -219,7 +206,6 @@
                                 } else {
                                     this.generalError = data.message || 'Сталася помилка. Спробуйте пізніше.';
                                 }
-                                if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                             }
                         })
                         .catch(() => {
@@ -272,15 +258,16 @@
                             </div>
                         </template>
 
-                        <!-- Капча -->
-                        <div class="flex justify-center mt-4">
-                            <div id="contact-recaptcha"></div>
-                        </div>
-
                         <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-70" :disabled="loading">
                             <span x-show="!loading">Відправити запит</span>
                             <span x-show="loading">Відправка...</span>
                         </button>
+
+                        <div class="text-center text-xs text-gray-400 mt-2">
+                            Цей сайт захищений reCAPTCHA і застосовуються
+                            <a href="https://policies.google.com/privacy" class="underline" target="_blank">Політика конфіденційності</a> та
+                            <a href="https://policies.google.com/terms" class="underline" target="_blank">Умови використання</a> Google.
+                        </div>
                     </form>
                 </div>
 
@@ -303,8 +290,6 @@
                     </a>
 
                     <div class="mt-8 pt-8 border-t border-slate-200">
-                        <div class="font-bold text-slate-900 mb-2">Інші контакти:</div>
-                        <div class="mb-1"><a href="mailto:support@g24.com.ua" class="text-primary hover:underline">support@g24.com.ua</a></div>
                         <div class="text-slate-500 text-sm">Пн-Пт: 10:00 - 18:00</div>
                     </div>
                 </div>
