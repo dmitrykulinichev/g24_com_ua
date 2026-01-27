@@ -1,6 +1,3 @@
-<!-- Підключення Google reCAPTCHA -->
-<script src="https://www.google.com/recaptcha/api.js" async defer></script>
-
 <!-- Логіка Alpine.js винесена в скрипт -->
 <script>
     document.addEventListener('alpine:init', () => {
@@ -11,10 +8,12 @@
             loading: false,
             success: false,
             successMessage: '',
+            ready: false, // Прапорець готовності
             generalError: null,
             fieldErrors: {},
             siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}',
             plans: [],
+            fields: [], // Поточні поля форми
 
             // Конфігурація форм (Fallback)
             forms: {
@@ -46,6 +45,10 @@
                     this.applyConfig(window.landingConfig);
                 } else {
                     this.fetchConfig();
+                    // Якщо ключа немає в конфігу, беремо з .env
+                    if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                        this.loadRecaptchaV3(this.siteKey);
+                    }
                 }
 
                 window.addEventListener('open-order-modal', (event) => {
@@ -72,16 +75,24 @@
                 });
             },
 
+            loadRecaptchaV3(siteKey) {
+                if (document.getElementById('recaptcha-script-modal')) return;
+                if (document.getElementById('recaptcha-script')) return; // Якщо вже є на сторінці контактів
+
+                const script = document.createElement('script');
+                script.id = 'recaptcha-script-modal';
+                script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+                document.head.appendChild(script);
+            },
+
             waitForRecaptcha() {
                 let attempts = 0;
                 const check = () => {
-                    if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
-                        // Капча готова
+                    if (typeof grecaptcha !== 'undefined' && grecaptcha.ready) {
+                        // Ready
                     } else if (attempts < 20) {
                         attempts++;
                         setTimeout(check, 500);
-                    } else {
-                        console.warn('reCAPTCHA library not loaded');
                     }
                 };
                 check();
@@ -93,11 +104,15 @@
                 } else {
                     this.activeFormKey = 'register_park';
                 }
+
+                // Оновлюємо список полів для поточної форми
+                if (this.forms[this.activeFormKey]) {
+                    this.fields = this.forms[this.activeFormKey].fields;
+                }
             },
 
             initFormData() {
-                const fields = this.forms[this.activeFormKey].fields;
-                fields.forEach(field => {
+                this.fields.forEach(field => {
                     if (field.default !== undefined) {
                         this.formData[field.name] = field.default;
                     } else {
@@ -117,8 +132,15 @@
 
             applyConfig(data) {
                 if (data.plans) this.plans = data.plans;
-                if (data.recaptcha_site_key) this.siteKey = data.recaptcha_site_key;
+                if (data.recaptcha_site_key) {
+                    this.siteKey = data.recaptcha_site_key;
+                    this.loadRecaptchaV3(this.siteKey);
+                } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                    this.loadRecaptchaV3(this.siteKey);
+                }
                 if (data.forms) this.forms = data.forms;
+
+                this.ready = true; // Готово
             },
 
             fetchConfig() {
@@ -130,7 +152,26 @@
                     .then(data => {
                         this.applyConfig(data);
                     })
-                    .catch(err => console.error('Failed to load config:', err));
+                    .catch(err => {
+                        console.error('Failed to load config:', err);
+                        // Навіть якщо помилка, показуємо fallback форму
+                        this.ready = true;
+                        this.updateActiveForm();
+                        this.initFormData();
+                    });
+            },
+
+            async getRecaptchaToken() {
+                if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
+
+                return new Promise((resolve) => {
+                    grecaptcha.ready(() => {
+                        const action = this.activeFormKey === 'lead' ? 'lead_form' : 'register_park';
+                        grecaptcha.execute(this.siteKey, {action: action}).then((token) => {
+                            resolve(token);
+                        });
+                    });
+                });
             },
 
             get modalTitle() {
@@ -144,11 +185,7 @@
                 return 'Створити акаунт';
             },
 
-            get activeFields() {
-                return this.forms[this.activeFormKey].fields;
-            },
-
-            submitForm() {
+            async submitForm() {
                 this.generalError = null;
                 this.fieldErrors = {};
 
@@ -158,7 +195,7 @@
                 }
 
                 let hasEmptyRequired = false;
-                this.activeFields.forEach(field => {
+                this.fields.forEach(field => {
                     if (field.required && !this.formData[field.name] && field.type !== 'hidden') {
                         this.fieldErrors[field.name] = 'Це поле обов\'язкове';
                         hasEmptyRequired = true;
@@ -169,25 +206,18 @@
 
                 this.loading = true;
 
-                // Отримуємо токен v3
-                if (typeof grecaptcha !== 'undefined') {
-                    grecaptcha.ready(() => {
-                        const action = this.activeFormKey === 'lead' ? 'lead_form' : 'register_park';
-                        grecaptcha.execute(this.siteKey, {action: action}).then((token) => {
-                            this.sendData(token);
-                        });
-                    });
-                } else {
-                    this.sendData('');
+                let captchaToken = '';
+                try {
+                    captchaToken = await this.getRecaptchaToken();
+                } catch (e) {
+                    console.error('Recaptcha error:', e);
                 }
-            },
 
-            sendData(token) {
                 let url = this.activeFormKey === 'lead' ? '/api/lead' : '/api/register';
 
                 let payload = { ...this.formData };
-                if (token) {
-                    payload['g-recaptcha-response'] = token;
+                if (captchaToken) {
+                    payload['g-recaptcha-response'] = captchaToken;
                 }
 
                 fetch(url, {
@@ -212,7 +242,7 @@
                                 this.fieldErrors[key] = apiErrors[key][0];
                             });
 
-                            const knownKeys = this.activeFields.map(f => f.name);
+                            const knownKeys = this.fields.map(f => f.name);
                             const unknownErrors = Object.keys(apiErrors).filter(key => !knownKeys.includes(key));
 
                             if (unknownErrors.length > 0) {
@@ -245,15 +275,22 @@
 
         <h2 class="modal-title" x-text="modalTitle"></h2>
 
-        <div x-show="success" class="success-message">
+        <!-- Спінер завантаження -->
+        <div x-show="!ready" class="flex justify-center items-center h-64">
+            <svg class="animate-spin h-10 w-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+        </div>
+
+        <div x-show="success" x-cloak class="success-message">
             <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
             <p x-text="successMessage"></p>
             <p class="text-sm text-gray-500 mt-2">Перевірте вашу пошту.</p>
         </div>
 
-        <!-- Додано novalidate -->
-        <form x-show="!success" @submit.prevent="submitForm" novalidate>
-            <!-- Загальна помилка -->
+        <!-- Форма -->
+        <form x-show="ready && !success" @submit.prevent="submitForm" novalidate x-cloak>
             <div x-show="generalError" class="error-message" x-text="generalError"></div>
 
             <!-- Вибір типу оплати (тільки якщо не Enterprise) -->
@@ -275,7 +312,7 @@
             </div>
 
             <!-- Динамічні поля -->
-            <template x-for="field in activeFields" :key="field.name">
+            <template x-for="field in fields" :key="field.name">
                 <div class="form-group" x-show="field.type !== 'hidden'">
                     <label>
                         <span x-text="field.label"></span>
@@ -319,9 +356,9 @@
             <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading || !formData.agreement" x-text="buttonText"></button>
 
             <div class="text-center text-xs text-gray-400 mt-2">
-                Цей сайт захищений reCAPTCHA і застосовуються
-                <a href="https://policies.google.com/privacy" class="underline" target="_blank">Політика конфіденційності</a> та
-                <a href="https://policies.google.com/terms" class="underline" target="_blank">Умови використання</a> Google.
+                This site is protected by reCAPTCHA and the Google
+                <a href="https://policies.google.com/privacy" class="underline" target="_blank">Privacy Policy</a> and
+                <a href="https://policies.google.com/terms" class="underline" target="_blank">Terms of Service</a> apply.
             </div>
         </form>
     </div>
@@ -523,4 +560,5 @@
 
     /* Приховуємо бейдж рекапчі */
     .grecaptcha-badge { visibility: hidden; }
+    [x-cloak] { display: none !important; }
 </style>
