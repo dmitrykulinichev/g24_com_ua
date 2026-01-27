@@ -72,7 +72,6 @@
 
             loadRecaptchaV3(siteKey) {
                 if (document.getElementById('recaptcha-script-modal')) return;
-                // Перевіряємо, чи вже не підключено на сторінці контактів
                 if (document.getElementById('recaptcha-script')) return;
 
                 const script = document.createElement('script');
@@ -252,7 +251,8 @@
             <p class="text-sm text-gray-500 mt-2">Перевірте вашу пошту.</p>
         </div>
 
-        <form x-show="!success" @submit.prevent="submitForm">
+        <!-- Додано novalidate -->
+        <form x-show="!success" @submit.prevent="submitForm" novalidate>
             <!-- Загальна помилка -->
             <div x-show="generalError" class="error-message" x-text="generalError"></div>
 
@@ -319,9 +319,9 @@
             <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading || !formData.agreement" x-text="buttonText"></button>
 
             <div class="text-center text-xs text-gray-400 mt-2">
-                Цей сайт захищений reCAPTCHA і застосовуються
-                <a href="https://policies.google.com/privacy" class="underline" target="_blank">Політика конфіденційності</a> та
-                <a href="https://policies.google.com/terms" class="underline" target="_blank">Умови використання</a> Google.
+                This site is protected by reCAPTCHA and the Google
+                <a href="https://policies.google.com/privacy" class="underline">Privacy Policy</a> and
+                <a href="https://policies.google.com/terms" class="underline">Terms of Service</a> apply.
             </div>
         </form>
     </div>

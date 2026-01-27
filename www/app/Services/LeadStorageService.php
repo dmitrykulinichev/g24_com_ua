@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Services\Logger;
+
 class LeadStorageService
 {
     protected $baseStoragePath;

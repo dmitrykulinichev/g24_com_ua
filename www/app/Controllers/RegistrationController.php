@@ -90,8 +90,20 @@ class RegistrationController
             // 3. Відправляємо на SPA API
             $response = $this->api->registerTenant($payload);
 
-            if ($response['status'] >= 500) {
-                Logger::error('SPA API Error', ['status' => $response['status'], 'body' => $response['raw_body']]);
+            // Обробка помилок API
+            if ($response['status'] >= 400) {
+                Logger::error('SPA API Error (Register)', ['status' => $response['status'], 'body' => $response['raw_body']]);
+                
+                // Сповіщення про помилку в Telegram
+                $this->sendApiErrorToTelegram($response, $payload['owner_email']);
+
+                if ($response['status'] >= 500) {
+                    response()->json(['status' => 'success', 'message' => 'Парк успішно зареєстровано! Перевірте пошту.'], 200);
+                    return;
+                }
+                
+                response()->json($response['body'], $response['status']);
+                return;
             }
 
             response()->json($response['body'], $response['status']);
@@ -114,6 +126,22 @@ class RegistrationController
         $msg .= "📱 Телефон: " . ($data['phone'] ?: '-') . "\n";
         $msg .= "💳 План: " . ($data['plan'] ?: '-') . "\n";
         $msg .= "\n🌍 IP: " . $data['ip'];
+
+        $this->telegram->sendMessage($msg);
+    }
+
+    private function sendApiErrorToTelegram($response, $email)
+    {
+        $msg = "⚠️ <b>Помилка SPA API (Register)!</b>\n";
+        $msg .= "Email: {$email}\n\n";
+        $msg .= "Status: <b>{$response['status']}</b>\n";
+        
+        $body = $response['raw_body'];
+        if (strlen($body) > 500) {
+            $body = substr($body, 0, 500) . '...';
+        }
+        
+        $msg .= "Response: <pre>{$body}</pre>";
 
         $this->telegram->sendMessage($msg);
     }

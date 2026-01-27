@@ -44,14 +44,28 @@ class LeadController
             // 1. Зберігаємо локально
             $this->storage->save($payload, $type);
 
-            // 2. Відправляємо в Telegram (Резерв)
+            // 2. Відправляємо в Telegram (Основне повідомлення)
             $this->sendToTelegram($payload);
 
             // 3. Відправляємо на SPA API
             $response = $this->api->sendLead($payload);
 
-            if ($response['status'] >= 500) {
+            // Обробка помилок API
+            if ($response['status'] >= 400) {
                 Logger::error('SPA API Error (Lead)', ['status' => $response['status'], 'body' => $response['raw_body']]);
+                
+                // Відправляємо сповіщення про помилку в Telegram
+                $this->sendApiErrorToTelegram($response, $payload['email']);
+
+                // Якщо це 500 (Server Error), кажемо юзеру, що все ОК (бо ми зберегли локально)
+                if ($response['status'] >= 500) {
+                    response()->json(['status' => 'success', 'message' => 'Ваша заявка прийнята!'], 200);
+                    return;
+                }
+                
+                // Якщо це 422 (Validation) або інше - віддаємо помилку юзеру
+                response()->json($response['body'], $response['status']);
+                return;
             }
 
             response()->json($response['body'], $response['status']);
@@ -93,6 +107,23 @@ class LeadController
         }
         
         $msg .= "\n🌍 IP: " . $data['ip'];
+
+        $this->telegram->sendMessage($msg);
+    }
+
+    private function sendApiErrorToTelegram($response, $email)
+    {
+        $msg = "⚠️ <b>Помилка SPA API!</b>\n";
+        $msg .= "Заявка від: {$email}\n\n";
+        $msg .= "Status: <b>{$response['status']}</b>\n";
+        
+        // Обрізаємо тіло відповіді, якщо воно занадто довге
+        $body = $response['raw_body'];
+        if (strlen($body) > 500) {
+            $body = substr($body, 0, 500) . '...';
+        }
+        
+        $msg .= "Response: <pre>{$body}</pre>";
 
         $this->telegram->sendMessage($msg);
     }
