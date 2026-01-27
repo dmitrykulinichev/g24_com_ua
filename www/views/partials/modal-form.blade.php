@@ -7,14 +7,15 @@
         Alpine.data('orderForm', () => ({
             showModal: false,
             orderType: 'monthly', // monthly, yearly, enterprise
-            formData: { name: '', email: '', company: '', phone: '', agreement: true },
+            formData: { name: '', email: '', company: '', phone: '', message: '', agreement: true },
             loading: false,
             success: false,
             successMessage: '',
-            generalError: null, // Загальна помилка (наприклад, 500)
-            fieldErrors: {}, // Помилки полів (422)
+            generalError: null,
+            fieldErrors: {},
             captchaWidgetId: null,
             plans: [],
+            siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}', // Fallback ключ
 
             init() {
                 this.fetchConfig();
@@ -26,6 +27,7 @@
                     this.generalError = null;
                     this.fieldErrors = {};
                     this.formData.agreement = true;
+                    this.formData.message = '';
 
                     setTimeout(() => {
                         this.renderCaptcha();
@@ -43,17 +45,26 @@
                         if (data.plans) {
                             this.plans = data.plans;
                         }
+                        if (data.recaptcha_site_key) {
+                            this.siteKey = data.recaptcha_site_key;
+                        }
                     })
                     .catch(err => console.error('Failed to load config:', err));
             },
 
             renderCaptcha() {
                 const container = document.getElementById('recaptcha-container');
+
+                if (!this.siteKey || this.siteKey === 'YOUR_SITE_KEY') {
+                    console.warn('Recaptcha Site Key not found');
+                    return;
+                }
+
                 if (container && !container.hasChildNodes()) {
                     if (typeof grecaptcha !== 'undefined') {
                         try {
                             this.captchaWidgetId = grecaptcha.render('recaptcha-container', {
-                                'sitekey': '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? 'YOUR_SITE_KEY' }}'
+                                'sitekey': this.siteKey
                             });
                         } catch (e) {
                             console.error('Captcha render error:', e);
@@ -78,7 +89,6 @@
             },
 
             submitForm() {
-                // Скидаємо помилки перед відправкою
                 this.generalError = null;
                 this.fieldErrors = {};
 
@@ -87,18 +97,30 @@
                     return;
                 }
 
-                let captchaToken = '';
-                if (typeof grecaptcha !== 'undefined') {
-                    try {
-                        captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
-                    } catch (e) {}
+                // Валідація повідомлення для Enterprise
+                if (this.orderType === 'enterprise' && (!this.formData.message || this.formData.message.length < 5)) {
+                    this.fieldErrors.message = 'Будь ласка, напишіть коротко про ваші потреби.';
+                    return;
+                }
 
-                    @if(($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== '' && ($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== 'YOUR_SITE_KEY')
+                // Валідація назви парку для Реєстрації
+                if (this.orderType !== 'enterprise' && (!this.formData.company || this.formData.company.length < 2)) {
+                    this.fieldErrors.company = 'Введіть назву парку.';
+                    return;
+                }
+
+                let captchaToken = '';
+                if (this.siteKey && this.siteKey !== 'YOUR_SITE_KEY') {
+                    if (typeof grecaptcha !== 'undefined') {
+                        try {
+                            captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
+                        } catch (e) {}
+
                         if (!captchaToken) {
                             this.generalError = 'Будь ласка, пройдіть перевірку "Я не робот".';
                             return;
                         }
-                    @endif
+                    }
                 }
 
                 this.loading = true;
@@ -136,29 +158,30 @@
                     this.loading = false;
 
                     if (response.ok) {
-                        // Успіх (200-299)
                         this.success = true;
                         this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
-                        this.formData = { name: '', email: '', company: '', phone: '', agreement: true };
+                        this.formData = { name: '', email: '', company: '', phone: '', message: '', agreement: true };
                         if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                         setTimeout(() => { this.showModal = false; }, 5000);
                     } else {
-                        // Помилка (4xx, 5xx)
                         if (response.status === 422 && data.errors) {
-                            // Мапінг помилок API на поля форми
-                            // API повертає: park_name, owner_name, owner_email
-                            // Форма має: company, name, email
-
                             const apiErrors = data.errors;
                             const mappedErrors = {};
 
+                            // Мапінг для Реєстрації
                             if (apiErrors.park_name) mappedErrors.company = apiErrors.park_name[0];
                             if (apiErrors.owner_name) mappedErrors.name = apiErrors.owner_name[0];
                             if (apiErrors.owner_email) mappedErrors.email = apiErrors.owner_email[0];
+
+                            // Мапінг для Лідів (Enterprise)
+                            if (apiErrors.email) mappedErrors.email = apiErrors.email[0];
+                            if (apiErrors.name) mappedErrors.name = apiErrors.name[0];
+                            if (apiErrors.message) mappedErrors.message = apiErrors.message[0];
+
+                            // Спільні поля
                             if (apiErrors.phone) mappedErrors.phone = apiErrors.phone[0];
 
-                            // Якщо є інші помилки, які ми не замапили, покажемо їх як загальні
-                            const knownKeys = ['park_name', 'owner_name', 'owner_email', 'phone'];
+                            const knownKeys = ['park_name', 'owner_name', 'owner_email', 'phone', 'email', 'name', 'message'];
                             const unknownErrors = Object.keys(apiErrors).filter(key => !knownKeys.includes(key));
 
                             if (unknownErrors.length > 0) {
@@ -224,27 +247,37 @@
             </div>
 
             <div class="form-group">
-                <label>Ваше ім'я</label>
+                <label>Ваше ім'я <span class="text-red-500">*</span></label>
                 <input type="text" x-model="formData.name" placeholder="Іван Іванов" :class="{'border-red-500': fieldErrors.name}">
                 <div x-show="fieldErrors.name" x-text="fieldErrors.name" class="text-red-500 text-xs mt-1"></div>
             </div>
 
             <div class="form-group">
-                <label>Email (Логін)</label>
+                <label>Email (Логін) <span class="text-red-500">*</span></label>
                 <input type="email" x-model="formData.email" placeholder="email@example.com" :class="{'border-red-500': fieldErrors.email}">
                 <div x-show="fieldErrors.email" x-text="fieldErrors.email" class="text-red-500 text-xs mt-1"></div>
             </div>
 
-            <div class="form-group">
-                <label>Назва парку / Компанії <span x-show="orderType !== 'enterprise'" class="text-red-500">*</span></label>
+            <!-- Назва парку: показуємо ТІЛЬКИ якщо це НЕ Enterprise -->
+            <div class="form-group" x-show="orderType !== 'enterprise'">
+                <label>Назва парку / Компанії <span class="text-red-500">*</span></label>
                 <input type="text" x-model="formData.company" placeholder="ТОВ Автопарк" :class="{'border-red-500': fieldErrors.company}">
                 <div x-show="fieldErrors.company" x-text="fieldErrors.company" class="text-red-500 text-xs mt-1"></div>
             </div>
 
             <div class="form-group">
-                <label>Телефон</label>
+                <label>Телефон <span class="text-red-500">*</span></label>
                 <input type="tel" x-model="formData.phone" placeholder="+380 ..." :class="{'border-red-500': fieldErrors.phone}">
                 <div x-show="fieldErrors.phone" x-text="fieldErrors.phone" class="text-red-500 text-xs mt-1"></div>
+            </div>
+
+            <!-- Поле повідомлення (Тільки для Enterprise) -->
+            <div class="form-group" x-show="orderType === 'enterprise'">
+                <label>Ваше повідомлення <span class="text-red-500">*</span></label>
+                <textarea x-model="formData.message" rows="3" placeholder="Кількість авто, особливі побажання..."
+                          class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                          :class="{'border-red-500': fieldErrors.message}"></textarea>
+                <div x-show="fieldErrors.message" x-text="fieldErrors.message" class="text-red-500 text-xs mt-1"></div>
             </div>
 
             <!-- Контейнер для reCAPTCHA -->
@@ -416,7 +449,7 @@
         color: #374151;
     }
 
-    .form-group input {
+    .form-group input, .form-group textarea {
         width: 100%;
         padding: 0.75rem;
         border: 1px solid #d1d5db;
@@ -425,7 +458,7 @@
         transition: border-color 0.2s;
     }
 
-    .form-group input:focus {
+    .form-group input:focus, .form-group textarea:focus {
         outline: none;
         border-color: var(--primary-color);
         box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);

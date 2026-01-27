@@ -5,11 +5,13 @@ namespace App\Services;
 class SpaApiService
 {
     protected $baseUrl;
+    protected $apiKey;
     protected $timeout;
 
     public function __construct()
     {
         $this->baseUrl = rtrim($_ENV['SPA_API_URL'] ?? 'https://app.g24.com.ua', '/');
+        $this->apiKey = $_ENV['LANDING_API_KEY'] ?? '';
         $this->timeout = 20;
     }
 
@@ -29,7 +31,15 @@ class SpaApiService
         return $this->post('/api/v1/public/landing/register', $data);
     }
 
-    // --- Базові методи (можна зробити protected, якщо хочемо заборонити прямі виклики) ---
+    /**
+     * Відправка ліда (Enterprise, Консультація)
+     */
+    public function sendLead(array $data)
+    {
+        return $this->post('/api/v1/public/landing/lead', $data);
+    }
+
+    // --- Базові методи ---
 
     protected function get(string $endpoint, array $params = [])
     {
@@ -53,6 +63,7 @@ class SpaApiService
         $headers = [
             'Content-Type: application/json',
             'Accept: application/json',
+            'X-Landing-Api-Key: ' . $this->apiKey
         ];
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);

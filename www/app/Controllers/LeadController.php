@@ -3,21 +3,15 @@
 namespace App\Controllers;
 
 use App\Services\Logger;
-use App\Services\TelegramService;
-use App\Services\CrmService;
-use App\Services\LeadStorageService;
+use App\Services\SpaApiService;
 
 class LeadController
 {
-    protected $telegram;
-    protected $crm;
-    protected $storage;
+    protected $api;
 
     public function __construct()
     {
-        $this->telegram = new TelegramService();
-        $this->crm = new CrmService();
-        $this->storage = new LeadStorageService();
+        $this->api = new SpaApiService();
     }
 
     public function submit()
@@ -26,35 +20,32 @@ class LeadController
             $data = request()->body();
             $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
             
-            Logger::info('Отримано нову заявку', ['ip' => $ip]);
+            Logger::info('Отримано нову заявку (Proxy)', ['ip' => $ip, 'email' => $data['email'] ?? 'unknown']);
 
-            // 1. Перевірка reCAPTCHA
-            if (!$this->verifyRecaptcha($data['g-recaptcha-response'] ?? null)) {
-                Logger::info('Помилка reCAPTCHA', ['ip' => $ip]);
-                response()->json(['status' => 'error', 'message' => 'Будь ласка, підтвердіть, що ви не робот.'], 422);
-                return;
+            // Формуємо payload згідно з новою документацією
+            $payload = [
+                'email'       => $data['email'] ?? '',
+                'name'        => $data['name'] ?? '',
+                'phone'       => $data['phone'] ?? '',
+                // Згідно з документацією (приклад JS), передаємо 'general'
+                // Якщо потрібно 'enterprise', можна змінити тут
+                'type'        => 'general', 
+                'message'     => $this->generateMessage($data),
+                'g-recaptcha-response' => $data['g-recaptcha-response'] ?? '',
+                'ip'          => $ip,
+                'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+            ];
+
+            // Відправляємо на SPA API
+            $response = $this->api->sendLead($payload);
+
+            // Логуємо помилки сервера
+            if ($response['status'] >= 500) {
+                Logger::error('SPA API Error (Lead)', ['status' => $response['status'], 'body' => $response['raw_body']]);
             }
 
-            // 2. Валідація
-            $errors = $this->validate($data);
-            if (!empty($errors)) {
-                Logger::info('Помилка валідації', $errors);
-                response()->json(['status' => 'error', 'errors' => $errors], 422);
-                return;
-            }
-
-            // Збагачення даних
-            $data['ip'] = $ip;
-            $data['user_agent'] = $_SERVER['HTTP_USER_AGENT'] ?? 'unknown';
-            $data['created_at'] = date('Y-m-d H:i:s');
-            $data['plan'] = $data['plan'] ?? '-';
-
-            // 3. Обробка заявки
-            $this->storage->save($data);
-            $this->crm->sendLead($data);
-            $this->telegram->sendLead($data);
-
-            response()->json(['status' => 'success', 'message' => 'Заявку прийнято!']);
+            // Повертаємо відповідь фронтенду
+            response()->json($response['body'], $response['status']);
 
         } catch (\Throwable $e) {
             Logger::error('Критична помилка в LeadController', [
@@ -62,58 +53,26 @@ class LeadController
                 'trace' => $e->getTraceAsString()
             ]);
             
-            response()->json(['status' => 'error', 'message' => 'Server Error'], 500);
+            response()->json(['message' => 'Server Error'], 500);
         }
     }
 
-    private function verifyRecaptcha($token)
+    private function generateMessage($data)
     {
-        $secret = $_ENV['RECAPTCHA_SECRET_KEY'] ?? null;
-        
-        if (!$secret || $secret === 'YOUR_SECRET_KEY') {
-            return true;
+        // Якщо фронтенд передав повідомлення — використовуємо його
+        if (!empty($data['message'])) {
+            return $data['message'];
         }
 
-        if (!$token) return false;
+        // Інакше генеруємо на основі типу
+        $type = $data['plan'] ?? 'general';
+        $company = $data['company'] ?? '';
 
-        $url = 'https://www.google.com/recaptcha/api/siteverify';
-        $data = [
-            'secret' => $secret,
-            'response' => $token,
-            'remoteip' => $_SERVER['REMOTE_ADDR'] ?? null
-        ];
-
-        $options = [
-            'http' => [
-                'header' => "Content-type: application/x-www-form-urlencoded\r\n",
-                'method' => 'POST',
-                'content' => http_build_query($data)
-            ]
-        ];
-
-        $context = stream_context_create($options);
-        $result = file_get_contents($url, false, $context);
-        $json = json_decode($result, true);
-
-        return $json['success'] ?? false;
-    }
-
-    private function validate($data)
-    {
-        $errors = [];
-        
-        if (empty($data['name']) || strlen($data['name']) < 2) {
-            $errors['name'] = 'Ім\'я має містити мінімум 2 символи';
+        $msg = "Заявка з лендінгу. Тип: " . ucfirst($type) . ".";
+        if ($company) {
+            $msg .= " Компанія: " . $company . ".";
         }
         
-        if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            $errors['email'] = 'Введіть коректний Email';
-        }
-        
-        if (empty($data['phone']) || strlen($data['phone']) < 10) {
-            $errors['phone'] = 'Введіть коректний номер телефону';
-        }
-
-        return $errors;
+        return $msg;
     }
 }

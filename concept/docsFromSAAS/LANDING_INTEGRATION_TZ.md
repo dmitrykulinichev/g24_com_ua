@@ -1,131 +1,202 @@
-# Технічне Завдання: Інтеграція Лендінгу з SPA API
+# API Реєстрації Парку (для Лендінгу)
 
-Цей документ описує вимоги до API SaaS платформи для забезпечення повноцінної роботи форми реєстрації та сторінки цін на лендінгу.
+Цей документ описує публічні ендпоінти для інтеграції форми реєстрації на лендінгу з SaaS платформою.
 
-**Архітектура:**
-Лендінг працює як Proxy. Браузер клієнта відправляє запити на бекенд лендінгу, а лендінг пересилає їх на SPA API.
-Це означає, що всі запити до SPA API будуть надходити з **IP-адреси сервера лендінгу**.
+**Base URL:** `https://app.your-domain.com/api/v1/public/landing`
+**Auth:** API Key (Header `X-Landing-Api-Key`).
+**Rate Limit:** 60 запитів / хв.
+**CORS:** Дозволено для доменів, вказаних у конфігурації сервера.
 
 ---
 
-## 1. Ендпоінт конфігурації (Ціни)
+## 🔐 Автентифікація та Безпека
 
-Необхідний для динамічного відображення цін на сторінці `/pricing`.
+### 1. API Key
+Всі запити до API повинні містити заголовок `X-Landing-Api-Key`.
+Цей ключ має зберігатися на бекенді лендінгу і не повинен бути доступним публічно.
 
+```http
+X-Landing-Api-Key: ваш_секретний_ключ
+```
+
+### 2. Google reCAPTCHA
+Для захисту від ботів використовується Google reCAPTCHA (v3 або v2 Invisible).
+Лендінг повинен отримати токен від Google і передати його в тілі запиту реєстрації.
+
+*   **Site Key:** Повертається в ендпоінті `/config` (поле `recaptcha_site_key`).
+*   **Action:** `register_park` (для реєстрації) або `lead_form` (для лідів).
+
+---
+
+## 📡 Ендпоінти
+
+### 1. Отримання конфігурації (GET /config)
+Отримує список доступних тарифних планів та налаштування (ключ капчі).
+
+- **URL:** `/config`
 - **Method:** `GET`
-- **URL:** `/api/v1/public/landing/config`
-- **Access:** Public
 
-### Вимоги до відповіді (Response Body)
-API має повертати масив `plans`. Для коректної роботи перемикача "Місяць/Рік" на лендінгу, в системі мають бути плани, що містять в `slug` слова `monthly` та `yearly`.
+#### Приклад відповіді (200 OK):
 
 ```json
 {
   "plans": [
     {
       "id": 1,
-      "slug": "standard-monthly",  // Лендінг шукає входження 'monthly'
-      "name": "Standard Monthly",
-      "price_monthly": "1000.00",  // Базова ціна (використовується лендінгом)
-      "price_per_car": "200.00",   // Ціна за авто (використовується лендінгом)
+      "slug": "standard-monthly-2026",
+      "name": "Стандарт (Щомісячний)",
+      "price_monthly": "1000.00",
+      "price_yearly": "0.00",
+      "price_per_car": "200.00",
       "currency": "UAH"
     },
     {
       "id": 2,
-      "slug": "standard-yearly",   // Лендінг шукає входження 'yearly'
-      "name": "Standard Yearly",
-      "price_monthly": "0.00",     // Якщо 0, лендінг вирахує (price_yearly / 12)
-      "price_yearly": "12000.00",  // Використовується для розрахунку бази
-      "price_per_car": "100.00",   // Акційна ціна за авто
+      "slug": "yearly-2026",
+      "name": "Річний (Знижка 50% на авто)",
+      "price_monthly": "0.00",
+      "price_yearly": "12000.00",
+      "price_per_car": "100.00",
       "currency": "UAH"
     }
-  ]
+  ],
+  "recaptcha_site_key": "6Lc..." // Ключ для ініціалізації reCAPTCHA на фронтенді
 }
 ```
 
 ---
 
-## 2. Ендпоінт реєстрації (Створення Парку)
+### 2. Реєстрація Парку (POST /register)
+Створює новий парк, власника та відправляє лист активації.
 
-Необхідний для обробки форми "Почати роботу".
-
+- **URL:** `/register`
 - **Method:** `POST`
-- **URL:** `/api/v1/public/landing/register`
-- **Access:** Public (захищено Google reCAPTCHA)
 
-### Тіло запиту (Request Body)
-
-Лендінг відправляє наступні поля. Всі поля є обов'язковими (окрім UTM-міток).
+#### Тіло запиту (JSON):
 
 ```json
 {
-  "park_name": "Назва Парку",        // String, min: 2
-  "owner_name": "Ім'я Власника",     // String, min: 2
-  "owner_email": "owner@mail.com",   // Email, Unique (User login)
-  "phone": "+380501234567",          // String, Phone format
-  "plan": "monthly",                 // Enum: 'monthly' | 'yearly'
-  "g-recaptcha-response": "03AFc...",// String (Google Token)
-  
-  // Технічні поля (для логування)
+  "park_name": "Назва Парку",
+  "owner_name": "Ім'я Власника",
+  "owner_email": "owner@mail.com",
+  "phone": "+380501234567",
+  "plan": "monthly", 
+  "g-recaptcha-response": "03AFc...",
   "ip": "123.123.123.123",
   "user_agent": "Mozilla/5.0..."
 }
 ```
 
-### Логіка обробки на стороні API
+| Поле | Тип | Обов'язкове | Опис |
+|---|---|---|---|
+| `park_name` | String | Так | Назва компанії/парку (2-255 символів). |
+| `owner_name` | String | Так | ПІБ власника (2-255 символів). |
+| `owner_email` | Email | Так | Email власника (унікальний логін). |
+| `phone` | String | Так | Телефон власника (до 20 символів). |
+| `plan` | String | Так | Тип плану: `monthly` або `yearly`. |
+| `g-recaptcha-response` | String | Так | Токен від Google reCAPTCHA. |
+| `ip` | String | Ні | IP адреса клієнта (для логів). |
+| `user_agent` | String | Ні | User Agent клієнта (для логів). |
 
-1.  **Валідація reCAPTCHA:**
-    *   API **обов'язково** має перевірити токен `g-recaptcha-response` через Google API (`https://www.google.com/recaptcha/api/siteverify`).
-    *   Використовувати `RECAPTCHA_SECRET_KEY` з `.env` файлу SPA.
-    *   Якщо перевірка не пройшла -> повернути помилку 422.
+#### Успішна відповідь (201 Created):
 
-2.  **Валідація даних:**
-    *   Перевірити унікальність `owner_email`.
-    *   Перевірити формат телефону.
-
-3.  **Створення сутностей:**
-    *   Створити `Tenant` (Парк).
-    *   Створити `User` (Власник) з роллю `owner`.
-    *   Створити підписку (Subscription) відповідно до обраного `plan` ('monthly' або 'yearly').
-
-4.  **Відповідь:**
-
-#### Успіх (201 Created)
 ```json
 {
   "success": true,
   "message": "Парк успішно зареєстровано. Перевірте вашу пошту для активації акаунту.",
-  "redirect_url": "https://app.g24.com.ua/login" // Опціонально, якщо потрібен авто-логін
+  "redirect_url": "https://app.g24.com.ua/login"
 }
 ```
 
-#### Помилка валідації (422 Unprocessable Entity)
-**Критично важливо:** Формат помилок має відповідати стандарту Laravel, щоб лендінг міг підсвітити конкретні поля.
+#### Помилка валідації (422 Unprocessable Entity):
 
 ```json
 {
   "message": "The given data was invalid.",
   "errors": {
-    "park_name": [
-      "Така назва парку вже існує."
-    ],
-    "owner_email": [
-      "Користувач з таким email вже зареєстрований."
-    ],
-    "g-recaptcha-response": [
-      "Помилка перевірки капчі."
-    ]
+    "owner_email": ["The owner email has already been taken."],
+    "g-recaptcha-response": ["Помилка перевірки reCAPTCHA"]
   }
 }
 ```
 
 ---
 
-## Чек-ліст для розробника API
+### 3. Створення Ліда (POST /lead)
+Відправляє заявку з контактної форми (Enterprise, Консультація).
 
-- [ ] Додати `GET /api/v1/public/landing/config` (повертає плани).
-- [ ] Додати `POST /api/v1/public/landing/register`.
-- [ ] Налаштувати валідацію вхідних даних (Laravel Request Validation).
-- [ ] Реалізувати серверну перевірку Google reCAPTCHA.
-- [ ] Забезпечити повернення помилок у форматі `{ "errors": { "field": ["msg"] } }` при 422 статусі.
-- [ ] Переконатися, що CORS налаштований (або дозволяє запити з IP лендінгу, або публічний).
+- **URL:** `/lead`
+- **Method:** `POST`
+
+#### Тіло запиту (JSON):
+
+```json
+{
+  "email": "ivan@company.com",
+  "message": "Цікавлять індивідуальні умови для парку 500+ авто.",
+  "name": "Іван Директор",
+  "phone": "+380501112233",
+  "type": "enterprise",
+  "g-recaptcha-response": "03AFc...",
+  "ip": "123.123.123.123",
+  "user_agent": "Mozilla/5.0..."
+}
+```
+
+| Поле | Тип | Обов'язкове | Опис |
+|---|---|---|---|
+| `email` | Email | Так | Email для зв'язку. |
+| `message` | String | Так | Текст повідомлення (до 5000 символів). |
+| `name` | String | Ні | Ім'я контактної особи. |
+| `phone` | String | Ні | Телефон. |
+| `type` | String | Ні | Тип заявки. Якщо не вказано, використовується `general`. Рекомендовані значення: `general`, `enterprise`, `partnership`. |
+| `g-recaptcha-response` | String | Так | Токен від Google reCAPTCHA. |
+| `ip` | String | Ні | IP адреса клієнта. |
+| `user_agent` | String | Ні | User Agent клієнта. |
+
+#### Успішна відповідь (201 Created):
+
+```json
+{
+  "success": true,
+  "message": "Ваша заявка прийнята. Менеджер зв'яжеться з вами найближчим часом."
+}
+```
+
+---
+
+## 💻 Приклад реалізації (JS/Fetch)
+
+```javascript
+const API_URL = 'https://app.g24.com.ua/api/v1/public/landing';
+const API_KEY = 'ваш_секретний_ключ_бекенду';
+
+// Функція для реєстрації парку
+async function registerPark(formData) {
+  const recaptchaToken = await grecaptcha.execute(SITE_KEY, { action: 'register_park' });
+  // ... (див. вище)
+}
+
+// Функція для відправки ліда
+async function sendLead(formData) {
+  const recaptchaToken = await grecaptcha.execute(SITE_KEY, { action: 'lead_form' });
+
+  const payload = {
+    ...formData,
+    'g-recaptcha-response': recaptchaToken,
+    'type': 'general' // Або 'enterprise', якщо це форма для великих клієнтів
+  };
+
+  const response = await fetch(`${API_URL}/lead`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'X-Landing-Api-Key': API_KEY
+    },
+    body: JSON.stringify(payload)
+  });
+  
+  // ... обробка відповіді
+}
+```
