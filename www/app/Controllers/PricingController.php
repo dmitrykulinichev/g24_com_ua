@@ -18,7 +18,7 @@ class PricingController
 
     public function index()
     {
-        // 1. Дефолтні значення (Fallback)
+        // 1. Дефолтні значення для відображення (Fallback)
         $pricingModel = [
             'monthly' => [
                 'base' => 1000,
@@ -47,32 +47,38 @@ class PricingController
         $cacheFile = __DIR__ . '/../../storage/cache/pricing_data.json';
         $cacheTtl = (int)($_ENV['PRICING_CACHE_TTL'] ?? 86400); 
         
-        $plans = null;
+        $fullConfig = null; // Тут буде весь об'єкт відповіді (plans, forms, recaptcha)
 
+        // Спроба читання з кешу
         if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheTtl)) {
             $content = @file_get_contents($cacheFile);
             if ($content) {
-                $plans = json_decode($content, true);
+                $fullConfig = json_decode($content, true);
             }
         }
 
-        if (!$plans) {
+        // Якщо кешу немає або він застарів — йдемо в API
+        if (!$fullConfig) {
             try {
                 $response = $this->api->getLandingConfig();
-                if ($response['status'] === 200 && !empty($response['body']['plans'])) {
-                    $plans = $response['body']['plans'];
+                
+                if ($response['status'] === 200 && !empty($response['body'])) {
+                    $fullConfig = $response['body'];
+                    
+                    // Зберігаємо ПОВНИЙ об'єкт у кеш
                     if (!is_dir(dirname($cacheFile))) {
                         mkdir(dirname($cacheFile), 0755, true);
                     }
-                    file_put_contents($cacheFile, json_encode($plans));
+                    file_put_contents($cacheFile, json_encode($fullConfig));
                 }
             } catch (\Throwable $e) {
                 Logger::error('Failed to fetch pricing from API', ['error' => $e->getMessage()]);
             }
         }
 
-        // 3. Оновлення моделі даними
-        if ($plans) {
+        // 3. Оновлення моделі цін даними з конфігу
+        if ($fullConfig && !empty($fullConfig['plans'])) {
+            $plans = $fullConfig['plans'];
             $monthlyPlan = null;
             $yearlyPlan = null;
 
@@ -89,14 +95,11 @@ class PricingController
             if ($monthlyPlan) {
                 $pricingModel['monthly']['base'] = (int)($monthlyPlan['price_monthly'] ?? 1000);
                 $pricingModel['monthly']['car'] = (int)($monthlyPlan['price_per_car'] ?? 200);
-                // Оновлюємо "стару ціну" для річного (вона дорівнює звичайній місячній)
                 $pricingModel['yearly']['old_car'] = $pricingModel['monthly']['car'];
             }
 
             // Оновлюємо Річний
             if ($yearlyPlan) {
-                // Якщо в API price_monthly вказано як 0 (бо платять раз на рік), 
-                // то вираховуємо місячний еквівалент: price_yearly / 12
                 $yBase = (float)($yearlyPlan['price_monthly'] ?? 0);
                 if ($yBase <= 0) {
                     $yBase = ((float)($yearlyPlan['price_yearly'] ?? 12000)) / 12;
@@ -115,7 +118,8 @@ class PricingController
         echo $this->blade->make('pricing', [
             'model' => $pricingModel, 
             'meta' => $meta,
-            'darkBg' => true
+            'darkBg' => true,
+            'apiConfig' => $fullConfig // Передаємо весь конфіг у View
         ])->render();
     }
 }

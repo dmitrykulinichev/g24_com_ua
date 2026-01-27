@@ -37,6 +37,13 @@
             background-color: #2563eb;
         }
     </style>
+
+    <!-- Передача конфігурації з бекенду на фронтенд -->
+    @if(isset($apiConfig) && $apiConfig)
+    <script>
+        window.landingConfig = {!! json_encode($apiConfig) !!};
+    </script>
+    @endif
 </head>
 <!-- Додаємо x-data, щоб Alpine працював на всій сторінці -->
 <body class="text-slate-800 antialiased bg-white" x-data="{ yearly: false }">

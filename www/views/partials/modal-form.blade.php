@@ -7,7 +7,7 @@
         Alpine.data('orderForm', () => ({
             showModal: false,
             orderType: 'monthly', // monthly, yearly, enterprise
-            formData: { name: '', email: '', company: '', phone: '', message: '', agreement: true },
+            formData: {}, // Динамічні дані
             loading: false,
             success: false,
             successMessage: '',
@@ -15,24 +15,94 @@
             fieldErrors: {},
             captchaWidgetId: null,
             plans: [],
-            siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}', // Fallback ключ
+            siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}',
+
+            // Конфігурація форм (Fallback)
+            forms: {
+                register_park: {
+                    fields: [
+                        {name: "owner_name", type: "text", required: true, label: "Ваше ім'я", placeholder: "Іван Іванов"},
+                        {name: "owner_email", type: "email", required: true, label: "Email (Логін)", placeholder: "email@example.com"},
+                        {name: "park_name", type: "text", required: true, label: "Назва парку / Компанії", placeholder: "ТОВ Автопарк"},
+                        {name: "phone", type: "tel", required: true, label: "Телефон", placeholder: "+380 ..."},
+                        {name: "plan", type: "hidden", required: true, default: "monthly"}
+                    ]
+                },
+                lead: {
+                    fields: [
+                        {name: "name", type: "text", required: false, label: "Ваше ім'я", placeholder: "Іван Іванов"},
+                        {name: "email", type: "email", required: true, label: "Email", placeholder: "email@example.com"},
+                        {name: "phone", type: "tel", required: false, label: "Телефон", placeholder: "+380 ..."},
+                        {name: "message", type: "textarea", required: true, label: "Ваше повідомлення", placeholder: "Кількість авто, особливі побажання..."},
+                        {name: "type", type: "hidden", required: false, default: "general"}
+                    ]
+                }
+            },
+
+            activeFormKey: 'register_park',
 
             init() {
-                this.fetchConfig();
+                // Спроба завантажити конфіг з глобальної змінної (якщо ми на сторінці Pricing)
+                if (window.landingConfig) {
+                    this.applyConfig(window.landingConfig);
+                } else {
+                    // Інакше вантажимо через API
+                    this.fetchConfig();
+                }
 
                 window.addEventListener('open-order-modal', (event) => {
                     this.showModal = true;
                     this.orderType = event.detail.type || 'monthly';
+                    this.updateActiveForm();
+
                     this.success = false;
                     this.generalError = null;
                     this.fieldErrors = {};
-                    this.formData.agreement = true;
-                    this.formData.message = '';
+                    this.formData = { agreement: true };
+
+                    this.initFormData();
 
                     setTimeout(() => {
                         this.renderCaptcha();
                     }, 100);
                 });
+
+                this.$watch('orderType', (value) => {
+                    this.updateActiveForm();
+                    if (this.activeFormKey === 'register_park') {
+                        this.formData.plan = value;
+                    }
+                });
+            },
+
+            updateActiveForm() {
+                if (this.orderType === 'enterprise') {
+                    this.activeFormKey = 'lead';
+                } else {
+                    this.activeFormKey = 'register_park';
+                }
+            },
+
+            initFormData() {
+                const fields = this.forms[this.activeFormKey].fields;
+                fields.forEach(field => {
+                    if (field.default !== undefined) {
+                        this.formData[field.name] = field.default;
+                    } else {
+                        if (field.name === 'plan' && this.activeFormKey === 'register_park') {
+                            this.formData[field.name] = this.orderType;
+                        } else {
+                            this.formData[field.name] = '';
+                        }
+                    }
+                });
+                this.formData.agreement = true;
+            },
+
+            applyConfig(data) {
+                if (data.plans) this.plans = data.plans;
+                if (data.recaptcha_site_key) this.siteKey = data.recaptcha_site_key;
+                if (data.forms) this.forms = data.forms;
             },
 
             fetchConfig() {
@@ -42,23 +112,14 @@
                         return response.json();
                     })
                     .then(data => {
-                        if (data.plans) {
-                            this.plans = data.plans;
-                        }
-                        if (data.recaptcha_site_key) {
-                            this.siteKey = data.recaptcha_site_key;
-                        }
+                        this.applyConfig(data);
                     })
                     .catch(err => console.error('Failed to load config:', err));
             },
 
             renderCaptcha() {
                 const container = document.getElementById('recaptcha-container');
-
-                if (!this.siteKey || this.siteKey === 'YOUR_SITE_KEY') {
-                    console.warn('Recaptcha Site Key not found');
-                    return;
-                }
+                if (!this.siteKey || this.siteKey === 'YOUR_SITE_KEY') return;
 
                 if (container && !container.hasChildNodes()) {
                     if (typeof grecaptcha !== 'undefined') {
@@ -88,6 +149,10 @@
                 return 'Створити акаунт';
             },
 
+            get activeFields() {
+                return this.forms[this.activeFormKey].fields;
+            },
+
             submitForm() {
                 this.generalError = null;
                 this.fieldErrors = {};
@@ -97,17 +162,15 @@
                     return;
                 }
 
-                // Валідація повідомлення для Enterprise
-                if (this.orderType === 'enterprise' && (!this.formData.message || this.formData.message.length < 5)) {
-                    this.fieldErrors.message = 'Будь ласка, напишіть коротко про ваші потреби.';
-                    return;
-                }
+                let hasEmptyRequired = false;
+                this.activeFields.forEach(field => {
+                    if (field.required && !this.formData[field.name] && field.type !== 'hidden') {
+                        this.fieldErrors[field.name] = 'Це поле обов\'язкове';
+                        hasEmptyRequired = true;
+                    }
+                });
 
-                // Валідація назви парку для Реєстрації
-                if (this.orderType !== 'enterprise' && (!this.formData.company || this.formData.company.length < 2)) {
-                    this.fieldErrors.company = 'Введіть назву парку.';
-                    return;
-                }
+                if (hasEmptyRequired) return;
 
                 let captchaToken = '';
                 if (this.siteKey && this.siteKey !== 'YOUR_SITE_KEY') {
@@ -125,26 +188,11 @@
 
                 this.loading = true;
 
-                let url = '/api/lead';
-                let payload = {};
+                let url = this.activeFormKey === 'lead' ? '/api/lead' : '/api/register';
 
-                if (this.orderType === 'enterprise') {
-                    url = '/api/lead';
-                    payload = {
-                        ...this.formData,
-                        plan: this.orderType,
-                        'g-recaptcha-response': captchaToken
-                    };
-                } else {
-                    url = '/api/register';
-                    payload = {
-                        park_name: this.formData.company,
-                        owner_name: this.formData.name,
-                        owner_email: this.formData.email,
-                        phone: this.formData.phone,
-                        plan: this.orderType,
-                        'g-recaptcha-response': captchaToken
-                    };
+                let payload = { ...this.formData };
+                if (captchaToken) {
+                    payload['g-recaptcha-response'] = captchaToken;
                 }
 
                 fetch(url, {
@@ -154,45 +202,30 @@
                 })
                 .then(async response => {
                     const data = await response.json();
-
                     this.loading = false;
 
                     if (response.ok) {
                         this.success = true;
                         this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
-                        this.formData = { name: '', email: '', company: '', phone: '', message: '', agreement: true };
+                        this.formData = { agreement: true };
                         if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                         setTimeout(() => { this.showModal = false; }, 5000);
                     } else {
                         if (response.status === 422 && data.errors) {
                             const apiErrors = data.errors;
-                            const mappedErrors = {};
+                            Object.keys(apiErrors).forEach(key => {
+                                this.fieldErrors[key] = apiErrors[key][0];
+                            });
 
-                            // Мапінг для Реєстрації
-                            if (apiErrors.park_name) mappedErrors.company = apiErrors.park_name[0];
-                            if (apiErrors.owner_name) mappedErrors.name = apiErrors.owner_name[0];
-                            if (apiErrors.owner_email) mappedErrors.email = apiErrors.owner_email[0];
-
-                            // Мапінг для Лідів (Enterprise)
-                            if (apiErrors.email) mappedErrors.email = apiErrors.email[0];
-                            if (apiErrors.name) mappedErrors.name = apiErrors.name[0];
-                            if (apiErrors.message) mappedErrors.message = apiErrors.message[0];
-
-                            // Спільні поля
-                            if (apiErrors.phone) mappedErrors.phone = apiErrors.phone[0];
-
-                            const knownKeys = ['park_name', 'owner_name', 'owner_email', 'phone', 'email', 'name', 'message'];
+                            const knownKeys = this.activeFields.map(f => f.name);
                             const unknownErrors = Object.keys(apiErrors).filter(key => !knownKeys.includes(key));
 
                             if (unknownErrors.length > 0) {
                                 this.generalError = apiErrors[unknownErrors[0]][0];
                             }
-
-                            this.fieldErrors = mappedErrors;
                         } else {
                             this.generalError = data.message || 'Сталася помилка сервера.';
                         }
-
                         if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                     }
                 })
@@ -228,7 +261,7 @@
             <!-- Загальна помилка -->
             <div x-show="generalError" class="error-message" x-text="generalError"></div>
 
-            <!-- Вибір типу оплати -->
+            <!-- Вибір типу оплати (тільки якщо не Enterprise) -->
             <div x-show="orderType !== 'enterprise'" class="payment-type-selector">
                 <label class="radio-label" :class="{ 'checked': orderType === 'monthly' }">
                     <input type="radio" name="orderType" value="monthly" x-model="orderType">
@@ -246,39 +279,35 @@
                 </label>
             </div>
 
-            <div class="form-group">
-                <label>Ваше ім'я <span class="text-red-500">*</span></label>
-                <input type="text" x-model="formData.name" placeholder="Іван Іванов" :class="{'border-red-500': fieldErrors.name}">
-                <div x-show="fieldErrors.name" x-text="fieldErrors.name" class="text-red-500 text-xs mt-1"></div>
-            </div>
+            <!-- Динамічні поля -->
+            <template x-for="field in activeFields" :key="field.name">
+                <div class="form-group" x-show="field.type !== 'hidden'">
+                    <label>
+                        <span x-text="field.label"></span>
+                        <span x-show="field.required" class="text-red-500">*</span>
+                    </label>
 
-            <div class="form-group">
-                <label>Email (Логін) <span class="text-red-500">*</span></label>
-                <input type="email" x-model="formData.email" placeholder="email@example.com" :class="{'border-red-500': fieldErrors.email}">
-                <div x-show="fieldErrors.email" x-text="fieldErrors.email" class="text-red-500 text-xs mt-1"></div>
-            </div>
+                    <!-- Text Input -->
+                    <template x-if="['text', 'email', 'tel'].includes(field.type)">
+                        <input :type="field.type"
+                               x-model="formData[field.name]"
+                               :placeholder="field.placeholder"
+                               :class="{'border-red-500': fieldErrors[field.name]}">
+                    </template>
 
-            <!-- Назва парку: показуємо ТІЛЬКИ якщо це НЕ Enterprise -->
-            <div class="form-group" x-show="orderType !== 'enterprise'">
-                <label>Назва парку / Компанії <span class="text-red-500">*</span></label>
-                <input type="text" x-model="formData.company" placeholder="ТОВ Автопарк" :class="{'border-red-500': fieldErrors.company}">
-                <div x-show="fieldErrors.company" x-text="fieldErrors.company" class="text-red-500 text-xs mt-1"></div>
-            </div>
+                    <!-- Textarea -->
+                    <template x-if="field.type === 'textarea'">
+                        <textarea x-model="formData[field.name]"
+                                  rows="3"
+                                  :placeholder="field.placeholder"
+                                  class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                                  :class="{'border-red-500': fieldErrors[field.name]}"></textarea>
+                    </template>
 
-            <div class="form-group">
-                <label>Телефон <span class="text-red-500">*</span></label>
-                <input type="tel" x-model="formData.phone" placeholder="+380 ..." :class="{'border-red-500': fieldErrors.phone}">
-                <div x-show="fieldErrors.phone" x-text="fieldErrors.phone" class="text-red-500 text-xs mt-1"></div>
-            </div>
-
-            <!-- Поле повідомлення (Тільки для Enterprise) -->
-            <div class="form-group" x-show="orderType === 'enterprise'">
-                <label>Ваше повідомлення <span class="text-red-500">*</span></label>
-                <textarea x-model="formData.message" rows="3" placeholder="Кількість авто, особливі побажання..."
-                          class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                          :class="{'border-red-500': fieldErrors.message}"></textarea>
-                <div x-show="fieldErrors.message" x-text="fieldErrors.message" class="text-red-500 text-xs mt-1"></div>
-            </div>
+                    <!-- Помилка поля -->
+                    <div x-show="fieldErrors[field.name]" x-text="fieldErrors[field.name]" class="text-red-500 text-xs mt-1"></div>
+                </div>
+            </template>
 
             <!-- Контейнер для reCAPTCHA -->
             <div class="form-group" style="display: flex; justify-content: center; margin-bottom: 1rem;">

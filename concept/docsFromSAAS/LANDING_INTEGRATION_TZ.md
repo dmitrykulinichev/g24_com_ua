@@ -31,7 +31,7 @@ X-Landing-Api-Key: ваш_секретний_ключ
 ## 📡 Ендпоінти
 
 ### 1. Отримання конфігурації (GET /config)
-Отримує список доступних тарифних планів та налаштування (ключ капчі).
+Отримує список доступних тарифних планів, налаштування (ключ капчі) та структуру форм.
 
 - **URL:** `/config`
 - **Method:** `GET`
@@ -60,7 +60,27 @@ X-Landing-Api-Key: ваш_секретний_ключ
       "currency": "UAH"
     }
   ],
-  "recaptcha_site_key": "6Lc..." // Ключ для ініціалізації reCAPTCHA на фронтенді
+  "recaptcha_site_key": "6Lc...",
+  "forms": {
+    "register_park": {
+      "fields": [
+        {"name": "park_name", "type": "text", "required": true, "label": "Назва Парку", "placeholder": "Наприклад: АвтоЛюкс"},
+        {"name": "owner_name", "type": "text", "required": true, "label": "Ім'я Власника", "placeholder": "Ваше ім'я"},
+        {"name": "owner_email", "type": "email", "required": true, "label": "Email", "placeholder": "email@example.com"},
+        {"name": "phone", "type": "tel", "required": true, "label": "Телефон", "placeholder": "+380..."},
+        {"name": "plan", "type": "hidden", "required": true, "default": "monthly"}
+      ]
+    },
+    "lead": {
+      "fields": [
+        {"name": "email", "type": "email", "required": true, "label": "Email", "placeholder": "email@example.com"},
+        {"name": "message", "type": "textarea", "required": true, "label": "Повідомлення", "placeholder": "Опишіть ваш запит..."},
+        {"name": "name", "type": "text", "required": false, "label": "Ім'я", "placeholder": "Ваше ім'я"},
+        {"name": "phone", "type": "tel", "required": false, "label": "Телефон", "placeholder": "+380..."},
+        {"name": "type", "type": "hidden", "required": false, "default": "general"}
+      ]
+    }
+  }
 }
 ```
 
