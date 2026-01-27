@@ -45,9 +45,10 @@ class PricingController
 
         // 2. Логіка кешування
         $cacheFile = __DIR__ . '/../../storage/cache/pricing_data.json';
-        $cacheTtl = (int)($_ENV['PRICING_CACHE_TTL'] ?? 86400); 
+        // Використовуємо нову змінну. Дефолт 24 години.
+        $cacheTtl = (int)($_ENV['API_CONFIG_CACHE_TTL'] ?? 86400); 
         
-        $fullConfig = null; // Тут буде весь об'єкт відповіді (plans, forms, recaptcha)
+        $fullConfig = null;
 
         // Спроба читання з кешу
         if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheTtl)) {
@@ -65,7 +66,6 @@ class PricingController
                 if ($response['status'] === 200 && !empty($response['body'])) {
                     $fullConfig = $response['body'];
                     
-                    // Зберігаємо ПОВНИЙ об'єкт у кеш
                     if (!is_dir(dirname($cacheFile))) {
                         mkdir(dirname($cacheFile), 0755, true);
                     }
@@ -91,14 +91,12 @@ class PricingController
                 }
             }
 
-            // Оновлюємо Місячний
             if ($monthlyPlan) {
                 $pricingModel['monthly']['base'] = (int)($monthlyPlan['price_monthly'] ?? 1000);
                 $pricingModel['monthly']['car'] = (int)($monthlyPlan['price_per_car'] ?? 200);
                 $pricingModel['yearly']['old_car'] = $pricingModel['monthly']['car'];
             }
 
-            // Оновлюємо Річний
             if ($yearlyPlan) {
                 $yBase = (float)($yearlyPlan['price_monthly'] ?? 0);
                 if ($yBase <= 0) {
@@ -119,7 +117,7 @@ class PricingController
             'model' => $pricingModel, 
             'meta' => $meta,
             'darkBg' => true,
-            'apiConfig' => $fullConfig // Передаємо весь конфіг у View
+            'apiConfig' => $fullConfig
         ])->render();
     }
 }

@@ -1,3 +1,6 @@
+<!-- Підключення Google reCAPTCHA -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
 <!-- Логіка Alpine.js винесена в скрипт -->
 <script>
     document.addEventListener('alpine:init', () => {
@@ -43,10 +46,6 @@
                     this.applyConfig(window.landingConfig);
                 } else {
                     this.fetchConfig();
-                    // Якщо ключа немає в конфігу, беремо з .env
-                    if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
-                        this.loadRecaptchaV3(this.siteKey);
-                    }
                 }
 
                 window.addEventListener('open-order-modal', (event) => {
@@ -60,6 +59,9 @@
                     this.formData = { agreement: true };
 
                     this.initFormData();
+
+                    // Чекаємо завантаження капчі
+                    this.waitForRecaptcha();
                 });
 
                 this.$watch('orderType', (value) => {
@@ -70,14 +72,19 @@
                 });
             },
 
-            loadRecaptchaV3(siteKey) {
-                if (document.getElementById('recaptcha-script-modal')) return;
-                if (document.getElementById('recaptcha-script')) return;
-
-                const script = document.createElement('script');
-                script.id = 'recaptcha-script-modal';
-                script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
-                document.head.appendChild(script);
+            waitForRecaptcha() {
+                let attempts = 0;
+                const check = () => {
+                    if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
+                        // Капча готова
+                    } else if (attempts < 20) {
+                        attempts++;
+                        setTimeout(check, 500);
+                    } else {
+                        console.warn('reCAPTCHA library not loaded');
+                    }
+                };
+                check();
             },
 
             updateActiveForm() {
@@ -96,7 +103,11 @@
                     } else {
                         if (field.name === 'plan' && this.activeFormKey === 'register_park') {
                             this.formData[field.name] = this.orderType;
-                        } else {
+                        }
+                        else if (field.name === 'type' && this.activeFormKey === 'lead' && this.orderType === 'enterprise') {
+                            this.formData[field.name] = 'enterprise';
+                        }
+                        else {
                             this.formData[field.name] = '';
                         }
                     }
@@ -106,12 +117,7 @@
 
             applyConfig(data) {
                 if (data.plans) this.plans = data.plans;
-                if (data.recaptcha_site_key) {
-                    this.siteKey = data.recaptcha_site_key;
-                    this.loadRecaptchaV3(this.siteKey);
-                } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
-                    this.loadRecaptchaV3(this.siteKey);
-                }
+                if (data.recaptcha_site_key) this.siteKey = data.recaptcha_site_key;
                 if (data.forms) this.forms = data.forms;
             },
 
@@ -125,19 +131,6 @@
                         this.applyConfig(data);
                     })
                     .catch(err => console.error('Failed to load config:', err));
-            },
-
-            async getRecaptchaToken() {
-                if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
-
-                return new Promise((resolve) => {
-                    grecaptcha.ready(() => {
-                        const action = this.activeFormKey === 'lead' ? 'lead_form' : 'register_park';
-                        grecaptcha.execute(this.siteKey, {action: action}).then((token) => {
-                            resolve(token);
-                        });
-                    });
-                });
             },
 
             get modalTitle() {
@@ -155,7 +148,7 @@
                 return this.forms[this.activeFormKey].fields;
             },
 
-            async submitForm() {
+            submitForm() {
                 this.generalError = null;
                 this.fieldErrors = {};
 
@@ -176,18 +169,25 @@
 
                 this.loading = true;
 
-                let captchaToken = '';
-                try {
-                    captchaToken = await this.getRecaptchaToken();
-                } catch (e) {
-                    console.error('Recaptcha error:', e);
+                // Отримуємо токен v3
+                if (typeof grecaptcha !== 'undefined') {
+                    grecaptcha.ready(() => {
+                        const action = this.activeFormKey === 'lead' ? 'lead_form' : 'register_park';
+                        grecaptcha.execute(this.siteKey, {action: action}).then((token) => {
+                            this.sendData(token);
+                        });
+                    });
+                } else {
+                    this.sendData('');
                 }
+            },
 
+            sendData(token) {
                 let url = this.activeFormKey === 'lead' ? '/api/lead' : '/api/register';
 
                 let payload = { ...this.formData };
-                if (captchaToken) {
-                    payload['g-recaptcha-response'] = captchaToken;
+                if (token) {
+                    payload['g-recaptcha-response'] = token;
                 }
 
                 fetch(url, {
@@ -319,9 +319,9 @@
             <button type="submit" class="btn-primary" style="width: 100%" :disabled="loading || !formData.agreement" x-text="buttonText"></button>
 
             <div class="text-center text-xs text-gray-400 mt-2">
-                This site is protected by reCAPTCHA and the Google
-                <a href="https://policies.google.com/privacy" class="underline">Privacy Policy</a> and
-                <a href="https://policies.google.com/terms" class="underline">Terms of Service</a> apply.
+                Цей сайт захищений reCAPTCHA і застосовуються
+                <a href="https://policies.google.com/privacy" class="underline" target="_blank">Політика конфіденційності</a> та
+                <a href="https://policies.google.com/terms" class="underline" target="_blank">Умови використання</a> Google.
             </div>
         </form>
     </div>

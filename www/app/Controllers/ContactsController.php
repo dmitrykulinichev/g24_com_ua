@@ -20,7 +20,7 @@ class ContactsController
     {
         // Логіка отримання конфігу (для ключа капчі)
         $cacheFile = __DIR__ . '/../../storage/cache/pricing_data.json';
-        $cacheTtl = (int)($_ENV['PRICING_CACHE_TTL'] ?? 86400); 
+        $cacheTtl = (int)($_ENV['API_CONFIG_CACHE_TTL'] ?? 86400); 
         
         $fullConfig = null;
 
@@ -46,7 +46,7 @@ class ContactsController
             }
         }
 
-        // Фільтруємо конфіг для контактів (прибираємо зайві плани і форми реєстрації)
+        // Фільтруємо конфіг для контактів
         $contactConfig = [];
         if ($fullConfig) {
             $contactConfig['recaptcha_site_key'] = $fullConfig['recaptcha_site_key'] ?? null;

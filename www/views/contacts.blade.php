@@ -27,25 +27,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Стилі для помилок */
-        .border-red-500 { border-color: #ef4444 !important; }
-        .text-red-500 { color: #ef4444; }
-        .text-xs { font-size: 0.75rem; }
-        .mt-1 { margin-top: 0.25rem; }
-        /* Приховуємо бейдж рекапчі */
-        .grecaptcha-badge { visibility: hidden; }
-    </style>
-
-    <!-- Передача конфігурації з бекенду -->
-    @if(isset($apiConfig) && $apiConfig)
-    <script>
-        window.landingConfig = {!! json_encode($apiConfig) !!};
-    </script>
-    @endif
-
-    <!-- Підключення Google reCAPTCHA v3 -->
+    <!-- Підключення Google reCAPTCHA (Локально для цієї сторінки) -->
     <script>
         function loadRecaptchaV3(siteKey) {
             if (document.getElementById('recaptcha-script')) return;
@@ -55,6 +37,25 @@
             document.head.appendChild(script);
         }
     </script>
+
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        /* Стилі для помилок */
+        .border-red-500 { border-color: #ef4444 !important; }
+        .text-red-500 { color: #ef4444; }
+        .text-xs { font-size: 0.75rem; }
+        .mt-1 { margin-top: 0.25rem; }
+        /* Приховуємо бейдж рекапчі */
+        .grecaptcha-badge { visibility: hidden; }
+        [x-cloak] { display: none !important; }
+    </style>
+
+    <!-- Передача конфігурації з бекенду -->
+    @if(isset($apiConfig) && $apiConfig)
+    <script>
+        window.landingConfig = {!! json_encode($apiConfig) !!};
+    </script>
+    @endif
 </head>
 <body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
@@ -75,14 +76,15 @@
             <div class="grid md:grid-cols-5 gap-8">
 
                 <!-- Блок для нових клієнтів (Динамічна Форма) -->
-                <div class="md:col-span-3 bg-white rounded-2xl shadow-lg border border-slate-100 p-8" x-data="{
+                <div class="md:col-span-3 bg-white rounded-2xl shadow-lg border border-slate-100 p-8 min-h-[400px]" x-data="{
                     formData: {},
                     loading: false,
                     success: false,
+                    ready: false, // Прапорець готовності форми
                     generalError: null,
                     fieldErrors: {},
                     siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}',
-                    fields: [], // Поля форми
+                    fields: [],
 
                     // Fallback конфігурація
                     fallbackFields: [
@@ -94,17 +96,32 @@
                     ],
 
                     init() {
-                        // 1. Завантажуємо конфіг
                         if (window.landingConfig) {
                             this.applyConfig(window.landingConfig);
                         } else {
                             this.fields = this.fallbackFields;
                             this.initFormData();
-                            // Якщо ключа немає в конфігу, беремо з .env (вже в this.siteKey)
+                            this.ready = true; // Готово (fallback)
+
                             if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
                                 loadRecaptchaV3(this.siteKey);
                             }
                         }
+
+                        this.waitForRecaptcha();
+                    },
+
+                    waitForRecaptcha() {
+                        let attempts = 0;
+                        const check = () => {
+                            if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
+                                // Ready
+                            } else if (attempts < 20) {
+                                attempts++;
+                                setTimeout(check, 500);
+                            }
+                        };
+                        check();
                     },
 
                     applyConfig(data) {
@@ -126,6 +143,7 @@
                         }
 
                         this.initFormData();
+                        this.ready = true; // Готово (з конфігу)
                     },
 
                     initFormData() {
@@ -142,11 +160,21 @@
                         if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
 
                         return new Promise((resolve) => {
-                            grecaptcha.ready(() => {
-                                grecaptcha.execute(this.siteKey, {action: 'contact'}).then((token) => {
-                                    resolve(token);
-                                });
-                            });
+                            const checkGrecaptcha = setInterval(() => {
+                                if (typeof grecaptcha !== 'undefined' && grecaptcha.ready) {
+                                    clearInterval(checkGrecaptcha);
+                                    grecaptcha.ready(() => {
+                                        grecaptcha.execute(this.siteKey, {action: 'contact'}).then((token) => {
+                                            resolve(token);
+                                        });
+                                    });
+                                }
+                            }, 100);
+
+                            setTimeout(() => {
+                                clearInterval(checkGrecaptcha);
+                                resolve('');
+                            }, 5000);
                         });
                     },
 
@@ -217,15 +245,24 @@
                     <h2 class="text-2xl font-bold text-slate-900 mb-2">Ще не з нами?</h2>
                     <p class="text-slate-600 mb-8">Заповніть форму, якщо у вас є питання щодо підключення, тарифів або можливостей системи.</p>
 
-                    <div x-show="success" class="bg-green-50 text-green-800 p-6 rounded-lg text-center mb-6 border border-green-100">
+                    <!-- Спінер завантаження -->
+                    <div x-show="!ready" class="flex justify-center items-center h-64">
+                        <svg class="animate-spin h-10 w-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                    </div>
+
+                    <div x-show="success" x-cloak class="bg-green-50 text-green-800 p-6 rounded-lg text-center mb-6 border border-green-100">
                         <div class="text-4xl mb-2">✅</div>
                         <strong>Повідомлення відправлено!</strong><br>
                         Ми зв'яжемося з вами найближчим часом.
                     </div>
 
-                    <div x-show="generalError" class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 border border-red-100 text-sm" x-text="generalError"></div>
+                    <div x-show="generalError" x-cloak class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 border border-red-100 text-sm" x-text="generalError"></div>
 
-                    <form x-show="!success" @submit.prevent="submitForm" class="space-y-4">
+                    <!-- Форма показується тільки коли ready = true -->
+                    <form x-show="ready && !success" @submit.prevent="submitForm" class="space-y-4" novalidate x-cloak>
 
                         <!-- Динамічні поля -->
                         <template x-for="field in fields" :key="field.name">

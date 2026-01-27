@@ -23,7 +23,7 @@ class RegistrationController
     public function getConfig()
     {
         $cacheFile = __DIR__ . '/../../storage/cache/pricing_data.json';
-        $cacheTtl = (int)($_ENV['PRICING_CACHE_TTL'] ?? 86400);
+        $cacheTtl = (int)($_ENV['API_CONFIG_CACHE_TTL'] ?? 86400);
 
         try {
             if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheTtl)) {
@@ -94,7 +94,6 @@ class RegistrationController
             if ($response['status'] >= 400) {
                 Logger::error('SPA API Error (Register)', ['status' => $response['status'], 'body' => $response['raw_body']]);
                 
-                // Сповіщення про помилку в Telegram
                 $this->sendApiErrorToTelegram($response, $payload['owner_email']);
 
                 if ($response['status'] >= 500) {
