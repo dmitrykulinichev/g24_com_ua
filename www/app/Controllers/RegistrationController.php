@@ -4,53 +4,51 @@ namespace App\Controllers;
 
 use App\Services\Logger;
 use App\Services\SpaApiService;
+use App\Services\LeadStorageService;
+use App\Services\TelegramService;
 
 class RegistrationController
 {
     protected $api;
+    protected $storage;
+    protected $telegram;
 
     public function __construct()
     {
         $this->api = new SpaApiService();
+        $this->storage = new LeadStorageService();
+        $this->telegram = new TelegramService();
     }
 
     public function getConfig()
     {
-        // Використовуємо той самий файл кешу, що і PricingController
         $cacheFile = __DIR__ . '/../../storage/cache/pricing_data.json';
         $cacheTtl = (int)($_ENV['PRICING_CACHE_TTL'] ?? 86400);
 
         try {
-            // 1. Спробуємо віддати з кешу
             if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheTtl)) {
                 $content = @file_get_contents($cacheFile);
                 if ($content) {
-                    // Віддаємо JSON з кешу
                     header('Content-Type: application/json');
                     echo $content;
                     return;
                 }
             }
 
-            // 2. Якщо кешу немає — йдемо в API
             $response = $this->api->getLandingConfig();
             
             if ($response['status'] === 200 && !empty($response['body'])) {
-                // Зберігаємо в кеш
                 if (!is_dir(dirname($cacheFile))) {
                     mkdir(dirname($cacheFile), 0755, true);
                 }
-                // Зберігаємо повну відповідь (plans, recaptcha, forms)
                 file_put_contents($cacheFile, json_encode($response['body']));
             }
 
-            // Віддаємо свіжі дані
             response()->json($response['body'], $response['status']);
 
         } catch (\Throwable $e) {
             Logger::error('Error fetching config', ['message' => $e->getMessage()]);
             
-            // Якщо API впало, а кеш є (навіть старий) — спробуємо віддати його
             if (file_exists($cacheFile)) {
                 $content = @file_get_contents($cacheFile);
                 if ($content) {
@@ -83,6 +81,13 @@ class RegistrationController
                 'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             ];
             
+            // 1. Зберігаємо локально
+            $this->storage->save($payload, 'register');
+
+            // 2. Відправляємо в Telegram
+            $this->sendToTelegram($payload);
+
+            // 3. Відправляємо на SPA API
             $response = $this->api->registerTenant($payload);
 
             if ($response['status'] >= 500) {
@@ -98,5 +103,18 @@ class RegistrationController
             ]);
             response()->json(['message' => 'Server Error'], 500);
         }
+    }
+
+    private function sendToTelegram($data)
+    {
+        $msg = "🚀 <b>Нова реєстрація парку!</b>\n\n";
+        $msg .= "🏢 Парк: " . ($data['park_name'] ?: '-') . "\n";
+        $msg .= "👤 Власник: " . ($data['owner_name'] ?: '-') . "\n";
+        $msg .= "📧 Email: " . ($data['owner_email'] ?: '-') . "\n";
+        $msg .= "📱 Телефон: " . ($data['phone'] ?: '-') . "\n";
+        $msg .= "💳 План: " . ($data['plan'] ?: '-') . "\n";
+        $msg .= "\n🌍 IP: " . $data['ip'];
+
+        $this->telegram->sendMessage($msg);
     }
 }

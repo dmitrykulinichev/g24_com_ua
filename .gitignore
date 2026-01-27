@@ -1,0 +1,19 @@
+# Environment variables
+www/.env
+
+# Composer dependencies
+www/vendor/
+
+# Storage & Cache
+www/storage/cache/
+www/storage/leads/
+www/storage/logs/
+
+# IDE settings
+.idea/
+.vscode/
+*.swp
+
+# OS generated files
+.DS_Store
+Thumbs.db

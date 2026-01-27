@@ -26,19 +26,32 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Підключення Google reCAPTCHA (Локально для цієї сторінки) -->
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
     <style>
         body { font-family: 'Inter', sans-serif; }
+        /* Стилі для помилок */
+        .border-red-500 { border-color: #ef4444 !important; }
+        .text-red-500 { color: #ef4444; }
+        .text-xs { font-size: 0.75rem; }
+        .mt-1 { margin-top: 0.25rem; }
     </style>
+
+    <!-- Передача конфігурації з бекенду -->
+    @if(isset($apiConfig) && $apiConfig)
+    <script>
+        window.landingConfig = {!! json_encode($apiConfig) !!};
+    </script>
+    @endif
 </head>
 <body class="text-slate-800 antialiased bg-white">
     @include('partials.header')
 
-    <!-- Прибрано pt-32 з main -->
     <main>
-        <!-- Hero Section: Додано pt-32 lg:pt-40 та декоративний фон -->
+        <!-- Hero Section -->
         <div class="relative bg-slate-900 text-white pt-32 pb-16 lg:pt-40 lg:pb-24 text-center overflow-hidden">
-            <!-- Декоративний фон -->
             <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
             <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
 
@@ -51,74 +64,167 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-10 relative z-10">
             <div class="grid md:grid-cols-5 gap-8">
 
-                <!-- Блок для нових клієнтів (Форма) -->
+                <!-- Блок для нових клієнтів (Динамічна Форма) -->
                 <div class="md:col-span-3 bg-white rounded-2xl shadow-lg border border-slate-100 p-8" x-data="{
-                    formData: { name: '', email: '', phone: '', message: '' },
+                    formData: {},
                     loading: false,
                     success: false,
-                    error: null,
+                    generalError: null,
+                    fieldErrors: {},
                     captchaWidgetId: null,
+                    siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}',
+                    fields: [], // Поля форми
+
+                    // Fallback конфігурація
+                    fallbackFields: [
+                        {name: 'name', type: 'text', required: false, label: 'Ваше ім\'я', placeholder: 'Іван Іванов'},
+                        {name: 'email', type: 'email', required: true, label: 'Email', placeholder: 'email@example.com'},
+                        {name: 'phone', type: 'tel', required: false, label: 'Телефон', placeholder: '+380 ...'},
+                        {name: 'message', type: 'textarea', required: true, label: 'Ваше питання', placeholder: 'Наприклад: Чи є інтеграція з Bolt?'},
+                        {name: 'type', type: 'hidden', required: false, default: 'contact'}
+                    ],
 
                     init() {
-                        setTimeout(() => {
-                            if (typeof grecaptcha !== 'undefined') {
-                                try {
-                                    this.captchaWidgetId = grecaptcha.render('contact-recaptcha', {
-                                        'sitekey': '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? 'YOUR_SITE_KEY' }}'
-                                    });
-                                } catch (e) {
-                                    console.error('Captcha render error:', e);
-                                }
+                        // 1. Завантажуємо конфіг
+                        if (window.landingConfig) {
+                            this.applyConfig(window.landingConfig);
+                        } else {
+                            this.fields = this.fallbackFields;
+                            this.initFormData();
+                        }
+
+                        // 2. Рендеримо капчу (чекаємо завантаження бібліотеки)
+                        this.waitForRecaptcha();
+                    },
+
+                    waitForRecaptcha() {
+                        let attempts = 0;
+                        const check = () => {
+                            if (typeof grecaptcha !== 'undefined' && grecaptcha.render) {
+                                this.renderCaptcha();
+                            } else if (attempts < 20) { // Чекаємо до 10 секунд (20 * 500мс)
+                                attempts++;
+                                setTimeout(check, 500);
+                            } else {
+                                console.warn('reCAPTCHA library not loaded');
                             }
-                        }, 500);
+                        };
+                        check();
+                    },
+
+                    applyConfig(data) {
+                        if (data.recaptcha_site_key) this.siteKey = data.recaptcha_site_key;
+
+                        if (data.forms && data.forms.lead && data.forms.lead.fields) {
+                            this.fields = data.forms.lead.fields;
+                            const typeField = this.fields.find(f => f.name === 'type');
+                            if (typeField) {
+                                typeField.default = 'contact';
+                            }
+                        } else {
+                            this.fields = this.fallbackFields;
+                        }
+
+                        this.initFormData();
+                    },
+
+                    initFormData() {
+                        this.fields.forEach(field => {
+                            if (field.default !== undefined) {
+                                this.formData[field.name] = field.default;
+                            } else {
+                                this.formData[field.name] = '';
+                            }
+                        });
+                    },
+
+                    renderCaptcha() {
+                        const container = document.getElementById('contact-recaptcha');
+                        if (!container) return;
+                        if (!this.siteKey || this.siteKey === 'YOUR_SITE_KEY') return;
+
+                        // Перевіряємо, чи вже не відрендерено
+                        if (container.hasChildNodes()) return;
+
+                        try {
+                            this.captchaWidgetId = grecaptcha.render('contact-recaptcha', {
+                                'sitekey': this.siteKey
+                            });
+                        } catch (e) {
+                            console.error('Captcha render error:', e);
+                        }
                     },
 
                     submitForm() {
-                        let captchaToken = '';
-                        if (typeof grecaptcha !== 'undefined') {
-                            try {
-                                captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
-                            } catch (e) {}
+                        this.generalError = null;
+                        this.fieldErrors = {};
 
-                            @if(($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== '' && ($_ENV['RECAPTCHA_SITE_KEY'] ?? '') !== 'YOUR_SITE_KEY')
+                        let hasEmptyRequired = false;
+                        this.fields.forEach(field => {
+                            if (field.required && !this.formData[field.name] && field.type !== 'hidden') {
+                                this.fieldErrors[field.name] = 'Це поле обов\'язкове';
+                                hasEmptyRequired = true;
+                            }
+                        });
+                        if (hasEmptyRequired) return;
+
+                        let captchaToken = '';
+                        if (this.siteKey && this.siteKey !== 'YOUR_SITE_KEY') {
+                            if (typeof grecaptcha !== 'undefined') {
+                                try {
+                                    captchaToken = grecaptcha.getResponse(this.captchaWidgetId);
+                                } catch (e) {}
+
                                 if (!captchaToken) {
-                                    this.error = 'Будь ласка, пройдіть перевірку &quot;Я не робот&quot;.';
+                                    this.generalError = 'Будь ласка, пройдіть перевірку &quot;Я не робот&quot;.';
                                     return;
                                 }
-                            @endif
+                            }
                         }
 
                         this.loading = true;
-                        this.error = null;
 
-                        let payload = {
-                            name: this.formData.name,
-                            email: this.formData.email,
-                            phone: this.formData.phone,
-                            company: 'Питання з сайту: ' + this.formData.message,
-                            'g-recaptcha-response': captchaToken
-                        };
+                        let payload = { ...this.formData };
+                        if (captchaToken) {
+                            payload['g-recaptcha-response'] = captchaToken;
+                        }
+                        if (!payload.type) payload.type = 'contact';
 
                         fetch('/api/lead', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
                         })
-                        .then(response => response.json())
-                        .then(data => {
+                        .then(async response => {
+                            const data = await response.json();
                             this.loading = false;
-                            if (data.status === 'success') {
+
+                            if (response.ok) {
                                 this.success = true;
-                                this.formData = { name: '', email: '', phone: '', message: '' };
+                                this.initFormData();
                                 if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                             } else {
-                                this.error = data.errors ? Object.values(data.errors)[0] : data.message;
+                                if (response.status === 422 && data.errors) {
+                                    const apiErrors = data.errors;
+                                    Object.keys(apiErrors).forEach(key => {
+                                        this.fieldErrors[key] = apiErrors[key][0];
+                                    });
+
+                                    const knownKeys = this.fields.map(f => f.name);
+                                    const unknownErrors = Object.keys(apiErrors).filter(key => !knownKeys.includes(key));
+
+                                    if (unknownErrors.length > 0) {
+                                        this.generalError = apiErrors[unknownErrors[0]][0];
+                                    }
+                                } else {
+                                    this.generalError = data.message || 'Сталася помилка. Спробуйте пізніше.';
+                                }
                                 if (typeof grecaptcha !== 'undefined') try { grecaptcha.reset(this.captchaWidgetId); } catch(e){}
                             }
                         })
                         .catch(() => {
                             this.loading = false;
-                            this.error = 'Сталася помилка. Спробуйте пізніше.';
+                            this.generalError = 'Сталася помилка мережі. Спробуйте пізніше.';
                         });
                     }
                 }">
@@ -131,31 +237,43 @@
                         Ми зв'яжемося з вами найближчим часом.
                     </div>
 
-                    <div x-show="error" class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 border border-red-100 text-sm" x-text="error"></div>
+                    <div x-show="generalError" class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 border border-red-100 text-sm" x-text="generalError"></div>
 
                     <form x-show="!success" @submit.prevent="submitForm" class="space-y-4">
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Ваше ім'я</label>
-                                <input type="text" x-model="formData.name" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
+
+                        <!-- Динамічні поля -->
+                        <template x-for="field in fields" :key="field.name">
+                            <div x-show="field.type !== 'hidden'">
+                                <label class="block text-sm font-medium text-slate-700 mb-1">
+                                    <span x-text="field.label"></span>
+                                    <span x-show="field.required" class="text-red-500">*</span>
+                                </label>
+
+                                <!-- Text/Email/Tel Input -->
+                                <template x-if="['text', 'email', 'tel'].includes(field.type)">
+                                    <input :type="field.type"
+                                           x-model="formData[field.name]"
+                                           :placeholder="field.placeholder"
+                                           class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                                           :class="{'border-red-500': fieldErrors[field.name]}">
+                                </template>
+
+                                <!-- Textarea -->
+                                <template x-if="field.type === 'textarea'">
+                                    <textarea x-model="formData[field.name]"
+                                              rows="4"
+                                              :placeholder="field.placeholder"
+                                              class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"
+                                              :class="{'border-red-500': fieldErrors[field.name]}"></textarea>
+                                </template>
+
+                                <!-- Помилка поля -->
+                                <div x-show="fieldErrors[field.name]" x-text="fieldErrors[field.name]" class="text-red-500 text-xs mt-1"></div>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">Email</label>
-                                <input type="email" x-model="formData.email" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
-                            </div>
-                        </div>
+                        </template>
 
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Телефон</label>
-                            <input type="tel" x-model="formData.phone" required class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Ваше питання</label>
-                            <textarea x-model="formData.message" rows="4" required placeholder="Наприклад: Чи є інтеграція з Bolt?" class="w-full px-4 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none transition"></textarea>
-                        </div>
-
-                        <div class="flex justify-center">
+                        <!-- Капча -->
+                        <div class="flex justify-center mt-4">
                             <div id="contact-recaptcha"></div>
                         </div>
 

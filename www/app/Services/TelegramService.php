@@ -13,58 +13,34 @@ class TelegramService
         $this->chatId = $_ENV['TELEGRAM_CHAT_ID'] ?? null;
     }
 
-    public function sendLead($data)
+    public function sendMessage(string $message)
     {
-        if (!$this->token || !$this->chatId) {
-            Logger::info('Telegram не налаштовано (відсутній токен або chat_id)');
+        if (empty($this->token) || empty($this->chatId)) {
             return false;
         }
 
-        $message = "🚀 *Нова заявка Garage24*\n\n";
-        $message .= "👤 Ім'я: " . $data['name'] . "\n";
-        $message .= "📧 Email: " . ($data['email'] ?? '-') . "\n";
-        $message .= "🏢 Компанія: " . ($data['company'] ?? '-') . "\n";
-        $message .= "📞 Телефон: " . $data['phone'] . "\n";
-        
-        if (!empty($data['plan'])) {
-            $message .= "📦 Тариф: *" . $data['plan'] . "*";
-        }
+        try {
+            $url = "https://api.telegram.org/bot{$this->token}/sendMessage";
+            $data = [
+                'chat_id' => $this->chatId,
+                'text' => $message,
+                'parse_mode' => 'HTML'
+            ];
 
-        return $this->sendMessage($message);
-    }
-
-    protected function sendMessage($text)
-    {
-        $url = "https://api.telegram.org/bot{$this->token}/sendMessage";
-        $params = [
-            'chat_id' => $this->chatId,
-            'text' => $text,
-            'parse_mode' => 'Markdown'
-        ];
-
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        
-        if (curl_errno($ch)) {
-            Logger::error('Помилка з\'єднання з Telegram', ['error' => curl_error($ch)]);
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_TIMEOUT, 5); // Таймаут 5 сек, щоб не гальмувати сайт
+            
+            $result = curl_exec($ch);
             curl_close($ch);
-            return false;
-        } 
-        
-        if ($httpCode >= 400) {
-            Logger::error("Помилка API Telegram ($httpCode)", ['response' => $response]);
-            curl_close($ch);
+
+            return $result;
+        } catch (\Throwable $e) {
+            Logger::error('Telegram send error', ['msg' => $e->getMessage()]);
             return false;
         }
-
-        Logger::info("Успішно відправлено в Telegram");
-        curl_close($ch);
-        return true;
     }
 }
