@@ -27,6 +27,9 @@ $app->get('/blog', 'App\Controllers\BlogController@index');
 $app->get('/blog/{slug}', 'App\Controllers\BlogController@show');
 $app->get('/api/blog/search', 'App\Controllers\SearchController@searchBlog');
 
+// Sitemap
+$app->get('/sitemap.xml', 'App\Controllers\SitemapController@index');
+
 // API для статичних сторінок (модалки)
 $app->get('/api/page/{slug}', 'App\Controllers\PageController@apiShow');
 
@@ -38,4 +41,4 @@ $app->get('/api/config', 'App\Controllers\RegistrationController@getConfig');
 $app->post('/api/register', 'App\Controllers\RegistrationController@register');
 $app->post('/api/resend', 'App\Controllers\RegistrationController@resend');
 $app->post('/api/check-status', 'App\Controllers\RegistrationController@checkStatus');
-$app->post('/api/abandoned', 'App\Controllers\RegistrationController@abandoned'); // Новий маршрут
+$app->post('/api/abandoned', 'App\Controllers\RegistrationController@abandoned');

@@ -66,9 +66,10 @@
                     }
                 }
 
-                const lastResend = localStorage.getItem('lastResendAttempt');
-                if (lastResend) {
-                    const diff = Math.floor((Date.now() - parseInt(lastResend)) / 1000);
+                // Відновлення таймера
+                const state = this.getState();
+                if (state.lastResend) {
+                    const diff = Math.floor((Date.now() - state.lastResend) / 1000);
                     if (diff < 60) {
                         this.startResendTimer(60 - diff);
                     }
@@ -77,7 +78,7 @@
                 // Авто-збереження чернетки
                 this.$watch('formData', (val) => {
                     if (this.activeFormKey === 'register_park' && !this.success) {
-                        localStorage.setItem(this.draftKey, JSON.stringify(val));
+                        this.updateState({ draft: val });
                     }
                 });
 
@@ -100,8 +101,6 @@
 
                     this.initFormData();
                     this.restoreDraft();
-
-                    // Перевіряємо статус ТІЛЬКИ з localStorage (минулі успішні реєстрації)
                     this.checkRegistrationStatus();
 
                     if (this.recaptchaEnabled) {
@@ -120,6 +119,22 @@
                 });
             },
 
+            // --- Storage Helpers ---
+            getState() {
+                try {
+                    return JSON.parse(localStorage.getItem(this.storageKey)) || {};
+                } catch (e) {
+                    return {};
+                }
+            },
+
+            updateState(newData) {
+                const state = this.getState();
+                const updated = { ...state, ...newData };
+                localStorage.setItem(this.storageKey, JSON.stringify(updated));
+            },
+            // -----------------------
+
             sendAbandonedData() {
                 if (this.activeFormKey === 'register_park' && !this.success && this.formData.owner_email) {
                     const data = JSON.stringify(this.formData);
@@ -131,30 +146,43 @@
             restoreDraft() {
                 if (this.activeFormKey !== 'register_park') return;
 
-                const draft = localStorage.getItem(this.draftKey);
-                if (draft) {
-                    try {
-                        const parsed = JSON.parse(draft);
-                        this.formData = { ...this.formData, ...parsed };
-                        this.formData.plan = this.orderType;
-                    } catch (e) {}
+                const state = this.getState();
+                if (state.draft) {
+                    this.formData = { ...this.formData, ...state.draft };
+                    this.formData.plan = this.orderType;
                 }
             },
 
             checkRegistrationStatus() {
                 if (this.activeFormKey !== 'register_park') return;
 
-                const savedReg = localStorage.getItem('registrationSuccess');
-                if (savedReg) {
-                    const data = JSON.parse(savedReg);
-                    if (Date.now() - data.timestamp < 86400000) {
-                        this.registeredEmail = data.email;
-                        // Тут ми можемо перевірити актуальний статус через API,
-                        // але тільки якщо ми ВЖЕ знаємо, що юзер реєструвався
-                        this.checkUserStatus(data.email);
+                const state = this.getState();
+
+                // 1. Перевірка активації
+                if (state.isActivated) {
+                    this.success = true;
+                    this.isActivated = true;
+                    this.successMessage = 'Ваш акаунт вже активовано.';
+                    return;
+                }
+
+                // 2. Перевірка успішної реєстрації
+                if (state.registration) {
+                    if (Date.now() - state.registration.timestamp < 86400000) {
+                        this.registeredEmail = state.registration.email;
+                        this.checkUserStatus(state.registration.email);
                         return;
                     }
                 }
+
+                // 3. Перевірка email з форми
+                if (this.formData.owner_email && this.isValidEmail(this.formData.owner_email)) {
+                    this.checkUserStatus(this.formData.owner_email);
+                }
+            },
+
+            isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
             },
 
             async checkUserStatus(email) {
@@ -176,7 +204,7 @@
                         if (data.is_activated) {
                             this.isActivated = true;
                             this.successMessage = 'Ваш акаунт вже активовано.';
-                            localStorage.setItem('accountActivated', 'true');
+                            this.updateState({ isActivated: true });
                         } else {
                             this.isActivated = false;
                             this.successMessage = 'Ви вже зареєстровані, але не активовані.';
@@ -184,6 +212,12 @@
                     }
                 } catch (e) {
                     console.error('Check status error:', e);
+                }
+            },
+
+            onEmailBlur() {
+                if (this.activeFormKey === 'register_park' && this.formData.owner_email) {
+                    this.checkUserStatus(this.formData.owner_email);
                 }
             },
 
@@ -348,20 +382,31 @@
                         this.success = true;
                         this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
 
+                        // DataLayer Event
+                        window.dataLayer = window.dataLayer || [];
+                        window.dataLayer.push({
+                            'event': 'lead_generated',
+                            'lead_type': this.activeFormKey === 'register_park' ? 'registration' : 'consultation',
+                            'plan': this.formData.plan || null
+                        });
+
                         if (this.activeFormKey === 'register_park') {
                             this.registeredEmail = this.formData.owner_email;
 
-                            localStorage.removeItem(this.draftKey);
+                            // Очищаємо чернетку
+                            const state = this.getState();
+                            delete state.draft;
 
                             if (data.is_activated) {
                                 this.isActivated = true;
-                                localStorage.setItem('accountActivated', 'true');
+                                state.isActivated = true;
                             } else {
-                                localStorage.setItem('registrationSuccess', JSON.stringify({
+                                state.registration = {
                                     email: this.registeredEmail,
                                     timestamp: Date.now()
-                                }));
+                                };
                             }
+                            localStorage.setItem(this.storageKey, JSON.stringify(state));
                         }
 
                         this.formData = { agreement: true };
@@ -419,7 +464,7 @@
                         if (data.is_activated) {
                             this.isActivated = true;
                             this.successMessage = data.message || 'Акаунт вже активовано.';
-                            localStorage.setItem('accountActivated', 'true');
+                            this.updateState({ isActivated: true });
                         } else {
                             this.successMessage = data.message || 'Лист відправлено повторно!';
                             this.startResendTimer(60);
@@ -439,13 +484,12 @@
 
             startResendTimer(seconds) {
                 this.resendTimer = seconds;
-                localStorage.setItem('lastResendAttempt', Date.now());
+                this.updateState({ lastResend: Date.now() });
 
                 const timer = setInterval(() => {
                     this.resendTimer--;
                     if (this.resendTimer <= 0) {
                         clearInterval(timer);
-                        localStorage.removeItem('lastResendAttempt');
                     }
                 }, 1000);
             }
@@ -540,7 +584,8 @@
                         <input :type="field.type"
                                x-model="formData[field.name]"
                                :placeholder="field.placeholder"
-                               :class="{'border-red-500': fieldErrors[field.name]}">
+                               :class="{'border-red-500': fieldErrors[field.name]}"
+                               @blur="field.name === 'owner_email' ? onEmailBlur() : null">
                     </template>
 
                     <!-- Textarea -->
