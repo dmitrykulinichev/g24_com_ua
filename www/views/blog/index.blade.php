@@ -1,80 +1,7 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Блог - Garage24</title>
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <!-- Підключення Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e293b',
-                        accent: '#10b981',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
+@extends('layout')
 
-        /* Стилі для зображення */
-        .post-image {
-            display: block;
-            width: 280px; /* Фіксована ширина */
-            flex-shrink: 0; /* Не стискати */
-            border-right: 1px solid #e5e7eb; /* Розділювач */
-            border-bottom: none;
-            background-color: #f3f4f6;
-            position: relative;
-        }
-        .post-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            transition: transform 0.5s ease;
-            position: absolute; /* Абсолютне позиціонування для cover */
-            top: 0;
-            left: 0;
-        }
-        .post-card:hover .post-image img {
-            transform: scale(1.05);
-        }
-
-        /* Мобільна адаптація */
-        @media (max-width: 768px) {
-            .post-card {
-                flex-direction: column; /* Вертикально на мобільному */
-            }
-            .post-image {
-                width: 100%;
-                height: 200px;
-                border-right: none;
-                border-bottom: 1px solid #e5e7eb;
-            }
-            .post-image img {
-                position: static; /* Повертаємо звичайну поведінку */
-                height: 100%;
-            }
-        }
-    </style>
-</head>
-<body class="text-slate-800 antialiased bg-white">
-    @include('partials.header')
-
-    <main class="pt-32 lg:pt-40 pb-20">
+@section('content')
+    <div class="pt-32 lg:pt-40 pb-20">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">Блог розробників</h1>
@@ -116,8 +43,50 @@
                 <p class="text-center text-slate-500 py-12">Поки що немає новин.</p>
             @endif
         </div>
-    </main>
+    </div>
+@endsection
 
-    @include('partials.footer')
-</body>
-</html>
+@push('styles')
+<style>
+    /* Стилі для зображення */
+    .post-image {
+        display: block;
+        width: 280px; /* Фіксована ширина */
+        flex-shrink: 0; /* Не стискати */
+        border-right: 1px solid #e5e7eb; /* Розділювач */
+        border-bottom: none;
+        background-color: #f3f4f6;
+        position: relative;
+    }
+    .post-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+        transition: transform 0.5s ease;
+        position: absolute; /* Абсолютне позиціонування для cover */
+        top: 0;
+        left: 0;
+    }
+    .post-card:hover .post-image img {
+        transform: scale(1.05);
+    }
+
+    /* Мобільна адаптація */
+    @media (max-width: 768px) {
+        .post-card {
+            flex-direction: column; /* Вертикально на мобільному */
+        }
+        .post-image {
+            width: 100%;
+            height: 200px;
+            border-right: none;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .post-image img {
+            position: static; /* Повертаємо звичайну поведінку */
+            height: 100%;
+        }
+    }
+</style>
+@endpush

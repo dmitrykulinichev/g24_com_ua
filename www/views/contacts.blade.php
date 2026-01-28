@@ -1,84 +1,19 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title та Meta тепер у header.blade.php -->
-    <link rel="stylesheet" href="/assets/css/style.css">
-    <!-- Підключення Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e293b',
-                        accent: '#10b981',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+@extends('layout')
 
-    @php
-        $recaptchaEnabled = filter_var($_ENV['RECAPTCHA_ENABLED'] ?? true, FILTER_VALIDATE_BOOLEAN);
-    @endphp
+@section('content')
+    <!-- Hero Section -->
+    <section class="relative bg-slate-900 text-white pt-32 pb-16 lg:pt-40 lg:pb-24 text-center overflow-hidden">
+        <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
+        <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
 
-    @if($recaptchaEnabled)
-    <!-- Підключення Google reCAPTCHA (Локально для цієї сторінки) -->
-    <script>
-        function loadRecaptchaV3(siteKey) {
-            if (document.getElementById('recaptcha-script')) return;
-            const script = document.createElement('script');
-            script.id = 'recaptcha-script';
-            script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
-            document.head.appendChild(script);
-        }
-    </script>
-    @endif
-
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        /* Стилі для помилок */
-        .border-red-500 { border-color: #ef4444 !important; }
-        .text-red-500 { color: #ef4444; }
-        .text-xs { font-size: 0.75rem; }
-        .mt-1 { margin-top: 0.25rem; }
-        /* Приховуємо бейдж рекапчі */
-        .grecaptcha-badge { visibility: hidden; }
-        [x-cloak] { display: none !important; }
-    </style>
-
-    <!-- Передача конфігурації з бекенду -->
-    @if(isset($apiConfig) && $apiConfig)
-    <script>
-        window.landingConfig = {!! json_encode($apiConfig) !!};
-    </script>
-    @endif
-</head>
-<body class="text-slate-800 antialiased bg-white">
-    @include('partials.header')
-
-    <main>
-        <!-- Hero Section -->
-        <div class="relative bg-slate-900 text-white pt-32 pb-16 lg:pt-40 lg:pb-24 text-center overflow-hidden">
-            <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
-            <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
-
-            <div class="container mx-auto px-4 relative z-10">
-                <h1 class="text-4xl font-extrabold sm:text-5xl mb-6">Зв'яжіться з нами</h1>
-                <p class="text-xl text-slate-300 max-w-2xl mx-auto">Оберіть зручний спосіб комунікації залежно від вашого запиту.</p>
-            </div>
+        <div class="container mx-auto px-4 relative z-10">
+            <h1 class="text-4xl font-extrabold sm:text-5xl mb-6">Зв'яжіться з нами</h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto">Оберіть зручний спосіб комунікації залежно від вашого запиту.</p>
         </div>
+    </section>
 
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 -mt-10 relative z-10">
+    <section class="py-16 -mt-10 relative z-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid md:grid-cols-5 gap-8">
 
                 <!-- Блок для нових клієнтів (Динамічна Форма) -->
@@ -168,7 +103,7 @@
                     },
 
                     async getRecaptchaToken() {
-                        if (!this.recaptchaEnabled) return ''; // Пустий рядок
+                        if (!this.recaptchaEnabled) return '';
                         if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
 
                         return new Promise((resolve) => {
@@ -213,7 +148,7 @@
                                 console.error('Recaptcha error:', e);
                             }
                         } else {
-                            captchaToken = ''; // Пустий рядок
+                            captchaToken = '';
                         }
 
                         let payload = { ...this.formData };
@@ -234,6 +169,13 @@
                             if (response.ok) {
                                 this.success = true;
                                 this.initFormData();
+
+                                // DataLayer Event
+                                window.dataLayer = window.dataLayer || [];
+                                window.dataLayer.push({
+                                    'event': 'lead_generated',
+                                    'lead_type': 'contact_form'
+                                });
                             } else {
                                 if (response.status === 422 && data.errors) {
                                     const apiErrors = data.errors;
@@ -277,7 +219,6 @@
 
                     <div x-show="generalError" x-cloak class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 border border-red-100 text-sm" x-text="generalError"></div>
 
-                    <!-- Форма показується тільки коли ready = true -->
                     <form x-show="ready && !success" @submit.prevent="submitForm" class="space-y-4" novalidate x-cloak>
 
                         <!-- Динамічні поля -->
@@ -310,11 +251,6 @@
                                 <div x-show="fieldErrors[field.name]" x-text="fieldErrors[field.name]" class="text-red-500 text-xs mt-1"></div>
                             </div>
                         </template>
-
-                        <!-- Капча -->
-                        <div class="flex justify-center mt-4">
-                            <div id="contact-recaptcha"></div>
-                        </div>
 
                         <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-70" :disabled="loading">
                             <span x-show="!loading">Відправити запит</span>
@@ -356,8 +292,19 @@
 
             </div>
         </div>
-    </main>
+    </section>
+@endsection
 
-    @include('partials.footer')
-</body>
-</html>
+@push('scripts')
+@if($recaptchaEnabled)
+<script>
+    function loadRecaptchaV3(siteKey) {
+        if (document.getElementById('recaptcha-script')) return;
+        const script = document.createElement('script');
+        script.id = 'recaptcha-script';
+        script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+        document.head.appendChild(script);
+    }
+</script>
+@endif
+@endpush

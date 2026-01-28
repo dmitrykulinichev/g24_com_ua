@@ -59,11 +59,14 @@ class ContactsController
             'title' => 'Контакти',
             'description' => 'Зв\'яжіться з нами для консультації або технічної підтримки. Ми завжди на зв\'язку.'
         ];
+        
+        $recaptchaEnabled = filter_var($_ENV['RECAPTCHA_ENABLED'] ?? true, FILTER_VALIDATE_BOOLEAN);
 
         echo $this->blade->make('contacts', [
             'meta' => $meta, 
             'darkBg' => true,
-            'apiConfig' => $contactConfig
+            'apiConfig' => $contactConfig,
+            'recaptchaEnabled' => $recaptchaEnabled
         ])->render();
     }
 }

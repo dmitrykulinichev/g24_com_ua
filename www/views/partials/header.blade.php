@@ -1,39 +1,9 @@
-<!-- Підключення Alpine.js -->
-<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-
-<!-- SEO Meta Tags -->
 @php
-    $pageTitle = $meta['title'] ?? 'Garage24 - CRM для автопарків';
-    if (isset($meta['title'])) {
-        $pageTitle .= ' | Garage24';
-    }
-    $pageDesc = $meta['description'] ?? 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.';
-    $pageImage = $meta['image'] ?? '/assets/img/landing/og-image.jpg';
-
     // Визначення активного пункту меню
     $currentUri = $_SERVER['REQUEST_URI'];
-
     // Чи є темний фон під хедером (передається з view)
     $isDarkBg = $darkBg ?? false;
 @endphp
-
-<title>{{ $pageTitle }}</title>
-<meta name="description" content="{{ $pageDesc }}">
-
-<!-- ЗАБОРОНА ІНДЕКСАЦІЇ (Тимчасово) -->
-<meta name="robots" content="noindex, nofollow">
-
-<!-- Open Graph / Facebook -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="{{ $pageTitle }}">
-<meta property="og:description" content="{{ $pageDesc }}">
-<meta property="og:image" content="{{ $pageImage }}">
-
-<!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image">
-<meta property="twitter:title" content="{{ $pageTitle }}">
-<meta property="twitter:description" content="{{ $pageDesc }}">
-<meta property="twitter:image" content="{{ $pageImage }}">
 
 <header
     x-data="{

@@ -1,39 +1,7 @@
-<!DOCTYPE html>
-<html lang="uk">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title та Meta тепер у header.blade.php -->
-    <link rel="stylesheet" href="/assets/css/style.css?v={{ time() }}">
-    <!-- Підключення Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e293b',
-                        accent: '#10b981',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-    </style>
-</head>
-<body class="text-slate-800 antialiased bg-white">
-    @include('partials.header')
+@extends('layout')
 
-    <main class="pt-32 lg:pt-40 pb-20">
+@section('content')
+    <div class="pt-32 lg:pt-40 pb-20">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12 bg-gradient-to-br from-blue-50 to-white p-10 rounded-3xl border border-blue-100">
                 <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">База знань Garage24</h1>
@@ -86,8 +54,5 @@
                 </button>
             </div>
         </div>
-    </main>
-
-    @include('partials.footer')
-</body>
-</html>
+    </div>
+@endsection
