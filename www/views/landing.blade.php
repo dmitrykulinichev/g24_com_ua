@@ -11,36 +11,39 @@
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Title та Meta тепер у header.blade.php -->
-    <link rel="stylesheet" href="assets/css/style.css?v={{ time() }}">
-    <!-- Підключення Tailwind CSS (через CDN для розробки) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- AlpineJS для інтерактивності -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb', // blue-600
-                        secondary: '#1e293b', // slate-800
-                        accent: '#10b981', // emerald-500
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Garage24",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web, iOS, Android",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "UAH",
+        "description": "Безкоштовний старт, оплата по факту використання"
+      },
+      "description": "Операційна система для сучасного таксопарку. Автоматизація виплат, контроль палива та робота з водіями.",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "124"
+      }
+    }
     </script>
+
+    <!-- Основні стилі (зкомпільовані через npm run build) -->
+    <link rel="stylesheet" href="/assets/css/style.css?v={{ time() }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        /* Тимчасові стилі для сумісності */
-        body { font-family: 'Inter', sans-serif; }
-        .btn-primary { @apply bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 inline-block text-center; }
-    </style>
+
+    <!-- AlpineJS для інтерактивності -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="text-slate-800 antialiased bg-white">
     <!-- Google Tag Manager (noscript) -->
