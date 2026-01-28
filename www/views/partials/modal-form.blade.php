@@ -16,8 +16,8 @@
             formData: {}, // Динамічні дані
 
             // Стани UI
-            loading: false,      // Загальний спінер (завантаження конфігу або перевірка статусу)
-            submitting: false,   // Спінер на кнопці відправки
+            loading: false,      // Загальний спінер
+            submitting: false,   // Спінер на кнопці
             viewState: 'form',   // 'form', 'success_new', 'success_exists', 'success_activated'
 
             successMessage: '',
@@ -35,6 +35,7 @@
 
             // Draft Logic
             draftKey: 'registrationDraft',
+            storageKey: 'g24_registration_state',
 
             // Конфігурація форм (Fallback)
             forms: {
@@ -71,9 +72,9 @@
                 }
 
                 // Відновлення таймера
-                const lastResend = localStorage.getItem('lastResendAttempt');
-                if (lastResend) {
-                    const diff = Math.floor((Date.now() - parseInt(lastResend)) / 1000);
+                const state = this.getState();
+                if (state.lastResend) {
+                    const diff = Math.floor((Date.now() - state.lastResend) / 1000);
                     if (diff < 60) {
                         this.startResendTimer(60 - diff);
                     }
@@ -82,7 +83,9 @@
                 // Авто-збереження чернетки
                 this.$watch('formData', (val) => {
                     if (this.activeFormKey === 'register_park' && this.viewState === 'form') {
-                        localStorage.setItem(this.draftKey, JSON.stringify(val));
+                        if (Object.keys(val).length > 0) {
+                            this.updateState({ draft: val });
+                        }
                     }
                 });
 
@@ -106,10 +109,8 @@
                     this.initFormData();
                     this.restoreDraft();
 
-                    // Якщо це реєстрація і є email -> перевіряємо статус
-                    if (this.activeFormKey === 'register_park' && this.formData.owner_email) {
-                        this.checkUserStatus(this.formData.owner_email);
-                    }
+                    // Перевіряємо статус при відкритті
+                    this.checkRegistrationStatus();
 
                     if (this.recaptchaEnabled) {
                         this.waitForRecaptcha();
@@ -124,11 +125,68 @@
                 });
             },
 
-            // --- Логіка ---
+            // --- Storage Helpers ---
+            getState() {
+                try {
+                    return JSON.parse(localStorage.getItem(this.storageKey)) || {};
+                } catch (e) {
+                    return {};
+                }
+            },
+
+            updateState(newData) {
+                const state = this.getState();
+                const updated = { ...state, ...newData };
+                localStorage.setItem(this.storageKey, JSON.stringify(updated));
+            },
+            // -----------------------
+
+            sendAbandonedData() {
+                if (this.activeFormKey === 'register_park' && this.viewState === 'form' && this.formData.owner_email) {
+                    const data = JSON.stringify(this.formData);
+                    const blob = new Blob([data], {type: 'application/json'});
+                    navigator.sendBeacon('/api/abandoned', blob);
+                }
+            },
+
+            restoreDraft() {
+                if (this.activeFormKey !== 'register_park') return;
+
+                const state = this.getState();
+                if (state.draft) {
+                    try {
+                        // Копіюємо поля, зберігаючи plan актуальним
+                        this.formData = { ...this.formData, ...state.draft };
+                        this.formData.plan = this.orderType;
+                    } catch (e) {}
+                }
+            },
+
+            checkRegistrationStatus() {
+                if (this.activeFormKey !== 'register_park') return;
+
+                const state = this.getState();
+                let emailToCheck = null;
+
+                // Пріоритет 1: Успішна реєстрація в минулому
+                if (state.registration && state.registration.email) {
+                    emailToCheck = state.registration.email;
+                }
+                // Пріоритет 2: Email з чернетки
+                else if (this.formData.owner_email && this.isValidEmail(this.formData.owner_email)) {
+                    emailToCheck = this.formData.owner_email;
+                }
+
+                if (emailToCheck) {
+                    this.checkUserStatus(emailToCheck);
+                }
+            },
+
+            isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            },
 
             async checkUserStatus(email) {
-                if (!email || !this.isValidEmail(email)) return;
-
                 this.loading = true;
                 try {
                     const response = await fetch('/api/check-status', {
@@ -149,15 +207,129 @@
                             this.successMessage = 'Ви вже зареєстровані, але не активовані.';
                         }
                     } else {
+                        // Якщо юзера немає в базі - показуємо форму
                         this.viewState = 'form';
+                        // Якщо ми думали, що він є (з localStorage), то очищаємо цей запис
+                        const state = this.getState();
+                        if (state.registration && state.registration.email === email) {
+                            delete state.registration;
+                            localStorage.setItem(this.storageKey, JSON.stringify(state));
+                        }
                     }
                 } catch (e) {
                     console.error('Check status error:', e);
-                    // Якщо помилка мережі, просто показуємо форму
                     this.viewState = 'form';
                 } finally {
                     this.loading = false;
                 }
+            },
+
+            loadRecaptchaV3(siteKey) {
+                if (!this.recaptchaEnabled) return;
+                if (document.getElementById('recaptcha-script-modal')) return;
+                if (document.getElementById('recaptcha-script')) return;
+
+                const script = document.createElement('script');
+                script.id = 'recaptcha-script-modal';
+                script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
+                document.head.appendChild(script);
+            },
+
+            waitForRecaptcha() {
+                if (!this.recaptchaEnabled) return;
+                let attempts = 0;
+                const check = () => {
+                    if (typeof grecaptcha !== 'undefined' && grecaptcha.ready) {
+                        // Ready
+                    } else if (attempts < 20) {
+                        attempts++;
+                        setTimeout(check, 500);
+                    }
+                };
+                check();
+            },
+
+            updateActiveForm() {
+                if (this.orderType === 'enterprise') {
+                    this.activeFormKey = 'lead';
+                } else {
+                    this.activeFormKey = 'register_park';
+                }
+            },
+
+            initFormData() {
+                const fields = this.forms[this.activeFormKey].fields;
+                fields.forEach(field => {
+                    if (field.default !== undefined) {
+                        this.formData[field.name] = field.default;
+                    } else {
+                        if (field.name === 'plan' && this.activeFormKey === 'register_park') {
+                            this.formData[field.name] = this.orderType;
+                        }
+                        else if (field.name === 'type' && this.activeFormKey === 'lead' && this.orderType === 'enterprise') {
+                            this.formData[field.name] = 'enterprise';
+                        }
+                        else {
+                            this.formData[field.name] = '';
+                        }
+                    }
+                });
+                this.formData.agreement = true;
+            },
+
+            applyConfig(data) {
+                if (data.plans) this.plans = data.plans;
+
+                if (this.recaptchaEnabled) {
+                    if (data.recaptcha_site_key) {
+                        this.siteKey = data.recaptcha_site_key;
+                        this.loadRecaptchaV3(this.siteKey);
+                    } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                        this.loadRecaptchaV3(this.siteKey);
+                    }
+                }
+
+                if (data.forms) this.forms = data.forms;
+            },
+
+            fetchConfig() {
+                fetch('/api/config')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Network response was not ok');
+                        return response.json();
+                    })
+                    .then(data => {
+                        this.applyConfig(data);
+                    })
+                    .catch(err => console.error('Failed to load config:', err));
+            },
+
+            async getRecaptchaToken(action = 'register_park') {
+                if (!this.recaptchaEnabled) return '';
+                if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
+
+                return new Promise((resolve) => {
+                    grecaptcha.ready(() => {
+                        grecaptcha.execute(this.siteKey, {action: action}).then((token) => {
+                            resolve(token);
+                        });
+                    });
+                });
+            },
+
+            get modalTitle() {
+                if (this.orderType === 'enterprise') return 'Індивідуальні умови';
+                return 'Реєстрація парку';
+            },
+
+            get buttonText() {
+                if (this.submitting) return 'Обробка...';
+                if (this.orderType === 'enterprise') return 'Замовити консультацію';
+                return 'Створити акаунт';
+            },
+
+            get activeFields() {
+                return this.forms[this.activeFormKey].fields;
             },
 
             async submitForm() {
@@ -209,7 +381,6 @@
                     const data = await response.json();
                     this.submitting = false;
 
-                    // Успіх (201) або Конфлікт (409)
                     if (response.ok || response.status === 409) {
                         this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
 
@@ -223,7 +394,17 @@
 
                         if (this.activeFormKey === 'register_park') {
                             this.registeredEmail = this.formData.owner_email;
-                            localStorage.removeItem(this.draftKey); // Очищаємо чернетку
+
+                            // Очищаємо чернетку
+                            const state = this.getState();
+                            delete state.draft;
+
+                            // Зберігаємо факт реєстрації
+                            state.registration = {
+                                email: this.registeredEmail,
+                                timestamp: Date.now()
+                            };
+                            localStorage.setItem(this.storageKey, JSON.stringify(state));
 
                             if (data.is_activated) {
                                 this.viewState = 'success_activated';
@@ -233,12 +414,10 @@
                                 this.viewState = 'success_new';
                             }
                         } else {
-                            // Для лідів просто показуємо успіх
                             this.viewState = 'success_new';
                             this.formData = { agreement: true };
                         }
                     } else {
-                        // Помилки (422, 500)
                         if (response.status === 422 && data.errors) {
                             const apiErrors = data.errors;
                             Object.keys(apiErrors).forEach(key => {
@@ -260,134 +439,6 @@
                     this.submitting = false;
                     this.generalError = 'Сталася помилка мережі. Спробуйте пізніше.';
                 });
-            },
-
-            // --- Допоміжні методи ---
-
-            sendAbandonedData() {
-                if (this.activeFormKey === 'register_park' && this.viewState === 'form' && this.formData.owner_email) {
-                    const data = JSON.stringify(this.formData);
-                    const blob = new Blob([data], {type: 'application/json'});
-                    navigator.sendBeacon('/api/abandoned', blob);
-                }
-            },
-
-            restoreDraft() {
-                if (this.activeFormKey !== 'register_park') return;
-                const draft = localStorage.getItem(this.draftKey);
-                if (draft) {
-                    try {
-                        const parsed = JSON.parse(draft);
-                        this.formData = { ...this.formData, ...parsed };
-                        this.formData.plan = this.orderType;
-                    } catch (e) {}
-                }
-            },
-
-            isValidEmail(email) {
-                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            },
-
-            loadRecaptchaV3(siteKey) {
-                if (!this.recaptchaEnabled) return;
-                if (document.getElementById('recaptcha-script-modal')) return;
-                if (document.getElementById('recaptcha-script')) return;
-                const script = document.createElement('script');
-                script.id = 'recaptcha-script-modal';
-                script.src = `https://www.google.com/recaptcha/api.js?render=${siteKey}`;
-                document.head.appendChild(script);
-            },
-
-            waitForRecaptcha() {
-                if (!this.recaptchaEnabled) return;
-                let attempts = 0;
-                const check = () => {
-                    if (typeof grecaptcha !== 'undefined' && grecaptcha.ready) {} else if (attempts < 20) {
-                        attempts++;
-                        setTimeout(check, 500);
-                    }
-                };
-                check();
-            },
-
-            updateActiveForm() {
-                if (this.orderType === 'enterprise') {
-                    this.activeFormKey = 'lead';
-                } else {
-                    this.activeFormKey = 'register_park';
-                }
-            },
-
-            initFormData() {
-                const fields = this.forms[this.activeFormKey].fields;
-                fields.forEach(field => {
-                    if (field.default !== undefined) {
-                        this.formData[field.name] = field.default;
-                    } else {
-                        if (field.name === 'plan' && this.activeFormKey === 'register_park') {
-                            this.formData[field.name] = this.orderType;
-                        }
-                        else if (field.name === 'type' && this.activeFormKey === 'lead' && this.orderType === 'enterprise') {
-                            this.formData[field.name] = 'enterprise';
-                        }
-                        else {
-                            this.formData[field.name] = '';
-                        }
-                    }
-                });
-                this.formData.agreement = true;
-            },
-
-            applyConfig(data) {
-                if (data.plans) this.plans = data.plans;
-                if (this.recaptchaEnabled) {
-                    if (data.recaptcha_site_key) {
-                        this.siteKey = data.recaptcha_site_key;
-                        this.loadRecaptchaV3(this.siteKey);
-                    } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
-                        this.loadRecaptchaV3(this.siteKey);
-                    }
-                }
-                if (data.forms) this.forms = data.forms;
-            },
-
-            fetchConfig() {
-                fetch('/api/config')
-                    .then(response => {
-                        if (!response.ok) throw new Error('Network response was not ok');
-                        return response.json();
-                    })
-                    .then(data => {
-                        this.applyConfig(data);
-                    })
-                    .catch(err => console.error('Failed to load config:', err));
-            },
-
-            async getRecaptchaToken(action = 'register_park') {
-                if (!this.recaptchaEnabled) return '';
-                if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
-                return new Promise((resolve) => {
-                    grecaptcha.ready(() => {
-                        grecaptcha.execute(this.siteKey, {action: action}).then((token) => {
-                            resolve(token);
-                        });
-                    });
-                });
-            },
-
-            get modalTitle() {
-                if (this.orderType === 'enterprise') return 'Індивідуальні умови';
-                return 'Реєстрація парку';
-            },
-
-            get buttonText() {
-                if (this.submitting) return 'Обробка...';
-                if (this.orderType === 'enterprise') return 'Замовити консультацію';
-                return 'Створити акаунт';
-            },
-
-            get activeFields() {
-                return this.forms[this.activeFormKey].fields;
             },
 
             async resendEmail() {
@@ -438,7 +489,7 @@
 
             startResendTimer(seconds) {
                 this.resendTimer = seconds;
-                localStorage.setItem('lastResendAttempt', Date.now());
+                this.updateState({ lastResend: Date.now() });
                 const timer = setInterval(() => {
                     this.resendTimer--;
                     if (this.resendTimer <= 0) {
@@ -463,7 +514,7 @@
 
         <h2 class="modal-title" x-text="modalTitle"></h2>
 
-        <!-- Спінер завантаження (показується при loading) -->
+        <!-- Спінер завантаження -->
         <div x-show="loading" class="flex justify-center items-center h-64">
             <svg class="animate-spin h-10 w-10 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -471,7 +522,7 @@
             </svg>
         </div>
 
-        <!-- Екран успіху (різні варіанти) -->
+        <!-- Екран успіху -->
         <div x-show="!loading && viewState.startsWith('success')" x-cloak class="success-message">
             <div style="font-size: 3rem; margin-bottom: 1rem;">✅</div>
             <p x-text="successMessage"></p>
@@ -480,7 +531,6 @@
             <div x-show="viewState === 'success_new' || viewState === 'success_exists'">
                 <p class="text-sm text-gray-500 mt-2">Перевірте вашу пошту (включаючи папку Спам).</p>
 
-                <!-- Кнопка повторної відправки (тільки для реєстрації) -->
                 <div x-show="activeFormKey === 'register_park'" class="mt-6">
                     <button @click="resendEmail"
                             class="text-sm text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
@@ -502,7 +552,6 @@
                 </div>
             </div>
 
-            <!-- Допомога -->
             <div class="mt-8 pt-6 border-t border-gray-100 text-xs text-gray-400">
                 Якщо виникли проблеми з входом або реєстрацією —
                 <a href="/contacts" class="text-primary hover:underline">напишіть нам</a>.
@@ -511,10 +560,8 @@
 
         <!-- Форма -->
         <form x-show="!loading && viewState === 'form'" @submit.prevent="submitForm" novalidate x-cloak>
-            <!-- Загальна помилка -->
             <div x-show="generalError" class="error-message" x-text="generalError"></div>
 
-            <!-- Вибір типу оплати (тільки якщо не Enterprise) -->
             <div x-show="orderType !== 'enterprise'" class="payment-type-selector">
                 <label class="radio-label" :class="{ 'checked': orderType === 'monthly' }">
                     <input type="radio" name="orderType" value="monthly" x-model="orderType">
@@ -532,12 +579,10 @@
                 </label>
             </div>
 
-            <!-- Підказка про зміну тарифу -->
             <div x-show="orderType !== 'enterprise'" class="text-xs text-gray-400 mb-4 text-center">
                 Ви зможете змінити тарифний план у будь-який момент в особистому кабінеті.
             </div>
 
-            <!-- Динамічні поля -->
             <template x-for="field in activeFields" :key="field.name">
                 <div class="form-group" x-show="field.type !== 'hidden'">
                     <label>
@@ -545,7 +590,6 @@
                         <span x-show="field.required" class="text-red-500">*</span>
                     </label>
 
-                    <!-- Text Input -->
                     <template x-if="['text', 'email', 'tel'].includes(field.type)">
                         <input :type="field.type"
                                x-model="formData[field.name]"
@@ -553,7 +597,6 @@
                                :class="{'border-red-500': fieldErrors[field.name]}">
                     </template>
 
-                    <!-- Textarea -->
                     <template x-if="field.type === 'textarea'">
                         <textarea x-model="formData[field.name]"
                                   rows="3"
@@ -562,7 +605,6 @@
                                   :class="{'border-red-500': fieldErrors[field.name]}"></textarea>
                     </template>
 
-                    <!-- Помилка поля -->
                     <div x-show="fieldErrors[field.name]" x-text="fieldErrors[field.name]" class="text-red-500 text-xs mt-1"></div>
                 </div>
             </template>

@@ -32,8 +32,3 @@
         </div>
     </div>
 </footer>
-
-<!-- Підключаємо модальні вікна -->
-@include('partials.modal-form')
-@include('partials.modal-text')
-@include('partials.cookie-consent')
