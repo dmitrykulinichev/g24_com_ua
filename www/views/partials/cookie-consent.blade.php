@@ -4,14 +4,39 @@
     accept() {
         localStorage.setItem('cookie_accepted', 'true');
         this.showCookie = false;
+
+        // Google Consent Mode v2 Update
+        if (typeof gtag === 'function') {
+            gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'ad_user_data': 'granted',
+                'ad_personalization': 'granted',
+                'analytics_storage': 'granted'
+            });
+            // Push event to dataLayer for GTM triggers
+            window.dataLayer = window.dataLayer || [];
+            window.dataLayer.push({'event': 'consent_update'});
+        }
     }
 }"
 x-init="
-    setTimeout(() => {
-        if (!localStorage.getItem('cookie_accepted')) {
-            showCookie = true;
+    // Check consent on load
+    if (localStorage.getItem('cookie_accepted') === 'true') {
+        // Already accepted - ensure Google knows
+        if (typeof gtag === 'function') {
+            gtag('consent', 'update', {
+                'ad_storage': 'granted',
+                'ad_user_data': 'granted',
+                'ad_personalization': 'granted',
+                'analytics_storage': 'granted'
+            });
         }
-    }, 1000);
+    } else {
+        // Not accepted yet - show banner
+        setTimeout(() => {
+            showCookie = true;
+        }, 1000);
+    }
 "
 x-show="showCookie"
 x-transition:enter="transition ease-out duration-300"
@@ -40,10 +65,10 @@ class="cookie-banner">
         bottom: 0;
         left: 0;
         width: 100%;
-        background-color: var(--white);
+        background-color: #ffffff;
         box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
         z-index: 900;
-        border-top: 1px solid var(--border-color);
+        border-top: 1px solid #e5e7eb;
         padding: 1rem;
     }
 
@@ -59,11 +84,11 @@ class="cookie-banner">
     .cookie-text p {
         margin: 0;
         font-size: 0.95rem;
-        color: var(--text-color);
+        color: #374151;
     }
 
     .cookie-text a {
-        color: var(--primary-color);
+        color: #2563eb;
         text-decoration: underline;
     }
 

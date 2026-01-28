@@ -428,5 +428,10 @@
     </main>
 
     @include('partials.footer')
+
+    <!-- Модальні вікна (підключаються глобально ОДИН РАЗ) -->
+    @include('partials.modal-form')
+    @include('partials.modal-text')
+    @include('partials.cookie-consent')
 </body>
 </html>
