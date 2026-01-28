@@ -47,21 +47,3 @@
         </div>
     </div>
 @endsection
-
-@push('styles')
-<style>
-    /* Стилі для іконок категорій */
-    .category-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 3rem;
-        height: 3rem;
-        background-color: #eff6ff;
-        color: #2563eb;
-        border-radius: 0.75rem;
-        font-size: 1.5rem;
-        margin-right: 1rem;
-    }
-</style>
-@endpush

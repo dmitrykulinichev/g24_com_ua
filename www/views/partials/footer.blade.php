@@ -1,31 +1,33 @@
-<footer x-data>
-    <div class="container">
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4>Garage24</h4>
-                <p>Сучасні рішення для управління транспортом.</p>
+<footer class="bg-slate-900 text-slate-300 py-12 border-t border-slate-800" x-data>
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            <div class="col-span-1 md:col-span-2">
+                <h4 class="text-white font-bold text-lg mb-4">Garage24</h4>
+                <p class="text-sm leading-relaxed max-w-xs">
+                    Сучасні рішення для управління транспортом. Автоматизуйте рутину та збільшуйте прибуток.
+                </p>
             </div>
-            <div class="footer-col">
-                <h4>Продукт</h4>
-                <ul>
-                    <li><a href="/features">Можливості</a></li>
-                    <li><a href="/target">Кому підійде</a></li>
-                    <li><a href="/pricing">Тарифи</a></li>
-                    <li><a href="/blog">Блог</a></li>
-                    <li><a href="/docs">Документація</a></li>
+            <div>
+                <h4 class="text-white font-bold text-lg mb-4">Продукт</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/features" class="hover:text-white transition-colors">Можливості</a></li>
+                    <li><a href="/target" class="hover:text-white transition-colors">Кому підійде</a></li>
+                    <li><a href="/pricing" class="hover:text-white transition-colors">Тарифи</a></li>
+                    <li><a href="/blog" class="hover:text-white transition-colors">Блог</a></li>
+                    <li><a href="/docs" class="hover:text-white transition-colors">Документація</a></li>
                 </ul>
             </div>
-            <div class="footer-col">
-                <h4>Інформація</h4>
-                <ul>
-                    <li><a href="/contacts">Зв'язатися з нами</a></li>
-                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Політика конфіденційності', slug: 'privacy' })">Політика конфіденційності</a></li>
-                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Угода користувача', slug: 'terms' })">Угода користувача</a></li>
-                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Публічна оферта', slug: 'offer' })">Публічна оферта</a></li>
+            <div>
+                <h4 class="text-white font-bold text-lg mb-4">Інформація</h4>
+                <ul class="space-y-2 text-sm">
+                    <li><a href="/contacts" class="hover:text-white transition-colors">Зв'язатися з нами</a></li>
+                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Політика конфіденційності', slug: 'privacy' })" class="hover:text-white transition-colors">Політика конфіденційності</a></li>
+                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Угода користувача', slug: 'terms' })" class="hover:text-white transition-colors">Угода користувача</a></li>
+                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Публічна оферта', slug: 'offer' })" class="hover:text-white transition-colors">Публічна оферта</a></li>
                 </ul>
             </div>
         </div>
-        <div class="copyright">
+        <div class="border-t border-slate-800 pt-8 text-center text-xs text-slate-500">
             <p>
                 &copy; {{ date('Y') }} Garage24. Всі права захищено.
             </p>

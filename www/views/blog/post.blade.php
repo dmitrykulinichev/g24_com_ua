@@ -29,31 +29,6 @@
     </div>
 @endsection
 
-@push('styles')
-<style>
-    /* Стилі контенту (Prose) */
-    .content h1 { @apply text-3xl sm:text-4xl font-bold text-slate-900 mb-6 mt-8 leading-tight; }
-    .content h2 { @apply text-2xl font-bold text-slate-800 mb-4 mt-8 border-b border-slate-200 pb-2; }
-    .content h3 { @apply text-xl font-bold text-slate-800 mb-3 mt-6; }
-    .content p { @apply text-lg text-slate-700 mb-6 leading-relaxed; }
-    .content ul { @apply list-disc list-outside ml-6 mb-6 text-slate-700; }
-    .content ol { @apply list-decimal list-outside ml-6 mb-6 text-slate-700; }
-    .content li { @apply mb-2; }
-    .content img { @apply rounded-xl border border-slate-200 my-8 w-full h-auto shadow-sm; }
-    .content blockquote { @apply border-l-4 border-primary pl-4 italic text-slate-600 bg-slate-50 p-4 rounded-r-lg my-6; }
-    .content code { @apply bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-sm font-mono; }
-    .content pre { @apply bg-slate-800 text-slate-100 p-4 rounded-lg overflow-x-auto mb-6; }
-    .content pre code { @apply bg-transparent text-inherit p-0; }
-
-    /* Стиль для підсвічування */
-    mark {
-        background-color: #fef08a;
-        padding: 0.1rem 0.2rem;
-        border-radius: 0.2rem;
-    }
-</style>
-@endpush
-
 @push('scripts')
 <!-- Скрипт для підсвічування тексту -->
 <script>

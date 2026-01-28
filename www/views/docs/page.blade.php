@@ -54,59 +54,6 @@
     </div>
 @endsection
 
-@push('styles')
-<style>
-    /* Sticky Sidebar */
-    .sidebar {
-        position: sticky;
-        top: 6rem; /* Відступ від верху (враховуючи хедер) */
-        height: calc(100vh - 7rem);
-        overflow-y: auto;
-    }
-
-    /* Стилізація скролбару */
-    .sidebar::-webkit-scrollbar { width: 4px; }
-    .sidebar::-webkit-scrollbar-track { background: #f1f1f1; }
-    .sidebar::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
-    .sidebar::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-
-    /* Стилі контенту (Prose) */
-    .content h1 { @apply text-3xl sm:text-4xl font-bold text-slate-900 mb-6 leading-tight; }
-    .content h2 { @apply text-2xl font-bold text-slate-800 mb-4 mt-10 border-b border-slate-200 pb-2; }
-    .content h3 { @apply text-xl font-bold text-slate-800 mb-3 mt-8; }
-    .content p { @apply text-lg text-slate-700 mb-6 leading-relaxed; }
-    .content ul { @apply list-disc list-outside ml-6 mb-6 text-slate-700; }
-    .content ol { @apply list-decimal list-outside ml-6 mb-6 text-slate-700; }
-    .content li { @apply mb-2; }
-    .content img { @apply rounded-xl border border-slate-200 my-8 w-full h-auto shadow-sm; }
-    .content blockquote { @apply border-l-4 border-primary pl-4 italic text-slate-600 bg-slate-50 p-4 rounded-r-lg my-6; }
-    .content code { @apply bg-slate-100 text-slate-800 px-1.5 py-0.5 rounded text-sm font-mono; }
-    .content pre { @apply bg-slate-800 text-slate-100 p-4 rounded-lg overflow-x-auto mb-6; }
-    .content pre code { @apply bg-transparent text-inherit p-0; }
-    .content table { @apply w-full border-collapse mb-6; }
-    .content th { @apply border border-slate-200 p-3 text-left bg-slate-50 font-bold text-slate-700; }
-    .content td { @apply border border-slate-200 p-3 text-slate-600; }
-
-    /* Стиль для підсвічування */
-    mark {
-        background-color: #fef08a;
-        padding: 0.1rem 0.2rem;
-        border-radius: 0.2rem;
-    }
-
-    @media (max-width: 1024px) {
-        .sidebar {
-            position: static;
-            height: auto;
-            border-right: none;
-            border-bottom: 1px solid #e5e7eb;
-            padding-bottom: 2rem;
-            margin-bottom: 2rem;
-        }
-    }
-</style>
-@endpush
-
 @push('scripts')
 <!-- Скрипт для Lightbox -->
 <script src="/assets/js/docs.js?v={{ time() }}"></script>
