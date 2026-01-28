@@ -15,13 +15,28 @@ class SitemapController
 
         $urls = [];
 
-        // 1. Головна сторінка
-        $urls[] = [
-            'loc' => $baseUrl . '/',
-            'lastmod' => date('Y-m-d'), // Сьогодні
-            'changefreq' => 'weekly',
-            'priority' => '1.0'
+        // 1. Статичні сторінки
+        $staticPages = [
+            '/',
+            '/features',
+            '/target',
+            '/pricing',
+            '/contacts',
+            '/blog',
+            '/docs'
         ];
+
+        foreach ($staticPages as $page) {
+            // Для головної сторінки не додаємо слеш, якщо він вже є в baseUrl (але тут baseUrl без слеша)
+            $loc = ($page === '/') ? $baseUrl . '/' : $baseUrl . $page;
+            
+            $urls[] = [
+                'loc' => $loc,
+                'lastmod' => date('Y-m-d'), // Сьогодні
+                'changefreq' => 'weekly',
+                'priority' => ($page === '/') ? '1.0' : '0.9'
+            ];
+        }
 
         // 2. Блог
         $posts = MarkdownService::getList(__DIR__ . '/../../content/blog');
@@ -42,7 +57,7 @@ class SitemapController
                 'loc' => $baseUrl . '/docs/' . $doc['slug'],
                 'lastmod' => date('Y-m-d', $doc['date']),
                 'changefreq' => 'monthly',
-                'priority' => '0.9'
+                'priority' => '0.7'
             ];
         }
 
