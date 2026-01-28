@@ -1,7 +1,5 @@
 @php
-    // Визначення активного пункту меню
     $currentUri = $_SERVER['REQUEST_URI'];
-    // Чи є темний фон під хедером (передається з view)
     $isDarkBg = $darkBg ?? false;
 @endphp
 
@@ -11,11 +9,11 @@
         scrolled: false,
         isDarkBg: {{ $isDarkBg ? 'true' : 'false' }}
     }"
-    @scroll.window="scrolled = (window.pageYOffset > 20)"
-    class="fixed top-0 w-full z-50 transition-all duration-300 border-b"
+    @scroll.window="scrolled = (window.scrollY > 20)"
+    class="fixed top-0 w-full z-[999] transition-all duration-300 border-b"
     :class="{
-        'bg-white/90 backdrop-blur-md shadow-sm border-slate-100': scrolled,
-        'bg-white border-transparent': !scrolled && isOpen,
+        'bg-white shadow-md border-slate-200': scrolled,
+        'bg-white border-transparent': isOpen && !scrolled,
         'bg-transparent border-transparent': !scrolled && !isOpen && isDarkBg,
         'bg-white border-slate-100': !scrolled && !isOpen && !isDarkBg
     }"
@@ -23,7 +21,7 @@
     <div class="container mx-auto px-4 sm:px-6 lg:px-8">
         <nav class="flex items-center justify-between h-20">
             <!-- Логотип -->
-            <a href="/" class="flex items-center gap-3 group">
+            <a href="/" class="flex items-center gap-3 group relative z-[1000]">
                 <div class="relative overflow-hidden rounded-lg shadow-sm group-hover:shadow-md transition-all duration-300">
                     <img src="/assets/img/logo.jpg" alt="Garage24 Logo" class="h-10 w-auto transform group-hover:scale-105 transition-transform duration-500">
                 </div>
@@ -83,7 +81,7 @@
             </div>
 
             <!-- Мобільна кнопка -->
-            <button class="lg:hidden p-2 focus:outline-none transition-colors duration-300"
+            <button class="lg:hidden p-2 focus:outline-none transition-colors duration-300 relative z-[1000]"
                 :class="{ 'text-slate-600 hover:text-slate-900': scrolled || isOpen || !isDarkBg, 'text-white hover:text-white/80': !scrolled && !isOpen && isDarkBg }"
                 @click="isOpen = !isOpen" aria-label="Меню">
                 <div class="w-6 h-6 relative flex flex-col justify-center gap-1.5">
@@ -104,8 +102,9 @@
         x-transition:leave="transition ease-in duration-150"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-4"
-        class="lg:hidden absolute top-20 left-0 w-full bg-white border-b border-slate-100 shadow-lg"
+        class="lg:hidden absolute top-0 left-0 w-full bg-white border-b border-slate-100 shadow-lg pt-20 z-[998]"
         style="display: none;"
+        @click.away="isOpen = false"
     >
         <div class="container mx-auto px-4 py-6 flex flex-col gap-2">
             @foreach([
@@ -136,7 +135,3 @@
         </div>
     </div>
 </header>
-
-<style>
-    .backdrop-blur-md { backdrop-filter: blur(12px); }
-</style>

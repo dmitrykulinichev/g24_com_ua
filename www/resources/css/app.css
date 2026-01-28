@@ -14,6 +14,11 @@ body {
     visibility: hidden;
 }
 
+/* --- Buttons --- */
+.btn-primary {
+    @apply bg-primary text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 inline-block text-center;
+}
+
 /* --- Typography (Blog & Docs) --- */
 .content h1 {
     @apply text-3xl sm:text-4xl font-bold text-slate-900 mb-6 mt-8 leading-tight;
@@ -353,7 +358,7 @@ mark {
     width: auto !important;
     margin-right: 0.75rem;
     margin-top: 0.2rem;
-}
+    }
 .checkbox-label a {
     color: #2563eb;
     text-decoration: underline;
@@ -361,4 +366,143 @@ mark {
 button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+}
+
+/* --- Navigation (Blog/Docs) --- */
+.nav-container-wrapper {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e5e7eb;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.nav-item {
+    text-decoration: none;
+    padding: 1rem 1.5rem;
+    border-radius: 2rem; /* Pill shape */
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    /* Світлий стиль */
+    background-color: #fff;
+    border: 1px solid #e5e7eb;
+    color: #1f2937;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    width: fit-content;
+}
+
+.nav-item:hover, .nav-item.active-press {
+    background-color: #1f2937;
+    border-color: #1f2937;
+    color: white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+    transform: translateY(-3px);
+}
+
+.nav-item.active-press {
+    transform: translateY(1px);
+}
+
+.nav-arrow {
+    font-size: 1.2em;
+    line-height: 1;
+    color: #9ca3af;
+    transition: color 0.2s ease;
+}
+
+.nav-item:hover .nav-arrow, .nav-item.active-press .nav-arrow {
+    color: white;
+}
+
+.nav-title {
+    font-weight: 600;
+    color: #1e293b; /* secondary color */
+    font-size: 1rem;
+    transition: color 0.2s ease;
+    margin: 0;
+}
+
+.nav-item:hover .nav-title, .nav-item.active-press .nav-title {
+    color: white;
+}
+
+/* Вирівнювання */
+.nav-prev {
+    grid-column: 1;
+    justify-self: start;
+}
+.nav-next {
+    grid-column: 2;
+    justify-self: end;
+}
+
+/* Якщо тільки одна кнопка */
+.nav-prev:only-child { grid-column: 1; }
+.nav-next:only-child { grid-column: 2; }
+
+/* Ghost Button Animation */
+.nav-ghost {
+    position: fixed;
+    bottom: 2rem;
+    z-index: 1000;
+    background-color: rgba(31, 41, 55, 0.95);
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: auto;
+    pointer-events: none;
+    animation: ghostJump 0.6s ease-out forwards;
+    white-space: nowrap;
+}
+
+.nav-ghost.ghost-left {
+    text-align: left;
+}
+
+.nav-ghost.ghost-right {
+    text-align: right;
+}
+
+.nav-ghost .nav-title {
+    font-weight: 600;
+    color: white;
+    font-size: 1rem;
+    margin: 0;
+}
+
+.nav-ghost .nav-arrow {
+    font-size: 1.2em;
+    line-height: 1;
+    color: #9ca3af;
+}
+
+@keyframes ghostJump {
+    0% { opacity: 0; transform: translateY(100%); }
+    20% { opacity: 1; transform: translateY(0); }
+    70% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-10px); }
+}
+
+@media (max-width: 768px) {
+    .nav-container-wrapper {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .nav-prev, .nav-next {
+        grid-column: 1;
+        justify-self: center;
+        width: 100%;
+        justify-content: center;
+    }
+    .nav-ghost {
+        display: none;
+    }
 }

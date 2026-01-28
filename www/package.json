@@ -1,8 +1,8 @@
 {
   "private": true,
   "scripts": {
-    "dev": "npx tailwindcss -i ./src/css/input.css -o ./assets/css/style.css --watch",
-    "build": "npx tailwindcss -i ./src/css/input.css -o ./assets/css/style.css --minify"
+    "dev": "npx tailwindcss -i ./resources/css/app.css -o ./assets/css/style.css --watch",
+    "build": "npx tailwindcss -i ./resources/css/app.css -o ./assets/css/style.css --minify"
   },
   "devDependencies": {
     "tailwindcss": "^3.4.1",
