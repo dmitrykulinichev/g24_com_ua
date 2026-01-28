@@ -41,14 +41,19 @@ class LeadController
                 'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             ];
 
-            // 1. Зберігаємо локально
-            $this->storage->save($payload, $type);
+            // 1. Зберігаємо локально і отримуємо ім'я файлу
+            $filename = $this->storage->save($payload, $type);
 
             // 2. Відправляємо в Telegram (Основне повідомлення)
             $this->sendToTelegram($payload);
 
             // 3. Відправляємо на SPA API
             $response = $this->api->sendLead($payload);
+
+            // 4. Оновлюємо локальний файл відповіддю API
+            if ($filename) {
+                $this->storage->updateWithResponse($filename, $type, $response);
+            }
 
             // Обробка помилок API
             if ($response['status'] >= 400) {

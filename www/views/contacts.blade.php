@@ -27,6 +27,11 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
+    @php
+        $recaptchaEnabled = filter_var($_ENV['RECAPTCHA_ENABLED'] ?? true, FILTER_VALIDATE_BOOLEAN);
+    @endphp
+
+    @if($recaptchaEnabled)
     <!-- Підключення Google reCAPTCHA (Локально для цієї сторінки) -->
     <script>
         function loadRecaptchaV3(siteKey) {
@@ -37,6 +42,7 @@
             document.head.appendChild(script);
         }
     </script>
+    @endif
 
     <style>
         body { font-family: 'Inter', sans-serif; }
@@ -80,10 +86,11 @@
                     formData: {},
                     loading: false,
                     success: false,
-                    ready: false, // Прапорець готовності форми
+                    ready: false,
                     generalError: null,
                     fieldErrors: {},
                     siteKey: '{{ $_ENV['RECAPTCHA_SITE_KEY'] ?? '' }}',
+                    recaptchaEnabled: {{ $recaptchaEnabled ? 'true' : 'false' }},
                     fields: [],
 
                     // Fallback конфігурація
@@ -101,14 +108,16 @@
                         } else {
                             this.fields = this.fallbackFields;
                             this.initFormData();
-                            this.ready = true; // Готово (fallback)
+                            this.ready = true;
 
-                            if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                            if (this.recaptchaEnabled && this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
                                 loadRecaptchaV3(this.siteKey);
                             }
                         }
 
-                        this.waitForRecaptcha();
+                        if (this.recaptchaEnabled) {
+                            this.waitForRecaptcha();
+                        }
                     },
 
                     waitForRecaptcha() {
@@ -125,11 +134,13 @@
                     },
 
                     applyConfig(data) {
-                        if (data.recaptcha_site_key) {
-                            this.siteKey = data.recaptcha_site_key;
-                            loadRecaptchaV3(this.siteKey);
-                        } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
-                            loadRecaptchaV3(this.siteKey);
+                        if (this.recaptchaEnabled) {
+                            if (data.recaptcha_site_key) {
+                                this.siteKey = data.recaptcha_site_key;
+                                loadRecaptchaV3(this.siteKey);
+                            } else if (this.siteKey && this.siteKey !== 'YOUR_V3_SITE_KEY') {
+                                loadRecaptchaV3(this.siteKey);
+                            }
                         }
 
                         if (data.forms && data.forms.lead && data.forms.lead.fields) {
@@ -143,7 +154,7 @@
                         }
 
                         this.initFormData();
-                        this.ready = true; // Готово (з конфігу)
+                        this.ready = true;
                     },
 
                     initFormData() {
@@ -157,6 +168,7 @@
                     },
 
                     async getRecaptchaToken() {
+                        if (!this.recaptchaEnabled) return ''; // Пустий рядок
                         if (!this.siteKey || this.siteKey === 'YOUR_V3_SITE_KEY') return '';
 
                         return new Promise((resolve) => {
@@ -194,10 +206,14 @@
                         this.loading = true;
 
                         let captchaToken = '';
-                        try {
-                            captchaToken = await this.getRecaptchaToken();
-                        } catch (e) {
-                            console.error('Recaptcha error:', e);
+                        if (this.recaptchaEnabled) {
+                            try {
+                                captchaToken = await this.getRecaptchaToken();
+                            } catch (e) {
+                                console.error('Recaptcha error:', e);
+                            }
+                        } else {
+                            captchaToken = ''; // Пустий рядок
                         }
 
                         let payload = { ...this.formData };
@@ -295,16 +311,23 @@
                             </div>
                         </template>
 
+                        <!-- Капча -->
+                        <div class="flex justify-center mt-4">
+                            <div id="contact-recaptcha"></div>
+                        </div>
+
                         <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-70" :disabled="loading">
                             <span x-show="!loading">Відправити запит</span>
                             <span x-show="loading">Відправка...</span>
                         </button>
 
+                        @if($recaptchaEnabled)
                         <div class="text-center text-xs text-gray-400 mt-2">
                             Цей сайт захищений reCAPTCHA і застосовуються
                             <a href="https://policies.google.com/privacy" class="underline" target="_blank">Політика конфіденційності</a> та
                             <a href="https://policies.google.com/terms" class="underline" target="_blank">Умови використання</a> Google.
                         </div>
+                        @endif
                     </form>
                 </div>
 

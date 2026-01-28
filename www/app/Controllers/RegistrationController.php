@@ -81,14 +81,19 @@ class RegistrationController
                 'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             ];
             
-            // 1. Зберігаємо локально
-            $this->storage->save($payload, 'register');
+            // 1. Зберігаємо локально і отримуємо ім'я файлу
+            $filename = $this->storage->save($payload, 'register');
 
             // 2. Відправляємо в Telegram
             $this->sendToTelegram($payload);
 
             // 3. Відправляємо на SPA API
             $response = $this->api->registerTenant($payload);
+
+            // 4. Оновлюємо локальний файл відповіддю API
+            if ($filename) {
+                $this->storage->updateWithResponse($filename, 'register', $response);
+            }
 
             // Обробка помилок API
             if ($response['status'] >= 400) {
