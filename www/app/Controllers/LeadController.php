@@ -6,25 +6,34 @@ use App\Services\Logger;
 use App\Services\SpaApiService;
 use App\Services\LeadStorageService;
 use App\Services\TelegramService;
+use App\Services\RateLimiterService;
 
 class LeadController
 {
     protected $api;
     protected $storage;
     protected $telegram;
+    protected $rateLimiter;
 
     public function __construct()
     {
         $this->api = new SpaApiService();
         $this->storage = new LeadStorageService();
         $this->telegram = new TelegramService();
+        $this->rateLimiter = new RateLimiterService();
     }
 
     public function submit()
     {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        
+        if ($this->rateLimiter->isLimitExceeded($ip)) {
+            response()->json(['message' => 'Too many requests. Please try again later.'], 429);
+            return;
+        }
+
         try {
             $data = request()->body();
-            $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
             
             Logger::info('Отримано нову заявку (Proxy)', ['ip' => $ip, 'email' => $data['email'] ?? 'unknown']);
 
@@ -41,16 +50,16 @@ class LeadController
                 'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             ];
 
-            // 1. Зберігаємо локально і отримуємо ім'я файлу
+            // 1. Зберігаємо локально
             $filename = $this->storage->save($payload, $type);
 
-            // 2. Відправляємо в Telegram (Основне повідомлення)
+            // 2. Відправляємо в Telegram
             $this->sendToTelegram($payload);
 
             // 3. Відправляємо на SPA API
             $response = $this->api->sendLead($payload);
 
-            // 4. Оновлюємо локальний файл відповіддю API
+            // 4. Оновлюємо локальний файл
             if ($filename) {
                 $this->storage->updateWithResponse($filename, $type, $response);
             }
@@ -59,16 +68,13 @@ class LeadController
             if ($response['status'] >= 400) {
                 Logger::error('SPA API Error (Lead)', ['status' => $response['status'], 'body' => $response['raw_body']]);
                 
-                // Відправляємо сповіщення про помилку в Telegram
                 $this->sendApiErrorToTelegram($response, $payload['email']);
 
-                // Якщо це 500 (Server Error), кажемо юзеру, що все ОК (бо ми зберегли локально)
                 if ($response['status'] >= 500) {
                     response()->json(['status' => 'success', 'message' => 'Ваша заявка прийнята!'], 200);
                     return;
                 }
                 
-                // Якщо це 422 (Validation) або інше - віддаємо помилку юзеру
                 response()->json($response['body'], $response['status']);
                 return;
             }
@@ -122,7 +128,6 @@ class LeadController
         $msg .= "Заявка від: {$email}\n\n";
         $msg .= "Status: <b>{$response['status']}</b>\n";
         
-        // Обрізаємо тіло відповіді, якщо воно занадто довге
         $body = $response['raw_body'];
         if (strlen($body) > 500) {
             $body = substr($body, 0, 500) . '...';

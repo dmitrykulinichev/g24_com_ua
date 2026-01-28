@@ -6,18 +6,21 @@ use App\Services\Logger;
 use App\Services\SpaApiService;
 use App\Services\LeadStorageService;
 use App\Services\TelegramService;
+use App\Services\RateLimiterService;
 
 class RegistrationController
 {
     protected $api;
     protected $storage;
     protected $telegram;
+    protected $rateLimiter;
 
     public function __construct()
     {
         $this->api = new SpaApiService();
         $this->storage = new LeadStorageService();
         $this->telegram = new TelegramService();
+        $this->rateLimiter = new RateLimiterService();
     }
 
     public function getConfig()
@@ -64,9 +67,15 @@ class RegistrationController
 
     public function register()
     {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        
+        if ($this->rateLimiter->isLimitExceeded($ip)) {
+            response()->json(['message' => 'Too many requests. Please try again later.'], 429);
+            return;
+        }
+
         try {
             $data = request()->body();
-            $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
 
             Logger::info('Спроба реєстрації (Proxy)', ['ip' => $ip, 'email' => $data['owner_email'] ?? 'unknown']);
 
@@ -123,6 +132,13 @@ class RegistrationController
 
     public function resend()
     {
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        
+        if ($this->rateLimiter->isLimitExceeded($ip)) {
+            response()->json(['message' => 'Too many requests.'], 429);
+            return;
+        }
+
         try {
             $data = request()->body();
             
@@ -143,6 +159,15 @@ class RegistrationController
 
     public function checkStatus()
     {
+        // Для checkStatus можна зробити м'якший ліміт або не робити взагалі, 
+        // але для безпеки краще додати.
+        $ip = $_SERVER['REMOTE_ADDR'] ?? 'unknown';
+        
+        if ($this->rateLimiter->isLimitExceeded($ip)) {
+            response()->json(['message' => 'Too many requests.'], 429);
+            return;
+        }
+
         try {
             $data = request()->body();
             $email = $data['email'] ?? '';
@@ -164,16 +189,15 @@ class RegistrationController
 
     public function abandoned()
     {
+        // Для abandoned ліміт не критичний, але хай буде
         try {
-            // sendBeacon відправляє дані як FormData або JSON string
-            // Leaf може не розпарсити JSON автоматично, якщо Content-Type text/plain (стандарт для beacon)
             $input = file_get_contents('php://input');
             $data = json_decode($input, true) ?? $_POST;
 
             $email = $data['email'] ?? ($data['owner_email'] ?? '');
             
             if (empty($email)) {
-                return; // Немає сенсу зберігати без контакту
+                return;
             }
 
             $payload = [
@@ -185,17 +209,14 @@ class RegistrationController
                 'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             ];
 
-            // Зберігаємо в окрему папку
             $this->storage->save($payload, 'abandoned');
 
-            // Відправляємо в Telegram (тихо)
             $msg = "👻 <b>Покинутий лід!</b>\n";
             $msg .= "Email: {$email}\n";
             if (!empty($payload['phone'])) $msg .= "Phone: {$payload['phone']}\n";
             $this->telegram->sendMessage($msg);
 
         } catch (\Throwable $e) {
-            // Ігноруємо помилки, щоб не блокувати закриття сторінки
             Logger::error('Abandoned lead error', ['msg' => $e->getMessage()]);
         }
     }

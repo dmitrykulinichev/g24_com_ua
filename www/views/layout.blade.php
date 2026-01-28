@@ -12,9 +12,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Блокування індексації -->
-    <meta name="robots" content="noindex, nofollow">
-
     <!-- SEO Meta Tags -->
     @php
         $pageTitle = $meta['title'] ?? 'Garage24 - CRM для автопарків';
@@ -40,26 +37,9 @@
     <meta property="twitter:description" content="{{ $pageDesc }}">
     <meta property="twitter:image" content="{{ $pageImage }}">
 
-    <link rel="stylesheet" href="/assets/css/style.css">
+    <!-- Основні стилі (зкомпільовані Tailwind) -->
+    <link rel="stylesheet" href="/assets/css/style.css?v={{ time() }}">
 
-    <!-- Підключення Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#2563eb',
-                        secondary: '#1e293b',
-                        accent: '#10b981',
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    }
-                }
-            }
-        }
-    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -77,11 +57,6 @@
     <!-- Додаткові скрипти для конкретних сторінок -->
     @stack('scripts')
 
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        [x-cloak] { display: none !important; }
-        .grecaptcha-badge { visibility: hidden; }
-    </style>
     @stack('styles')
 </head>
 <body class="text-slate-800 antialiased bg-white" x-data="{ yearly: false }">
@@ -98,7 +73,7 @@
 
     @include('partials.footer')
 
-    <!-- Модальні вікна (підключаються глобально) -->
+    <!-- Модальні вікна (підключаються глобально ОДИН РАЗ) -->
     @include('partials.modal-form')
     @include('partials.modal-text')
     @include('partials.cookie-consent')
