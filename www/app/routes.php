@@ -25,7 +25,7 @@ $app->get('/api/docs/search', 'App\Controllers\SearchController@search');
 // Блог
 $app->get('/blog', 'App\Controllers\BlogController@index');
 $app->get('/blog/{slug}', 'App\Controllers\BlogController@show');
-$app->get('/api/blog/search', 'App\Controllers\SearchController@searchBlog'); // Новий маршрут
+$app->get('/api/blog/search', 'App\Controllers\SearchController@searchBlog');
 
 // API для статичних сторінок (модалки)
 $app->get('/api/page/{slug}', 'App\Controllers\PageController@apiShow');
@@ -36,3 +36,6 @@ $app->post('/api/lead', 'App\Controllers\LeadController@submit');
 // Реєстрація нового парку (Proxy to SPA API)
 $app->get('/api/config', 'App\Controllers\RegistrationController@getConfig');
 $app->post('/api/register', 'App\Controllers\RegistrationController@register');
+$app->post('/api/resend', 'App\Controllers\RegistrationController@resend');
+$app->post('/api/check-status', 'App\Controllers\RegistrationController@checkStatus');
+$app->post('/api/abandoned', 'App\Controllers\RegistrationController@abandoned'); // Новий маршрут

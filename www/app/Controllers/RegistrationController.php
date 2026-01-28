@@ -81,7 +81,7 @@ class RegistrationController
                 'user_agent'  => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
             ];
             
-            // 1. Зберігаємо локально і отримуємо ім'я файлу
+            // 1. Зберігаємо локально
             $filename = $this->storage->save($payload, 'register');
 
             // 2. Відправляємо в Telegram
@@ -90,7 +90,7 @@ class RegistrationController
             // 3. Відправляємо на SPA API
             $response = $this->api->registerTenant($payload);
 
-            // 4. Оновлюємо локальний файл відповіддю API
+            // 4. Оновлюємо локальний файл
             if ($filename) {
                 $this->storage->updateWithResponse($filename, 'register', $response);
             }
@@ -118,6 +118,85 @@ class RegistrationController
                 'trace' => $e->getTraceAsString()
             ]);
             response()->json(['message' => 'Server Error'], 500);
+        }
+    }
+
+    public function resend()
+    {
+        try {
+            $data = request()->body();
+            
+            $payload = [
+                'email' => $data['email'] ?? '',
+                'g-recaptcha-response' => $data['g-recaptcha-response'] ?? ''
+            ];
+
+            $response = $this->api->resendActivation($payload);
+            
+            response()->json($response['body'], $response['status']);
+
+        } catch (\Throwable $e) {
+            Logger::error('Error in resend', ['message' => $e->getMessage()]);
+            response()->json(['message' => 'Server Error'], 500);
+        }
+    }
+
+    public function checkStatus()
+    {
+        try {
+            $data = request()->body();
+            $email = $data['email'] ?? '';
+
+            if (empty($email)) {
+                response()->json(['message' => 'Email required'], 422);
+                return;
+            }
+
+            $response = $this->api->checkStatus(['email' => $email]);
+            
+            response()->json($response['body'], $response['status']);
+
+        } catch (\Throwable $e) {
+            Logger::error('Error in checkStatus', ['message' => $e->getMessage()]);
+            response()->json(['message' => 'Server Error'], 500);
+        }
+    }
+
+    public function abandoned()
+    {
+        try {
+            // sendBeacon відправляє дані як FormData або JSON string
+            // Leaf може не розпарсити JSON автоматично, якщо Content-Type text/plain (стандарт для beacon)
+            $input = file_get_contents('php://input');
+            $data = json_decode($input, true) ?? $_POST;
+
+            $email = $data['email'] ?? ($data['owner_email'] ?? '');
+            
+            if (empty($email)) {
+                return; // Немає сенсу зберігати без контакту
+            }
+
+            $payload = [
+                'email' => $email,
+                'phone' => $data['phone'] ?? '',
+                'name' => $data['name'] ?? ($data['owner_name'] ?? ''),
+                'data' => $data,
+                'ip' => $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+                'user_agent' => $_SERVER['HTTP_USER_AGENT'] ?? 'unknown',
+            ];
+
+            // Зберігаємо в окрему папку
+            $this->storage->save($payload, 'abandoned');
+
+            // Відправляємо в Telegram (тихо)
+            $msg = "👻 <b>Покинутий лід!</b>\n";
+            $msg .= "Email: {$email}\n";
+            if (!empty($payload['phone'])) $msg .= "Phone: {$payload['phone']}\n";
+            $this->telegram->sendMessage($msg);
+
+        } catch (\Throwable $e) {
+            // Ігноруємо помилки, щоб не блокувати закриття сторінки
+            Logger::error('Abandoned lead error', ['msg' => $e->getMessage()]);
         }
     }
 

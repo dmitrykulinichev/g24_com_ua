@@ -32,6 +32,22 @@ class SpaApiService
     }
 
     /**
+     * Повторна відправка листа активації
+     */
+    public function resendActivation(array $data)
+    {
+        return $this->post('/api/v1/public/landing/resend-activation', $data);
+    }
+
+    /**
+     * Перевірка статусу користувача
+     */
+    public function checkStatus(array $data)
+    {
+        return $this->post('/api/v1/public/landing/check-status', $data);
+    }
+
+    /**
      * Відправка ліда (Enterprise, Консультація)
      */
     public function sendLead(array $data)
