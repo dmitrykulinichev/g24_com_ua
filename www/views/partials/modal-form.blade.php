@@ -89,9 +89,16 @@
                     }
                 });
 
-                // Відстеження покинутої форми
-                document.addEventListener('visibilitychange', () => {
-                    if (document.visibilityState === 'hidden') {
+                // Відстеження закриття модалки (клік на хрестик або фон)
+                this.$watch('showModal', (value) => {
+                    if (value === false) {
+                        this.sendAbandonedData();
+                    }
+                });
+
+                // Відстеження закриття вкладки браузера
+                window.addEventListener('beforeunload', () => {
+                    if (this.showModal) {
                         this.sendAbandonedData();
                     }
                 });
@@ -142,7 +149,11 @@
             // -----------------------
 
             sendAbandonedData() {
-                if (this.activeFormKey === 'register_park' && this.viewState === 'form' && this.formData.owner_email) {
+                if (this.activeFormKey === 'register_park' &&
+                    this.viewState === 'form' &&
+                    this.formData.owner_email &&
+                    !this.submitting) { // Не відправляти, якщо йде процес сабміту
+
                     const data = JSON.stringify(this.formData);
                     const blob = new Blob([data], {type: 'application/json'});
                     navigator.sendBeacon('/api/abandoned', blob);
