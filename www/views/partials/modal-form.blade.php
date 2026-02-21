@@ -393,7 +393,11 @@
                     this.submitting = false;
 
                     if (response.ok || response.status === 409) {
-                        this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
+                        if (this.activeFormKey === 'register_park') {
+                            this.successMessage = 'Парк успішно зареєстровано.';
+                        } else {
+                            this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
+                        }
 
                         // DataLayer Event
                         window.dataLayer = window.dataLayer || [];
@@ -540,7 +544,7 @@
 
             <!-- Якщо новий або існує, але не активований -->
             <div x-show="viewState === 'success_new' || viewState === 'success_exists'">
-                <p class="text-sm text-gray-500 mt-2">Перевірте вашу пошту (включаючи папку Спам).</p>
+                <p class="text-sm text-gray-500 mt-2">Перевірте вашу пошту для активації акаунту (включаючи папку Спам).</p>
 
                 <div x-show="activeFormKey === 'register_park'" class="mt-6">
                     <button @click="resendEmail"
@@ -565,7 +569,10 @@
 
             <div class="mt-8 pt-6 border-t border-gray-100 text-xs text-gray-400">
                 Якщо виникли проблеми з входом або реєстрацією —
-                <a href="/contacts" class="text-primary hover:underline">напишіть нам</a>.
+                <a href="/contacts" target="_blank" class="text-primary hover:underline inline-flex items-center gap-1">
+                    напишіть нам
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>.
             </div>
         </div>
 
