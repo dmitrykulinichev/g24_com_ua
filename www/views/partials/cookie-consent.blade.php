@@ -20,8 +20,9 @@
     }
 }"
 x-init="
-    // Check consent on load
-    if (localStorage.getItem('cookie_accepted') === 'true') {
+    const consent = localStorage.getItem('cookie_accepted');
+
+    if (consent === 'true') {
         // Already accepted - ensure Google knows
         if (typeof gtag === 'function') {
             gtag('consent', 'update', {

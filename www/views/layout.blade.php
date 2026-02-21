@@ -1,29 +1,7 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    @php
-        $googleAnalyticsId = getenv('GOOGLE_ANALYTICS_ID');
-    @endphp
-
-    @if($googleAnalyticsId)
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id={{ $googleAnalyticsId }}"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-
-        // Google Consent Mode v2: Default state (Denied)
-        gtag('consent', 'default', {
-            'ad_storage': 'denied',
-            'ad_user_data': 'denied',
-            'ad_personalization': 'denied',
-            'analytics_storage': 'denied'
-        });
-
-        gtag('js', new Date());
-        gtag('config', '{{ $googleAnalyticsId }}');
-    </script>
-    @endif
+    @include('partials.analytics')
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -60,7 +38,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <!-- Підключення Alpine.js -->
+    <!-- Підключення Alpine.js та плагінів -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
 
     <!-- Передача конфігурації з бекенду -->
