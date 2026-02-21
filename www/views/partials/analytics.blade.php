@@ -1,9 +1,6 @@
 @php
-    // Спробуємо отримати з ENV, якщо немає - використовуємо хардкод (тимчасово, для гарантії роботи)
-    $googleAnalyticsId = getenv('GOOGLE_ANALYTICS_ID') ?: 'G-QEZ3ZYHQMP';
+    $googleAnalyticsId = $_ENV['GOOGLE_ANALYTICS_ID'] ?? null;
 @endphp
-
-<!-- Analytics Debug: ID is '{{ $googleAnalyticsId }}' -->
 
 @if($googleAnalyticsId)
 <script>

@@ -83,23 +83,26 @@ class MarkdownService
         $items = [];
         
         foreach ($files as $file) {
-            $data = self::parseFile($file);
             $filename = basename($file, '.md');
             
             // Extract slug from filename (remove date prefix if present)
             if (preg_match('/^\d{4}-\d{2}-\d{2}-(.+)$/', $filename, $matches)) {
                 $slug = $matches[1];
+                // Parse file only if it matches the pattern (optional optimization, but safer logic)
+                $data = self::parseFile($file);
+                
+                $items[] = [
+                    'slug' => $slug,
+                    'title' => $data['meta']['title'],
+                    'date' => $data['meta']['date'],
+                    'preview' => $data['meta']['description'],
+                    'image' => $data['meta']['image'] ?? null
+                ];
             } else {
-                $slug = $filename;
+                // Skip files that don't match the date pattern (e.g. old files)
+                // Or handle them if needed, but for now we skip to enforce order
+                continue;
             }
-            
-            $items[] = [
-                'slug' => $slug,
-                'title' => $data['meta']['title'],
-                'date' => $data['meta']['date'],
-                'preview' => $data['meta']['description'],
-                'image' => $data['meta']['image'] ?? null
-            ];
         }
         
         // Сортування за датою (нові зверху)
