@@ -17,28 +17,33 @@
             window.dataLayer = window.dataLayer || [];
             window.dataLayer.push({'event': 'consent_update'});
         }
+    },
+    init() {
+        const consent = localStorage.getItem('cookie_accepted');
+
+        if (consent === 'true') {
+            // Already accepted - ensure Google knows
+            if (typeof gtag === 'function') {
+                gtag('consent', 'update', {
+                    'ad_storage': 'granted',
+                    'ad_user_data': 'granted',
+                    'ad_personalization': 'granted',
+                    'analytics_storage': 'granted'
+                });
+            }
+        } else {
+            // Not accepted yet - show banner
+            setTimeout(() => {
+                this.showCookie = true;
+            }, 1000);
+        }
+
+        // Listen for external consent trigger (e.g., from Privacy Policy modal)
+        window.addEventListener('cookie-consent-trigger', () => {
+            this.accept();
+        });
     }
 }"
-x-init="
-    const consent = localStorage.getItem('cookie_accepted');
-
-    if (consent === 'true') {
-        // Already accepted - ensure Google knows
-        if (typeof gtag === 'function') {
-            gtag('consent', 'update', {
-                'ad_storage': 'granted',
-                'ad_user_data': 'granted',
-                'ad_personalization': 'granted',
-                'analytics_storage': 'granted'
-            });
-        }
-    } else {
-        // Not accepted yet - show banner
-        setTimeout(() => {
-            showCookie = true;
-        }, 1000);
-    }
-"
 x-show="showCookie"
 x-transition:enter="transition ease-out duration-300"
 x-transition:enter-start="opacity-0 translate-y-full"
