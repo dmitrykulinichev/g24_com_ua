@@ -1,13 +1,7 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <!-- Google Tag Manager -->
-    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-    })(window,document,'script','dataLayer','GTM-P5VR2VN5');</script>
-    <!-- End Google Tag Manager -->
+    @include('partials.analytics')
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -43,14 +37,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- AlpineJS для інтерактивності -->
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/collapse@3.x.x/dist/cdn.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="text-slate-800 antialiased bg-white">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P5VR2VN5"
-    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-    <!-- End Google Tag Manager (noscript) -->
-
     @include('partials.header')
 
     <main>
@@ -69,7 +59,7 @@
                     </h1>
                     <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-300 mb-8">
                         Замініть Excel, блокноти та хаос у чатах на єдину цифрову екосистему.
-                        Автоматизуйте графіки, фінанси та ремонти в одному вікні.
+                        Автоматизуйте графіки, фінанси та ремонти в одному вікні
                     </p>
 
                     <!-- Кнопки перенесено нижче, за межі Hero -->
@@ -80,21 +70,21 @@
                             <div class="text-2xl">🤝</div>
                             <div>
                                 <h3 class="font-bold text-white text-sm">Оплата по факту</h3>
-                                <p class="text-slate-300 text-xs mt-1">Спочатку користуєтесь місяць, потім платите. Жодних передплат.</p>
+                                <p class="text-slate-300 text-xs mt-1">Спочатку користуєтесь, потім платите. Жодних передплат</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3 p-4 rounded-lg bg-white/10 border border-white/20 backdrop-blur-md text-white">
                             <div class="text-2xl">🔓</div>
                             <div>
                                 <h3 class="font-bold text-white text-sm">Все включено</h3>
-                                <p class="text-slate-300 text-xs mt-1">Один тариф. Всі функції доступні одразу. Жодних "Pro" версій.</p>
+                                <p class="text-slate-300 text-xs mt-1">Один тариф. Всі функції доступні одразу. Жодних "Pro" версій</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3 p-4 rounded-lg bg-white/10 border border-white/20 backdrop-blur-md text-white">
-                            <div class="text-2xl">📉</div>
+                            <div class="text-2xl">📈</div>
                             <div>
                                 <h3 class="font-bold text-white text-sm">Платіть за активних</h3>
-                                <p class="text-slate-300 text-xs mt-1">Машина в ремонті? Ви за неї не платите. Рахуємо тільки працюючі авто.</p>
+                                <p class="text-slate-300 text-xs mt-1">Машина в ремонті? Ви за неї не платите. Рахуємо тільки працюючі авто</p>
                             </div>
                         </div>
                     </div>
@@ -196,7 +186,7 @@
                     <!-- 1. Графік -->
                     <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
                         <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">📅</div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Розумний графік</h3>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Розумний графік роботи водіїв</h3>
                         <p class="text-slate-600 mb-4">Планування змін без конфліктів. Система не дасть поставити одного водія на дві машини.</p>
                         <ul class="space-y-2 text-sm text-slate-500">
                             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Drag & Drop календар</li>
@@ -208,12 +198,12 @@
                     <!-- 2. Фінанси -->
                     <div class="bg-slate-50 rounded-xl p-8 border border-slate-100 hover:shadow-lg transition duration-300 group">
                         <div class="w-12 h-12 bg-green-100 text-green-600 rounded-lg flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">💰</div>
-                        <h3 class="text-xl font-bold text-slate-900 mb-3">Фінанси та Payroll</h3>
-                        <p class="text-slate-600 mb-4">Автоматичний розрахунок зарплати водіїв на основі поїздок Uklon та ручних кас.</p>
+                        <h3 class="text-xl font-bold text-slate-900 mb-3">Фінанси та облік зарплати</h3>
+                        <p class="text-slate-600 mb-4">Автоматичний розрахунок зарплати водіїв на основі поїздок Uklon та ручних кас, премій та штрафів.</p>
                         <ul class="space-y-2 text-sm text-slate-500">
-                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Гнучкі схеми (50/50, Оренда)</li>
-                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Баланси водіїв</li>
-                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Unit Economics авто</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Схеми розподілу грошей</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Агрегація доходів та витрат</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Економіка парку</li>
                         </ul>
                     </div>
 
@@ -247,7 +237,7 @@
                         <h3 class="text-xl font-bold text-slate-900 mb-3">Сервіс та Ремонти</h3>
                         <p class="text-slate-600 mb-4">Контроль вартості володіння. Водії повідомляють про поломки через телефон.</p>
                         <ul class="space-y-2 text-sm text-slate-500">
-                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Тікети поломок з фото</li>
+                            <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Тікети поломок</li>
                             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Регламентні роботи</li>
                             <li class="flex items-center gap-2"><span class="text-green-500">✓</span> Контроль витрат на СТО</li>
                         </ul>
@@ -347,17 +337,23 @@
                             <h3 class="text-2xl font-bold mb-2">Telegram Бот</h3>
                             <p class="text-blue-100 mb-4">Для водіїв. Простий інтерфейс у звичному месенджері.</p>
                             <ul class="space-y-2 text-sm text-blue-100">
-                                <li>• Перегляд графіку змін</li>
-                                <li>• Перевірка балансу та боргів</li>
-                                <li>• Відправка фото поломок</li>
+                                <li>• Прийом-здача авто</li>
+                                <li>• Звіти про проблеми автомобіля</li>
+                                <li>• Графік чергувань</li>
+                                <li>• Передача пробігу</li>
+                                <li>• Облік ручної каси</li>
                             </ul>
                         </div>
                         <div class="w-full md:w-1/2 flex justify-center">
                             <!-- Імітація інтерфейсу бота -->
                             <div class="bg-white text-slate-900 p-4 rounded-lg shadow-lg w-full max-w-[200px] text-xs">
-                                <div class="bg-blue-100 p-2 rounded mb-2 self-start">Привіт! Твій баланс: 1250 грн.</div>
-                                <div class="bg-blue-100 p-2 rounded mb-2 self-start">Наступна зміна: Завтра, 08:00</div>
-                                <div class="bg-blue-500 text-white p-2 rounded self-end text-right">Дякую!</div>
+                                <div class="bg-blue-100 p-2 rounded mb-2 self-start">Олександр: 5683 здав 76081</div>
+                                <div class="bg-blue-500 text-white p-2 rounded self-end text-right">Бот: прийнято</div>
+
+                                <div class="bg-blue-100 p-2 rounded mb-2 self-start">Ігор: 2312 прийняв</div>
+                                <div class="bg-blue-500 text-white p-2 rounded self-end text-right">Бот: ок</div>
+                                <div class="bg-blue-100 p-2 rounded mb-2 self-start">Олексій: плавають оберти, треба до газовика!</div>
+                                <div class="bg-blue-500 text-white p-2 rounded self-end text-right">Бот: пепедано в обробку. З Вами звяжуться</div>
                             </div>
                         </div>
                     </div>
@@ -380,7 +376,8 @@
                             <span x-text="active === 1 ? '−' : '+'" class="text-xl"></span>
                         </button>
                         <div x-show="active === 1" x-collapse class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white">
-                            Так! Наш модуль "Smart Import" дозволяє завантажити тисячі водіїв та авто за кілька хвилин. Система сама підкаже, як співставити колонки.
+                            Так! Наш модуль імпорту дозволяє завантажити водіїв та автомобілі за кілька хвилин. Система сама підкаже, як співставити колонки.
+                            Крім того, доступна можливість синхронізації водіїв та автомобілів з базою Уклона.
                         </div>
                     </div>
 
@@ -391,7 +388,7 @@
                             <span x-text="active === 2 ? '−' : '+'" class="text-xl"></span>
                         </button>
                         <div x-show="active === 2" x-collapse class="px-6 py-4 text-slate-600 border-t border-slate-200 bg-white">
-                            Ми використовуємо шифрування даних за банківськими стандартами. Щоденні бекапи гарантують, що ви ніколи не втратите свою базу.
+                            Ми використовуємо надійні мехнізми ізоляції даних та шифруємо чутливу інформацію. Щоденні бекапи гарантують, що ви ніколи не втратите свою базу. В індивідуальному порядку можемо розглянути варіант підключення нашої системи до вашої бази даних. Однак, якщо у Вас невеликий парк - краще використати наше сховище.
                         </div>
                     </div>
 

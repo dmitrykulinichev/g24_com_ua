@@ -27,6 +27,15 @@ class BlogController
     public function show($slug)
     {
         $path = $this->contentPath . '/' . $slug . '.md';
+        
+        // Якщо точного файлу немає, шукаємо з префіксом дати
+        if (!file_exists($path)) {
+            $files = glob($this->contentPath . '/*-' . $slug . '.md');
+            if (!empty($files)) {
+                $path = $files[0];
+            }
+        }
+
         $data = MarkdownService::parseFile($path);
 
         if (!$data) {

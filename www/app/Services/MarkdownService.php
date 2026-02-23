@@ -42,10 +42,19 @@ class MarkdownService
 
         // Date fallback
         if (!isset($meta['date'])) {
-            $meta['date'] = filemtime($path);
+            $filename = basename($path);
+            // Check for date in filename (YYYY-MM-DD-slug.md)
+            if (preg_match('/^(\d{4}-\d{2}-\d{2})-(.+)\.md$/', $filename, $matches)) {
+                $meta['date'] = strtotime($matches[1]);
+            } else {
+                $meta['date'] = filemtime($path);
+            }
         } else {
             $meta['date'] = strtotime($meta['date']);
         }
+
+        // Remove "Date: YYYY-MM-DD" line from content if it exists
+        $content = preg_replace('/^Date:\s*\d{4}-\d{2}-\d{2}\s*$/m', '', $content);
 
         // Image fallback (шукаємо перше зображення в тексті)
         if (!isset($meta['image'])) {
@@ -58,6 +67,7 @@ class MarkdownService
         if (!isset($meta['description'])) {
             $cleanText = preg_replace('/^#.*$/m', '', $content);
             $cleanText = preg_replace('/!\[.*?\]\(.*?\)/', '', $cleanText);
+            $cleanText = preg_replace('/^Date:\s*\d{4}-\d{2}-\d{2}\s*$/m', '', $cleanText);
             $meta['description'] = mb_substr(trim(strip_tags($cleanText)), 0, 160) . '...';
         }
 
@@ -73,16 +83,26 @@ class MarkdownService
         $items = [];
         
         foreach ($files as $file) {
-            $data = self::parseFile($file);
-            $slug = basename($file, '.md');
+            $filename = basename($file, '.md');
             
-            $items[] = [
-                'slug' => $slug,
-                'title' => $data['meta']['title'],
-                'date' => $data['meta']['date'],
-                'preview' => $data['meta']['description'],
-                'image' => $data['meta']['image'] ?? null
-            ];
+            // Extract slug from filename (remove date prefix if present)
+            if (preg_match('/^\d{4}-\d{2}-\d{2}-(.+)$/', $filename, $matches)) {
+                $slug = $matches[1];
+                // Parse file only if it matches the pattern (optional optimization, but safer logic)
+                $data = self::parseFile($file);
+                
+                $items[] = [
+                    'slug' => $slug,
+                    'title' => $data['meta']['title'],
+                    'date' => $data['meta']['date'],
+                    'preview' => $data['meta']['description'],
+                    'image' => $data['meta']['image'] ?? null
+                ];
+            } else {
+                // Skip files that don't match the date pattern (e.g. old files)
+                // Or handle them if needed, but for now we skip to enforce order
+                continue;
+            }
         }
         
         // Сортування за датою (нові зверху)
