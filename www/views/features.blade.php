@@ -1,10 +1,10 @@
-@extends('layout_new')
+@extends('layout')
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative bg-slate-900 text-white py-20 lg:py-28 overflow-hidden">
+    <div class="relative bg-slate-900 text-white py-20 lg:py-28 overflow-hidden pt-32 lg:pt-40">
         <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
-        
+
         <div class="container mx-auto px-4 relative z-10 text-center">
             <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-6">Можливості системи</h1>
             <p class="text-xl text-slate-300 max-w-2xl mx-auto">Garage24 — це комплексне рішення, яке закриває всі потреби сучасного автопарку.</p>
@@ -14,14 +14,14 @@
     <!-- Features List -->
     <div class="bg-slate-50 py-16">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            
+
             <div class="space-y-16">
                 @foreach($features as $categoryName => $category)
                     <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                         <!-- Header -->
                         <div class="p-6 md:p-8 border-b border-slate-100 bg-slate-50/50 flex flex-col md:flex-row md:items-center gap-4 md:gap-6">
                             <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl bg-blue-600 text-2xl text-white shadow-md">
-                                {{ $category['icon'] }}
+                                {!! $category['icon'] !!}
                             </div>
                             <div>
                                 <h2 class="text-2xl font-bold text-slate-900">{{ $categoryName }}</h2>

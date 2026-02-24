@@ -2,7 +2,6 @@
 
 namespace App\Console;
 
-// Використовуємо чистий Symfony Command замість Aloe
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,7 +10,6 @@ use App\Services\MarkdownService;
 
 class GenerateSitemapCommand extends Command
 {
-    // У Symfony Command ім'я задається через властивість або в configure()
     protected static $defaultName = 'sitemap:generate';
 
     protected function configure()
@@ -23,7 +21,6 @@ class GenerateSitemapCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        // Використовуємо SymfonyStyle для гарного виводу (як $this->info в Aloe)
         $io = new SymfonyStyle($input, $output);
         $io->comment('Generating sitemap...');
 
@@ -32,34 +29,76 @@ class GenerateSitemapCommand extends Command
 
         $urls = [];
 
-        // 1. Головна
-        $urls[] = [
-            'loc' => $baseUrl . '/',
-            'lastmod' => date('Y-m-d'),
-            'changefreq' => 'weekly',
-            'priority' => '1.0'
+        // 1. Статичні сторінки (Головна, Тарифи, Контакти тощо)
+        $staticPages = [
+            '/' => '1.0',
+            '/features' => '0.9',
+            '/target' => '0.8',
+            '/pricing' => '0.9',
+            '/contacts' => '0.7',
+            '/blog' => '0.8',
+            '/docs' => '0.8'
         ];
 
-        // 2. Блог
-        $posts = MarkdownService::getList(__DIR__ . '/../../content/blog');
-        foreach ($posts as $post) {
+        foreach ($staticPages as $path => $priority) {
             $urls[] = [
-                'loc' => $baseUrl . '/blog/' . $post['slug'],
-                'lastmod' => date('Y-m-d', $post['date']),
-                'changefreq' => 'monthly',
-                'priority' => '0.8'
+                'loc' => $baseUrl . $path,
+                'lastmod' => date('Y-m-d'),
+                'changefreq' => 'weekly',
+                'priority' => $priority
             ];
         }
 
-        // 3. Документація
-        $docs = MarkdownService::getList(__DIR__ . '/../../content/docs');
-        foreach ($docs as $doc) {
-            $urls[] = [
-                'loc' => $baseUrl . '/docs/' . $doc['slug'],
-                'lastmod' => date('Y-m-d', $doc['date']),
-                'changefreq' => 'monthly',
-                'priority' => '0.9'
-            ];
+        // 2. Блог (з menu.json)
+        $blogMenuPath = __DIR__ . '/../../content/blog/menu.json';
+        if (file_exists($blogMenuPath)) {
+            $posts = json_decode(file_get_contents($blogMenuPath), true);
+            foreach ($posts as $post) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/blog/' . $post['slug'],
+                    'lastmod' => $post['date'], // У JSON дата вже у форматі YYYY-MM-DD
+                    'changefreq' => 'monthly',
+                    'priority' => '0.8'
+                ];
+            }
+        } else {
+            // Fallback, якщо menu.json немає
+            $posts = MarkdownService::getList(__DIR__ . '/../../content/blog');
+            foreach ($posts as $post) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/blog/' . $post['slug'],
+                    'lastmod' => date('Y-m-d', $post['date']),
+                    'changefreq' => 'monthly',
+                    'priority' => '0.8'
+                ];
+            }
+        }
+
+        // 3. Документація (з menu.json)
+        $docsMenuPath = __DIR__ . '/../../content/docs/menu.json';
+        if (file_exists($docsMenuPath)) {
+            $menu = json_decode(file_get_contents($docsMenuPath), true);
+            foreach ($menu as $group) {
+                foreach ($group['items'] as $item) {
+                    $urls[] = [
+                        'loc' => $baseUrl . '/docs/' . $item['slug'],
+                        'lastmod' => date('Y-m-d'), // Для документації беремо поточну дату, бо в menu.json немає дати
+                        'changefreq' => 'monthly',
+                        'priority' => '0.9'
+                    ];
+                }
+            }
+        } else {
+             // Fallback
+            $docs = MarkdownService::getList(__DIR__ . '/../../content/docs');
+            foreach ($docs as $doc) {
+                $urls[] = [
+                    'loc' => $baseUrl . '/docs/' . $doc['slug'],
+                    'lastmod' => date('Y-m-d', $doc['date']),
+                    'changefreq' => 'monthly',
+                    'priority' => '0.9'
+                ];
+            }
         }
 
         // Формуємо XML
@@ -68,7 +107,7 @@ class GenerateSitemapCommand extends Command
 
         foreach ($urls as $url) {
             $xml .= '  <url>' . PHP_EOL;
-            $xml .= '    <loc>' . $url['loc'] . '</loc>' . PHP_EOL;
+            $xml .= '    <loc>' . htmlspecialchars($url['loc']) . '</loc>' . PHP_EOL;
             $xml .= '    <lastmod>' . $url['lastmod'] . '</lastmod>' . PHP_EOL;
             $xml .= '    <changefreq>' . $url['changefreq'] . '</changefreq>' . PHP_EOL;
             $xml .= '    <priority>' . $url['priority'] . '</priority>' . PHP_EOL;

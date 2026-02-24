@@ -9,6 +9,7 @@ class BlogController
 {
     protected $blade;
     protected $contentPath;
+    protected $menuPath;
 
     public function __construct()
     {
@@ -16,11 +17,29 @@ class BlogController
         // Для простоти створимо новий екземпляр, як в index.php
         $this->blade = new \Jenssegers\Blade\Blade(__DIR__ . '/../../views', __DIR__ . '/../../storage/cache');
         $this->contentPath = __DIR__ . '/../../content/blog';
+        $this->menuPath = __DIR__ . '/../../content/blog/menu.json';
+    }
+
+    protected function getList()
+    {
+        if (file_exists($this->menuPath)) {
+            $posts = json_decode(file_get_contents($this->menuPath), true);
+            // Конвертуємо дати з рядків у timestamp для сумісності з view
+            foreach ($posts as &$post) {
+                if (is_string($post['date'])) {
+                    $post['date'] = strtotime($post['date']);
+                }
+            }
+            return $posts;
+        }
+        
+        // Fallback, якщо menu.json немає
+        return MarkdownService::getList($this->contentPath);
     }
 
     public function index()
     {
-        $posts = MarkdownService::getList($this->contentPath);
+        $posts = $this->getList();
         echo $this->blade->make('blog.index', ['posts' => $posts])->render();
     }
 
@@ -45,7 +64,7 @@ class BlogController
         $htmlContent = MarkdownService::render($data['content']);
 
         // Навігація
-        $posts = MarkdownService::getList($this->contentPath);
+        $posts = $this->getList();
         $newer = null; $older = null;
         $count = count($posts);
 

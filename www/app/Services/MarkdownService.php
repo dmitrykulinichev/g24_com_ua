@@ -86,10 +86,15 @@ class MarkdownService
             $filename = basename($file, '.md');
             
             // Extract slug from filename (remove date prefix if present)
-            if (preg_match('/^\d{4}-\d{2}-\d{2}-(.+)$/', $filename, $matches)) {
-                $slug = $matches[1];
+            if (preg_match('/^(\d{4}-\d{2}-\d{2})-(.+)$/', $filename, $matches)) {
+                $dateFromFilename = strtotime($matches[1]);
+                $slug = $matches[2];
+                
                 // Parse file only if it matches the pattern (optional optimization, but safer logic)
                 $data = self::parseFile($file);
+                
+                // Force date from filename
+                $data['meta']['date'] = $dateFromFilename;
                 
                 $items[] = [
                     'slug' => $slug,
