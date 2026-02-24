@@ -20,7 +20,16 @@ class DocsController
     protected function getMenu()
     {
         if (!file_exists($this->menuPath)) return [];
-        return json_decode(file_get_contents($this->menuPath), true) ?? [];
+        $menu = json_decode(file_get_contents($this->menuPath), true) ?? [];
+        
+        // Додаємо автоматичну перевірку наявності файлів
+        foreach ($menu as &$group) {
+            $group['items'] = array_filter($group['items'], function($item) {
+                return file_exists($this->contentPath . '/' . $item['slug'] . '.md');
+            });
+        }
+        
+        return $menu;
     }
 
     public function index()
