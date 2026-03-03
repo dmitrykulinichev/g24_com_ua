@@ -11,7 +11,7 @@
             </a>
 
             <div class="text-sm text-slate-500 mb-4 border-b border-slate-100 pb-4">
-                Опубліковано: {{ date('d.m.Y', $meta['date']) }}
+                Опубліковано: <time datetime="{{ date('Y-m-d', $meta['date']) }}">{{ date('d.m.Y', $meta['date']) }}</time>
             </div>
 
             <article class="content" id="blogContent">

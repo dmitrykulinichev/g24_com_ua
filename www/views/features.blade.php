@@ -2,17 +2,17 @@
 
 @section('content')
     <!-- Hero Section -->
-    <div class="relative bg-slate-900 text-white py-20 lg:py-28 overflow-hidden pt-32 lg:pt-40">
+    <section class="relative bg-slate-900 text-white py-20 lg:py-28 overflow-hidden pt-32 lg:pt-40">
         <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
 
         <div class="container mx-auto px-4 relative z-10 text-center">
             <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-6">Можливості системи</h1>
             <p class="text-xl text-slate-300 max-w-2xl mx-auto">Garage24 — це комплексне рішення, яке закриває всі потреби сучасного автопарку.</p>
         </div>
-    </div>
+    </section>
 
     <!-- Features List -->
-    <div class="bg-slate-50 py-16">
+    <section class="bg-slate-50 py-16">
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
 
             <div class="space-y-16">
@@ -68,5 +68,5 @@
                 </a>
             </div>
         </div>
-    </div>
+    </section>
 @endsection
