@@ -1,3 +1,0 @@
-<script>window.location.href = "/docs/reports";</script>
-# Redirecting...
-Go to [Reports](/docs/reports)

@@ -61,6 +61,22 @@ class BlogController
             response()->exit(404);
         }
 
+        // Використовуємо preview та image з menu.json якщо є — вони написані вручну і краще для SEO
+        if (file_exists($this->menuPath)) {
+            $menuItems = json_decode(file_get_contents($this->menuPath), true) ?? [];
+            foreach ($menuItems as $item) {
+                if ($item['slug'] === $slug) {
+                    if (!empty($item['preview'])) {
+                        $data['meta']['description'] = $item['preview'];
+                    }
+                    if (!empty($item['image'])) {
+                        $data['meta']['image'] = $item['image'];
+                    }
+                    break;
+                }
+            }
+        }
+
         $htmlContent = MarkdownService::render($data['content']);
 
         // Навігація

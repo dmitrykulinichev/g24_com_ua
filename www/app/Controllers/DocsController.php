@@ -35,7 +35,13 @@ class DocsController
     public function index()
     {
         $menu = $this->getMenu();
-        echo $this->blade->make('docs.index', ['menu' => $menu])->render();
+        echo $this->blade->make('docs.index', [
+            'menu' => $menu,
+            'meta' => [
+                'title' => 'Документація',
+                'description' => 'Інструкції, поради та відповіді на часті запитання про Garage24 — CRM-систему для управління автопарком.',
+            ]
+        ])->render();
     }
 
     public function show($slug)

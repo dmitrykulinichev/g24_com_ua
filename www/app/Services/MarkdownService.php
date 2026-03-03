@@ -65,10 +65,16 @@ class MarkdownService
 
         // Description fallback
         if (!isset($meta['description'])) {
-            $cleanText = preg_replace('/^#.*$/m', '', $content);
-            $cleanText = preg_replace('/!\[.*?\]\(.*?\)/', '', $cleanText);
+            $cleanText = preg_replace('/^#{1,6}\s*.*/m', '', $content);       // заголовки
+            $cleanText = preg_replace('/!\[.*?\]\(.*?\)/', '', $cleanText);   // зображення
+            $cleanText = preg_replace('/\[(.+?)\]\(.+?\)/', '$1', $cleanText); // [текст](url) → текст
+            $cleanText = preg_replace('/\*\*(.+?)\*\*/', '$1', $cleanText);   // **жирний** → текст
+            $cleanText = preg_replace('/\*(.+?)\*/', '$1', $cleanText);        // *курсив* → текст
+            $cleanText = preg_replace('/^\s*[-*]\s+/m', '', $cleanText);       // пункти списку
             $cleanText = preg_replace('/^Date:\s*\d{4}-\d{2}-\d{2}\s*$/m', '', $cleanText);
-            $meta['description'] = mb_substr(trim(strip_tags($cleanText)), 0, 160) . '...';
+            $cleanText = trim(strip_tags($cleanText));
+            $cleanText = preg_replace('/\s+/', ' ', $cleanText);               // зайві пробіли
+            $meta['description'] = mb_substr($cleanText, 0, 155) . '...';
         }
 
         return ['meta' => $meta, 'content' => $content];

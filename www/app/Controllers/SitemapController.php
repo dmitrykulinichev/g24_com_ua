@@ -49,16 +49,20 @@ class SitemapController
             ];
         }
 
-        // 3. Документація
-        // Скануємо папку, щоб знайти всі файли, навіть ті, що не в меню
-        $docs = MarkdownService::getList(__DIR__ . '/../../content/docs');
-        foreach ($docs as $doc) {
-            $urls[] = [
-                'loc' => $baseUrl . '/docs/' . $doc['slug'],
-                'lastmod' => date('Y-m-d', $doc['date']),
-                'changefreq' => 'monthly',
-                'priority' => '0.7'
-            ];
+        // 3. Документація — читаємо з menu.json (getList потребує дату в назві файлу, docs її не мають)
+        $docsMenuPath = __DIR__ . '/../../content/docs/menu.json';
+        if (file_exists($docsMenuPath)) {
+            $docsMenu = json_decode(file_get_contents($docsMenuPath), true) ?? [];
+            foreach ($docsMenu as $group) {
+                foreach ($group['items'] as $item) {
+                    $urls[] = [
+                        'loc' => $baseUrl . '/docs/' . $item['slug'],
+                        'lastmod' => date('Y-m-d'),
+                        'changefreq' => 'monthly',
+                        'priority' => '0.7'
+                    ];
+                }
+            }
         }
 
         // Формуємо XML
