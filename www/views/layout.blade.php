@@ -36,6 +36,18 @@
     <meta property="twitter:description" content="{{ $pageDesc }}">
     <meta property="twitter:image" content="{{ $pageImage }}">
 
+    <!-- Schema.org Organization -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Garage24",
+      "url": "{{ $baseUrl }}",
+      "logo": "{{ $baseUrl }}/assets/img/logo.jpg",
+      "sameAs": []
+    }
+    </script>
+
     <!-- Основні стилі (зкомпільовані Tailwind) -->
     <link rel="stylesheet" href="/assets/css/style.css?v={{ time() }}">
 

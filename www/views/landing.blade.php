@@ -6,12 +6,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    @php
+        $baseUrl = rtrim($_ENV['APP_URL'] ?? ('https://' . $_SERVER['HTTP_HOST']), '/');
+        $pageTitle = ($meta['title'] ?? 'CRM для автопарків') . ' | Garage24';
+        $pageDesc = $meta['description'] ?? 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.';
+        $pageImage = $baseUrl . ($meta['image'] ?? '/assets/img/landing/og-image.jpg');
+        $canonicalUrl = $baseUrl . '/';
+    @endphp
+
+    <title>{{ $pageTitle }}</title>
+    <meta name="description" content="{{ $pageDesc }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
+    <meta property="og:title" content="{{ $pageTitle }}">
+    <meta property="og:description" content="{{ $pageDesc }}">
+    <meta property="og:image" content="{{ $pageImage }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="{{ $canonicalUrl }}">
+    <meta property="twitter:title" content="{{ $pageTitle }}">
+    <meta property="twitter:description" content="{{ $pageDesc }}">
+    <meta property="twitter:image" content="{{ $pageImage }}">
+
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "Garage24",
+      "url": "{{ $canonicalUrl }}",
       "applicationCategory": "BusinessApplication",
       "operatingSystem": "Web, iOS, Android",
       "offers": {
@@ -20,12 +47,7 @@
         "priceCurrency": "UAH",
         "description": "Безкоштовний старт, оплата по факту використання"
       },
-      "description": "Операційна система для сучасного таксопарку. Автоматизація виплат, контроль палива та робота з водіями.",
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": "4.8",
-        "ratingCount": "124"
-      }
+      "description": "{{ $pageDesc }}"
     }
     </script>
 
