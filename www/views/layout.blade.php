@@ -14,13 +14,18 @@
         }
         $pageDesc = $meta['description'] ?? 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.';
         $pageImage = $meta['image'] ?? '/assets/img/landing/og-image.jpg';
+        $baseUrl = rtrim($_ENV['APP_URL'] ?? ('https://' . $_SERVER['HTTP_HOST']), '/');
+        $canonicalUrl = $baseUrl . parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $pageImage = str_starts_with($pageImage, 'http') ? $pageImage : $baseUrl . $pageImage;
     @endphp
 
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDesc }}">
+    <link rel="canonical" href="{{ $canonicalUrl }}">
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $pageDesc }}">
     <meta property="og:image" content="{{ $pageImage }}">
