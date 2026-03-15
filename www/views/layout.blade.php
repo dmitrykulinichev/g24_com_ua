@@ -49,7 +49,8 @@
     </script>
 
     <!-- Основні стилі (зкомпільовані Tailwind) -->
-    <link rel="stylesheet" href="/assets/css/style.css?v={{ time() }}">
+    @php $cssVersion = @filemtime($_SERVER['DOCUMENT_ROOT'] . '/assets/css/style.css') ?: '1'; @endphp
+    <link rel="stylesheet" href="/assets/css/style.css?v={{ $cssVersion }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -66,9 +67,6 @@
     </script>
     @endif
 
-    <!-- Додаткові скрипти для конкретних сторінок -->
-    @stack('scripts')
-
     @stack('styles')
 </head>
 <body class="text-slate-800 antialiased bg-white" x-data="{ yearly: false }">
@@ -84,5 +82,8 @@
     @include('partials.modal-form')
     @include('partials.modal-text')
     @include('partials.cookie-consent')
+
+    <!-- Скрипти сторінок -->
+    @stack('scripts')
 </body>
 </html>

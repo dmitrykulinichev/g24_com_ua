@@ -61,6 +61,8 @@ class BlogController
             response()->exit(404);
         }
 
+        $data['meta']['updated'] = filemtime($path);
+
         // Використовуємо preview та image з menu.json якщо є — вони написані вручну і краще для SEO
         if (file_exists($this->menuPath)) {
             $menuItems = json_decode(file_get_contents($this->menuPath), true) ?? [];
