@@ -29,6 +29,7 @@ $app->get('/api/blog/search', 'App\Controllers\SearchController@searchBlog');
 
 // Sitemap
 $app->get('/sitemap.xml', 'App\Controllers\SitemapController@index');
+$app->get('/api/sitemap/generate', 'App\Controllers\SitemapController@generate');
 
 // API для статичних сторінок (модалки)
 $app->get('/api/page/{slug}', 'App\Controllers\PageController@apiShow');
