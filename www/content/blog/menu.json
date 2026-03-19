@@ -11,7 +11,7 @@
         "title": "Система обліку недоступних автомобілів",
         "date": "2026-03-15",
         "preview": "У попередній статті ми розповідали про трансфер авто між парками. Але що робити, коли машина нікуди не їде — вона просто стоїть на СТО або поліція її забрала?",
-        "image": "/assets/img/docs/fleet_vehicles_list.png"
+        "image": "/assets/img/blog/unavailabilities.png"
     },
     {
         "slug": "vehicle-transfer",
