@@ -4,7 +4,7 @@
         "title": "Щотижневий фінансовий звіт по заробітку водіїв",
         "date": "2026-04-13",
         "preview": "Ми додали щотижневу розсилку фінансового звіту — кожного понеділка о 08:15 система формує підсумок по заробітку водіїв за попередній тиждень.",
-        "image": "/assets/img/blog/new_report.png"
+        "image": "/assets/img/blog/weekly_report_example.png"
     },
     {
         "slug": "document-management-upgrade",
