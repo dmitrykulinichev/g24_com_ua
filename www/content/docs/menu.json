@@ -39,6 +39,12 @@
         ]
     },
     {
+        "title": "Парк",
+        "items": [
+            { "title": "Команда", "slug": "park-users", "image": "page_park_users_main.png" }
+        ]
+    },
+    {
         "title": "Адміністрування",
         "items": [
             { "title": "Налаштування та Безпека", "slug": "admin", "image": "admin_global_settings.png" },
