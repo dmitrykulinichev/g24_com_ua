@@ -180,16 +180,10 @@ HTML;
         </div>
         <div class="screenshot-content"><img src="{$desktopSrc}" alt="{$title}"></div>
     </div>
-    <div class="screenshot-container" style="flex:1">
-        <div class="screenshot-header">
-            <div class="screenshot-dots">
-                <div class="dot dot-red"></div>
-                <div class="dot dot-yellow"></div>
-                <div class="dot dot-green"></div>
-            </div>
-            <div class="screenshot-title">{$title} (mobile)</div>
-        </div>
-        <div class="screenshot-content"><img src="{$mobileSrc}" alt="{$title} (mobile)"></div>
+    <div class="screenshot-phone">
+        <div class="screenshot-phone-notch"><div class="screenshot-phone-notch-bar"></div></div>
+        <div class="screenshot-phone-content"><img src="{$mobileSrc}" alt="{$title} (mobile)"></div>
+        <div class="screenshot-phone-chin"><div class="screenshot-phone-chin-bar"></div></div>
     </div>
 </div>
 HTML;
