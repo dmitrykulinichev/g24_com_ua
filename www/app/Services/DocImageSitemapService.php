@@ -55,8 +55,9 @@ class DocImageSitemapService
     }
 
     /**
-     * Парсить {{screenshot file="..." title="..."}} з md-файлу,
-     * повертає лише ті зображення що фізично існують.
+     * Парсить {{screenshot ...}} з md-файлу,
+     * підтримує обидва формати — новий (desktop=/mobile=) і старий (file=).
+     * Повертає лише ті зображення що фізично існують.
      */
     protected function extractImages(string $slug, string $baseUrl): array
     {
@@ -65,18 +66,36 @@ class DocImageSitemapService
 
         $content = file_get_contents($mdPath);
         $images  = [];
+        $baseImgUrl = $baseUrl . '/assets/img/docs/';
 
-        preg_match_all('/\{\{screenshot\s+file="([^"]+)"\s*(?:title="([^"]+)")?\}\}/', $content, $matches, PREG_SET_ORDER);
+        preg_match_all('/\{\{screenshot\s+([^}]+)\}\}/', $content, $matches, PREG_SET_ORDER);
 
         foreach ($matches as $match) {
-            $file  = $match[1];
-            $title = $match[2] ?? $file;
+            $attrs = [];
+            preg_match_all('/(\w+)="([^"]*)"/', $match[1], $attrMatches, PREG_SET_ORDER);
+            foreach ($attrMatches as $attr) {
+                $attrs[$attr[1]] = $attr[2];
+            }
+            $title = $attrs['title'] ?? $slug;
 
-            if (file_exists($this->assetsPath . '/' . $file)) {
-                $images[] = [
-                    'loc'   => $baseUrl . '/assets/img/docs/' . $file,
-                    'title' => $title,
-                ];
+            if (isset($attrs['desktop']) || isset($attrs['mobile'])) {
+                // Новий формат: desktop= та mobile=
+                foreach (['desktop', 'mobile'] as $platform) {
+                    if (!empty($attrs[$platform]) && file_exists($this->assetsPath . '/' . $attrs[$platform])) {
+                        $images[] = [
+                            'loc'   => $baseImgUrl . $attrs[$platform],
+                            'title' => $title,
+                        ];
+                    }
+                }
+            } elseif (!empty($attrs['file'])) {
+                // Старий формат: file=
+                if (file_exists($this->assetsPath . '/' . $attrs['file'])) {
+                    $images[] = [
+                        'loc'   => $baseImgUrl . $attrs['file'],
+                        'title' => $title,
+                    ];
+                }
             }
         }
 

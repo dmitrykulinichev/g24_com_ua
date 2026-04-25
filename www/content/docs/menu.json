@@ -11,6 +11,7 @@
         "title": "Автомобілі",
         "items": [
             { "title": "Реєстр автопарку", "slug": "vehicles-list", "image": "fleet_vehicles_list.png" },
+            { "title": "Технічне обслуговування", "slug": "vehicles-maintenance", "image": "desktop/page_maint_list_main.png" },
             { "title": "Документи автопарку", "slug": "vehicles-documents", "image": "page_docs_list_main.png" },
             {
                 "title": "Звіти",
@@ -36,7 +37,7 @@
     {
         "title": "Фінанси та Обслуговування",
         "items": [
-            { "title": "Технічне обслуговування", "slug": "maintenance", "image": "maintenance_records_log.png" },
+
             { "title": "Фінанси", "slug": "finance", "image": "finance_transactions_log.png" },
             { "title": "Аналітика", "slug": "reports", "image": "analytics_general_stats.png" }
         ]

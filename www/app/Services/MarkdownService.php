@@ -125,19 +125,31 @@ class MarkdownService
     }
 
     /**
-     * Обробляє шорткоди перед рендерингом
+     * Витягує атрибути з рядка шорткоду у вигляді масиву key => value
      */
-    protected static function processShortcodes($text)
+    protected static function parseShortcodeAttrs($attrString)
     {
-        // Шорткод для скріншотів: {{screenshot file="image.png" title="Caption"}}
-        $text = preg_replace_callback('/\{\{screenshot\s+file="([^"]+)"\s*(?:title="([^"]+)")?\}\}/', function ($matches) {
-            $file = $matches[1];
-            $title = $matches[2] ?? 'Screenshot';
+        $attrs = [];
+        preg_match_all('/(\w+)="([^"]*)"/', $attrString, $matches, PREG_SET_ORDER);
+        foreach ($matches as $match) {
+            $attrs[$match[1]] = $match[2];
+        }
+        return $attrs;
+    }
 
-            $physicalPath = __DIR__ . '/../../assets/img/docs/' . $file;
+    /**
+     * Формує HTML блок скріншота
+     */
+    protected static function buildScreenshotHtml($desktopFile, $mobileFile, $title)
+    {
+        $baseDir  = __DIR__ . '/../../assets/img/docs/';
+        $basePath = '/assets/img/docs/';
 
-            if (!file_exists($physicalPath)) {
-                return <<<HTML
+        $desktopExists = $desktopFile && file_exists($baseDir . $desktopFile);
+        $mobileExists  = $mobileFile  && file_exists($baseDir . $mobileFile);
+
+        if (!$desktopExists && !$mobileExists) {
+            return <<<HTML
 <div class="screenshot-placeholder">
     <div class="screenshot-placeholder-icon">&#9888;</div>
     <div class="screenshot-placeholder-label">
@@ -146,12 +158,19 @@ class MarkdownService
     </div>
 </div>
 HTML;
-            }
+        }
 
-            $desktopPath = "/assets/img/docs/{$file}";
-            $mobilePath  = "/assets/img/docs/mobile/{$file}";
+        $desktopSrc = $desktopExists ? $basePath . $desktopFile : null;
+        $mobileSrc  = $mobileExists  ? $basePath . $mobileFile  : null;
+        $mainSrc    = $desktopSrc ?? $mobileSrc;
 
-            return <<<HTML
+        $pictureInner = '';
+        if ($mobileSrc) {
+            $pictureInner .= "            <source media=\"(max-width: 767px)\" srcset=\"{$mobileSrc}\">\n";
+        }
+        $pictureInner .= "            <img src=\"{$mainSrc}\" alt=\"{$title}\">";
+
+        return <<<HTML
 <div class="screenshot-container">
     <div class="screenshot-header">
         <div class="screenshot-dots">
@@ -163,12 +182,41 @@ HTML;
     </div>
     <div class="screenshot-content">
         <picture>
-            <source media="(max-width: 767px)" srcset="{$mobilePath}">
-            <img src="{$desktopPath}" alt="{$title}">
+{$pictureInner}
         </picture>
     </div>
 </div>
 HTML;
+    }
+
+    /**
+     * Обробляє шорткоди перед рендерингом.
+     *
+     * Підтримувані формати:
+     *   Новий: {{screenshot desktop="desktop/id.png" mobile="mobile/id.png" title="..."}}
+     *   Старий: {{screenshot file="id.png" title="..."}}
+     */
+    protected static function processShortcodes($text)
+    {
+        $text = preg_replace_callback('/\{\{screenshot\s+([^}]+)\}\}/', function ($matches) {
+            $attrs = self::parseShortcodeAttrs($matches[1]);
+            $title = $attrs['title'] ?? 'Screenshot';
+
+            if (isset($attrs['desktop']) || isset($attrs['mobile'])) {
+                // Новий формат
+                return self::buildScreenshotHtml(
+                    $attrs['desktop'] ?? null,
+                    $attrs['mobile']  ?? null,
+                    $title
+                );
+            }
+
+            if (isset($attrs['file'])) {
+                // Старий формат: file= відносно кореня /assets/img/docs/
+                return self::buildScreenshotHtml($attrs['file'], null, $title);
+            }
+
+            return $matches[0]; // невідомий формат — залишити як є
         }, $text);
 
         return $text;
