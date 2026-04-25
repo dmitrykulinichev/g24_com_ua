@@ -133,11 +133,24 @@ class MarkdownService
         $text = preg_replace_callback('/\{\{screenshot\s+file="([^"]+)"\s*(?:title="([^"]+)")?\}\}/', function ($matches) {
             $file = $matches[1];
             $title = $matches[2] ?? 'Screenshot';
-            
-            // Формуємо шляхи
+
+            $physicalPath = __DIR__ . '/../../assets/img/docs/' . $file;
+
+            if (!file_exists($physicalPath)) {
+                return <<<HTML
+<div class="screenshot-placeholder">
+    <div class="screenshot-placeholder-icon">&#9888;</div>
+    <div class="screenshot-placeholder-label">
+        <strong>Скріншот не додано</strong>
+        <span>{$title}</span>
+    </div>
+</div>
+HTML;
+            }
+
             $desktopPath = "/assets/img/docs/{$file}";
-            $mobilePath = "/assets/img/docs/mobile/{$file}";
-            
+            $mobilePath  = "/assets/img/docs/mobile/{$file}";
+
             return <<<HTML
 <div class="screenshot-container">
     <div class="screenshot-header">
