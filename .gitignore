@@ -17,3 +17,4 @@ www/storage/logs/
 # OS generated files
 .DS_Store
 Thumbs.db
+/www/node_modules/
