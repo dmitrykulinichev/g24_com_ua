@@ -138,7 +138,9 @@ class MarkdownService
     }
 
     /**
-     * Формує HTML блок скріншота
+     * Формує HTML блок скріншота.
+     * Якщо передано обидва варіанти — показує поруч (desktop + mobile).
+     * Якщо тільки один — показує один на всю ширину.
      */
     protected static function buildScreenshotHtml($desktopFile, $mobileFile, $title)
     {
@@ -162,14 +164,39 @@ HTML;
 
         $desktopSrc = $desktopExists ? $basePath . $desktopFile : null;
         $mobileSrc  = $mobileExists  ? $basePath . $mobileFile  : null;
-        $mainSrc    = $desktopSrc ?? $mobileSrc;
 
-        $pictureInner = '';
-        if ($mobileSrc) {
-            $pictureInner .= "            <source media=\"(max-width: 767px)\" srcset=\"{$mobileSrc}\">\n";
+        if ($desktopExists && $mobileExists) {
+            // Обидва варіанти: два окремих контейнери в ряд
+            return <<<HTML
+<div class="screenshot-duo-wrapper">
+    <div class="screenshot-container" style="flex:3">
+        <div class="screenshot-header">
+            <div class="screenshot-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+            </div>
+            <div class="screenshot-title">{$title}</div>
+        </div>
+        <div class="screenshot-content"><img src="{$desktopSrc}" alt="{$title}"></div>
+    </div>
+    <div class="screenshot-container" style="flex:1">
+        <div class="screenshot-header">
+            <div class="screenshot-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+            </div>
+            <div class="screenshot-title">{$title} (mobile)</div>
+        </div>
+        <div class="screenshot-content"><img src="{$mobileSrc}" alt="{$title} (mobile)"></div>
+    </div>
+</div>
+HTML;
         }
-        $pictureInner .= "            <img src=\"{$mainSrc}\" alt=\"{$title}\">";
 
+        // Один варіант — звичайний контейнер
+        $src = $desktopSrc ?? $mobileSrc;
         return <<<HTML
 <div class="screenshot-container">
     <div class="screenshot-header">
@@ -180,11 +207,7 @@ HTML;
         </div>
         <div class="screenshot-title">{$title}</div>
     </div>
-    <div class="screenshot-content">
-        <picture>
-{$pictureInner}
-        </picture>
-    </div>
+    <div class="screenshot-content"><img src="{$src}" alt="{$title}"></div>
 </div>
 HTML;
     }

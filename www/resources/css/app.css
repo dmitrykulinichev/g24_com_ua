@@ -393,6 +393,33 @@ button:disabled {
 .screenshot-content img {
     @apply my-0 rounded-none border-0 shadow-none w-full;
 }
+.screenshot-duo-wrapper {
+    @apply flex flex-row gap-4 my-8 items-start;
+}
+.screenshot-duo-wrapper .screenshot-container {
+    @apply my-0;
+}
+
+/* --- Mobile phone frame --- */
+.screenshot-phone {
+    @apply my-0 rounded-3xl border-4 border-slate-700 shadow-sm overflow-hidden bg-slate-700;
+    flex: 1;
+}
+.screenshot-phone-notch {
+    @apply flex justify-center items-center py-2 bg-slate-700;
+}
+.screenshot-phone-notch-bar {
+    @apply w-16 h-1.5 rounded-full bg-slate-500;
+}
+.screenshot-phone-content img {
+    @apply my-0 rounded-none border-0 shadow-none w-full block;
+}
+.screenshot-phone-chin {
+    @apply flex justify-center items-center py-2.5 bg-slate-700;
+}
+.screenshot-phone-chin-bar {
+    @apply w-10 h-1 rounded-full bg-slate-500;
+}
 
 .screenshot-placeholder {
     @apply my-8 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50
