@@ -21,10 +21,13 @@
                         <div class="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2">{{ $group['title'] }}</div>
                         <ul class="space-y-1">
                             @foreach($group['items'] as $item)
+                                @php
+                                    $isActive = $slug === $item['slug'] || ($isTab && $parentSlug === $item['slug']);
+                                @endphp
                                 <li>
                                     <a href="/docs/{{ $item['slug'] }}"
                                        class="block px-3 py-2 rounded-md text-sm transition-colors duration-200
-                                              {{ $slug === $item['slug'] ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                                              {{ $isActive ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
                                         {{ $item['title'] }}
                                     </a>
                                 </li>
@@ -36,6 +39,24 @@
         </aside>
 
         <article class="flex-1 min-w-0 content" id="docsContent">
+
+            @if(!empty($currentTabs))
+            <div class="flex flex-wrap gap-1 mb-8 border-b border-slate-200 pb-0">
+                <a href="/docs/{{ $parentItem['slug'] }}"
+                   class="px-4 py-2 text-sm font-medium rounded-t-md transition-colors duration-200 -mb-px border border-transparent
+                          {{ !$isTab ? 'border-slate-200 border-b-white bg-white text-primary' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ $parentItem['title'] }}
+                </a>
+                @foreach($currentTabs as $tab)
+                <a href="/docs/{{ $tab['slug'] }}"
+                   class="px-4 py-2 text-sm font-medium rounded-t-md transition-colors duration-200 -mb-px border border-transparent
+                          {{ $activeTabSlug === $tab['slug'] ? 'border-slate-200 border-b-white bg-white text-primary' : 'text-slate-500 hover:text-slate-700' }}">
+                    {{ $tab['title'] }}
+                </a>
+                @endforeach
+            </div>
+            @endif
+
             {!! $content !!}
 
             <!-- Підключення компонента навігації -->
@@ -58,16 +79,22 @@
 @php
     $baseUrl = rtrim($_ENV['APP_URL'] ?? ('https://' . $_SERVER['HTTP_HOST']), '/');
     $docTitle = $meta['title'] ?? $slug;
+    $breadcrumbs = [
+        ["position" => 1, "name" => "Garage24", "item" => "$baseUrl/"],
+        ["position" => 2, "name" => "Документація", "item" => "$baseUrl/docs"],
+    ];
+    if ($isTab && $parentItem) {
+        $breadcrumbs[] = ["position" => 3, "name" => $parentItem['title'], "item" => "$baseUrl/docs/{$parentItem['slug']}"];
+        $breadcrumbs[] = ["position" => 4, "name" => $docTitle, "item" => "$baseUrl/docs/$slug"];
+    } else {
+        $breadcrumbs[] = ["position" => 3, "name" => $docTitle, "item" => "$baseUrl/docs/$slug"];
+    }
 @endphp
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
-  "itemListElement": [
-    {"@type": "ListItem", "position": 1, "name": "Garage24", "item": "{{ $baseUrl }}/"},
-    {"@type": "ListItem", "position": 2, "name": "Документація", "item": "{{ $baseUrl }}/docs"},
-    {"@type": "ListItem", "position": 3, "name": "{{ $docTitle }}", "item": "{{ $baseUrl }}/docs/{{ $slug }}"}
-  ]
+  "itemListElement": @json(array_map(fn($b) => ["@type" => "ListItem"] + $b, $breadcrumbs))
 }
 </script>
 <!-- Скрипт для Lightbox -->

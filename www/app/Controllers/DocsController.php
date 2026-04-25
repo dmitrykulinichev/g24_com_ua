@@ -21,14 +21,22 @@ class DocsController
     {
         if (!file_exists($this->menuPath)) return [];
         $menu = json_decode(file_get_contents($this->menuPath), true) ?? [];
-        
-        // Додаємо автоматичну перевірку наявності файлів
+
         foreach ($menu as &$group) {
-            $group['items'] = array_filter($group['items'], function($item) {
+            $group['items'] = array_values(array_filter($group['items'], function($item) {
                 return file_exists($this->contentPath . '/' . $item['slug'] . '.md');
-            });
+            }));
+
+            foreach ($group['items'] as &$item) {
+                if (!empty($item['tabs'])) {
+                    $item['tabs'] = array_values(array_filter($item['tabs'], function($tab) {
+                        return file_exists($this->contentPath . '/' . $tab['slug'] . '.md');
+                    }));
+                }
+            }
+            unset($item);
         }
-        
+
         return $menu;
     }
 
@@ -56,7 +64,24 @@ class DocsController
         $htmlContent = MarkdownService::render($data['content']);
         $menu = $this->getMenu();
 
-        // Навігація
+        // Визначити чи це вкладка (slug містить --)
+        $isTab = str_contains($slug, '--');
+        $parentSlug = $isTab ? strstr($slug, '--', true) : null;
+        $parentItem = null;
+        $currentTabs = [];
+
+        foreach ($menu as $group) {
+            foreach ($group['items'] as $item) {
+                $matchSlug = $isTab ? $parentSlug : $slug;
+                if ($item['slug'] === $matchSlug) {
+                    $parentItem = $item;
+                    $currentTabs = $item['tabs'] ?? [];
+                    break 2;
+                }
+            }
+        }
+
+        // Навігація — тільки по основних сторінках, таби не включати
         $flatList = [];
         foreach ($menu as $group) {
             foreach ($group['items'] as $item) {
@@ -64,10 +89,11 @@ class DocsController
             }
         }
 
+        $navSlug = $isTab ? $parentSlug : $slug;
         $prev = null; $next = null;
         $count = count($flatList);
         for ($i = 0; $i < $count; $i++) {
-            if ($flatList[$i]['slug'] === $slug) {
+            if ($flatList[$i]['slug'] === $navSlug) {
                 if ($i > 0) $prev = $flatList[$i - 1];
                 if ($i < $count - 1) $next = $flatList[$i + 1];
                 break;
@@ -75,12 +101,16 @@ class DocsController
         }
 
         echo $this->blade->make('docs.page', [
-            'slug' => $slug,
-            'content' => $htmlContent,
-            'menu' => $menu,
-            'meta' => $data['meta'],
-            'prev' => $prev,
-            'next' => $next
+            'slug'          => $slug,
+            'content'       => $htmlContent,
+            'menu'          => $menu,
+            'meta'          => $data['meta'],
+            'prev'          => $prev,
+            'next'          => $next,
+            'isTab'         => $isTab,
+            'parentItem'    => $parentItem,
+            'currentTabs'   => $currentTabs,
+            'activeTabSlug' => $slug,
         ])->render();
     }
 }
