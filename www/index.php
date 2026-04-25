@@ -2,6 +2,9 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
+// Illuminate/Blade не сумісні з PHP 8.4 deprecation notices — пригнічуємо до оновлення пакетів
+error_reporting(E_ALL & ~E_DEPRECATED);
+
 use Jenssegers\Blade\Blade;
 
 // Завантаження .env

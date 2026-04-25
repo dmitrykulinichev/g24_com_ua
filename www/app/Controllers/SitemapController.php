@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\MarkdownService;
+use App\Services\DocImageSitemapService;
 
 class SitemapController
 {
@@ -136,8 +137,15 @@ class SitemapController
             }
         }
 
+        $imageEntries = (new DocImageSitemapService())->getEntries($baseUrl);
+        $imageIndex   = [];
+        foreach ($imageEntries as $entry) {
+            $imageIndex[$entry['loc']] = $entry['images'];
+        }
+
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
+        $xml .= '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
 
         foreach ($urls as $url) {
             $xml .= "  <url>\n";
@@ -145,6 +153,12 @@ class SitemapController
             $xml .= "    <lastmod>" . $url['lastmod'] . "</lastmod>\n";
             $xml .= "    <changefreq>" . $url['changefreq'] . "</changefreq>\n";
             $xml .= "    <priority>" . $url['priority'] . "</priority>\n";
+            foreach ($imageIndex[$url['loc']] ?? [] as $img) {
+                $xml .= "    <image:image>\n";
+                $xml .= "      <image:loc>" . htmlspecialchars($img['loc']) . "</image:loc>\n";
+                $xml .= "      <image:title>" . htmlspecialchars($img['title']) . "</image:title>\n";
+                $xml .= "    </image:image>\n";
+            }
             $xml .= "  </url>\n";
         }
 
