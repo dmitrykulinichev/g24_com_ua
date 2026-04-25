@@ -16,10 +16,11 @@
                     @include('partials.docs-search')
                 </div>
 
+                <nav aria-label="Документація">
                 @foreach($menu as $group)
                     <div class="mb-6">
-                        <div class="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2">{{ $group['title'] }}</div>
-                        <ul class="space-y-1">
+                        <p class="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2">{{ $group['title'] }}</p>
+                        <ul>
                             @foreach($group['items'] as $item)
                                 @php
                                     $isActive = $slug === $item['slug'] || ($isTab && $parentSlug === $item['slug']);
@@ -27,37 +28,49 @@
                                 <li>
                                     <a href="/docs/{{ $item['slug'] }}"
                                        class="block px-3 py-2 rounded-md text-sm transition-colors duration-200
-                                              {{ $isActive ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}">
+                                              {{ $isActive ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
+                                       {{ $isActive ? 'aria-current="page"' : '' }}>
                                         {{ $item['title'] }}
                                     </a>
+                                    @if($isActive && !empty($item['tabs']))
+                                    <ul aria-label="Розділи: {{ $item['title'] }}" class="mt-0.5 ml-3 border-l border-slate-200 pl-2">
+                                        @foreach($item['tabs'] as $tab)
+                                        <li>
+                                            <a href="/docs/{{ $tab['slug'] }}"
+                                               class="block px-2 py-1 text-xs transition-colors duration-200
+                                                      {{ $activeTabSlug === $tab['slug'] ? 'text-primary font-medium' : 'text-slate-400 hover:text-slate-700' }}"
+                                               {{ $activeTabSlug === $tab['slug'] ? 'aria-current="page"' : '' }}>
+                                                {{ $tab['title'] }}
+                                            </a>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>
                     </div>
                 @endforeach
+                </nav>
             </div>
         </aside>
 
         <article class="flex-1 min-w-0 content" id="docsContent">
 
+            {!! $content !!}
+
             @if(!empty($currentTabs))
-            <div class="flex flex-wrap gap-1 mb-8 border-b border-slate-200 pb-0">
-                <a href="/docs/{{ $parentItem['slug'] }}"
-                   class="px-4 py-2 text-sm font-medium rounded-t-md transition-colors duration-200 -mb-px border border-transparent
-                          {{ !$isTab ? 'border-slate-200 border-b-white bg-white text-primary' : 'text-slate-500 hover:text-slate-700' }}">
-                    {{ $parentItem['title'] }}
-                </a>
+            <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach($currentTabs as $tab)
                 <a href="/docs/{{ $tab['slug'] }}"
-                   class="px-4 py-2 text-sm font-medium rounded-t-md transition-colors duration-200 -mb-px border border-transparent
-                          {{ $activeTabSlug === $tab['slug'] ? 'border-slate-200 border-b-white bg-white text-primary' : 'text-slate-500 hover:text-slate-700' }}">
-                    {{ $tab['title'] }}
+                   class="block p-4 rounded-lg border transition-colors duration-200 group
+                          {{ $activeTabSlug === $tab['slug'] ? 'border-blue-300 bg-blue-50' : 'border-slate-200 hover:border-blue-300 hover:bg-blue-50' }}">
+                    <div class="text-sm font-medium {{ $activeTabSlug === $tab['slug'] ? 'text-primary' : 'text-slate-900 group-hover:text-primary' }}">{{ $tab['title'] }}</div>
+                    <div class="mt-1 text-xs {{ $activeTabSlug === $tab['slug'] ? 'text-blue-400' : 'text-slate-400 group-hover:text-blue-400' }}">{{ $activeTabSlug === $tab['slug'] ? 'Поточний розділ' : 'Детальніше →' }}</div>
                 </a>
                 @endforeach
             </div>
             @endif
-
-            {!! $content !!}
 
             <!-- Підключення компонента навігації -->
             @include('partials.navigation-buttons', [

@@ -10,7 +10,17 @@
     {
         "title": "Автомобілі",
         "items": [
-            { "title": "Реєстр автопарку", "slug": "vehicles-list", "image": "fleet_vehicles_list.png" }
+            { "title": "Реєстр автопарку", "slug": "vehicles-list", "image": "fleet_vehicles_list.png" },
+            {
+                "title": "Звіти",
+                "slug": "vehicles-reports",
+                "image": "",
+                "tabs": [
+                    { "title": "Оперативна статистика", "slug": "vehicles-reports--operational" },
+                    { "title": "Виконання нормативів", "slug": "vehicles-reports--performance" },
+                    { "title": "Тех. обслуговування", "slug": "vehicles-reports--maintenance" }
+                ]
+            }
         ]
     },
     {

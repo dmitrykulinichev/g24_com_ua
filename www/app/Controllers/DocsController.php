@@ -81,19 +81,23 @@ class DocsController
             }
         }
 
-        // Навігація — тільки по основних сторінках, таби не включати
+        // Навігація — батьківські сторінки + таби послідовно після кожної
         $flatList = [];
         foreach ($menu as $group) {
             foreach ($group['items'] as $item) {
                 $flatList[] = $item;
+                if (!empty($item['tabs'])) {
+                    foreach ($item['tabs'] as $tab) {
+                        $flatList[] = $tab;
+                    }
+                }
             }
         }
 
-        $navSlug = $isTab ? $parentSlug : $slug;
         $prev = null; $next = null;
         $count = count($flatList);
         for ($i = 0; $i < $count; $i++) {
-            if ($flatList[$i]['slug'] === $navSlug) {
+            if ($flatList[$i]['slug'] === $slug) {
                 if ($i > 0) $prev = $flatList[$i - 1];
                 if ($i < $count - 1) $next = $flatList[$i + 1];
                 break;
@@ -108,6 +112,7 @@ class DocsController
             'prev'          => $prev,
             'next'          => $next,
             'isTab'         => $isTab,
+            'parentSlug'    => $parentSlug,
             'parentItem'    => $parentItem,
             'currentTabs'   => $currentTabs,
             'activeTabSlug' => $slug,

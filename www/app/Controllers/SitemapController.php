@@ -124,6 +124,14 @@ class SitemapController
                         'changefreq' => 'monthly',
                         'priority'   => '0.7',
                     ];
+                    foreach ($item['tabs'] ?? [] as $tab) {
+                        $urls[] = [
+                            'loc'        => $baseUrl . '/docs/' . $tab['slug'],
+                            'lastmod'    => '2025-10-01',
+                            'changefreq' => 'monthly',
+                            'priority'   => '0.6',
+                        ];
+                    }
                 }
             }
         }
