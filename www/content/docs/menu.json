@@ -26,20 +26,14 @@
         ]
     },
     {
-        "title": "Дашборд",
+        "title": "Основний функціонал",
         "items": [
             { "title": "Головна панель", "slug": "dashboard", "image": "desktop/page_dash_main.png" },
             { "title": "Графік роботи", "slug": "schedule", "image": "desktop/page_drv_schedule_main.png" },
             { "title": "Задачі", "slug": "tasks", "image": "desktop/page_tasks_main.png" }
         ]
     },
-    {
-        "title": "Основний функціонал",
-        "items": [
-            { "title": "Автопарк", "slug": "fleet", "image": "fleet_vehicles_list.png" },
-            { "title": "Водії та HR", "slug": "drivers", "image": "drivers_list.png" }
-        ]
-    },
+
     {
         "title": "Фінанси та Обслуговування",
         "items": [
