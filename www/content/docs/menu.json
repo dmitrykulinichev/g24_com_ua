@@ -28,7 +28,7 @@
     {
         "title": "Основний функціонал",
         "items": [
-            { "title": "Головна панель", "slug": "dashboard", "image": "dashboard_main.png" },
+            { "title": "Головна панель", "slug": "dashboard", "image": "desktop/page_dash_main.png" },
             { "title": "Автопарк", "slug": "fleet", "image": "fleet_vehicles_list.png" },
             { "title": "Водії та HR", "slug": "drivers", "image": "drivers_list.png" },
             { "title": "Розумний графік", "slug": "schedule", "image": "schedule_matrix_view.png" }
