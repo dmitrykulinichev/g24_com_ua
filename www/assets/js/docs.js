@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Docs Lightbox Script Loaded');
+    const allImgs = document.querySelectorAll('.screenshot-content img, .screenshot-phone-content img');
+    console.log('[Lightbox] DOMContentLoaded. Screenshot images found:', allImgs.length);
+    allImgs.forEach((img, i) => console.log(`[Lightbox]   [${i}] src=${img.src} parent=${img.parentElement?.className}`));
 
     // 1. Створюємо розмітку модального вікна динамічно
     const lightbox = document.createElement('div');
@@ -39,8 +41,12 @@ document.addEventListener('DOMContentLoaded', function() {
     // 4. Делегування подій (Event Delegation)
     // Слухаємо кліки на всьому документі, але реагуємо тільки якщо клікнули на картинку всередині .screenshot-content
     document.addEventListener('click', function(e) {
-        // Перевіряємо, чи клік був по зображенню всередині контейнера скріншотів
-        if (e.target.tagName === 'IMG' && e.target.closest('.screenshot-content')) {
+        console.log('[Lightbox] click on:', e.target.tagName, e.target.className || e.target.src);
+        if (e.target.tagName === 'IMG') {
+            const parent = e.target.closest('.screenshot-content, .screenshot-phone-content');
+            console.log('[Lightbox] IMG clicked. Closest screenshot parent:', parent ? parent.className : 'NOT FOUND');
+        }
+        if (e.target.tagName === 'IMG' && e.target.closest('.screenshot-content, .screenshot-phone-content')) {
             openLightbox(e.target);
         }
         
@@ -57,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Підтримка клавіатури (Enter на картинці)
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter' && e.target.tagName === 'IMG' && e.target.closest('.screenshot-content')) {
+        if (e.key === 'Enter' && e.target.tagName === 'IMG' && e.target.closest('.screenshot-content, .screenshot-phone-content')) {
             openLightbox(e.target);
         }
         
@@ -68,7 +74,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Додаємо tabindex для доступності всім картинкам
-    const screenshots = document.querySelectorAll('.screenshot-content img');
+    const screenshots = document.querySelectorAll('.screenshot-content img, .screenshot-phone-content img');
     screenshots.forEach(img => {
         img.setAttribute('tabindex', '0');
     });
