@@ -19,7 +19,7 @@
                     </h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach($group['items'] as $item)
-                            <a href="/docs2/{{ $item['slug'] }}" class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
+                            <a href="/docs/{{ $item['slug'] }}" class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
                                 <!-- Зображення-прев'ю -->
                                 <div class="h-40 bg-slate-100 overflow-hidden border-b border-slate-100 relative">
                                     @if(!empty($item['image']))
