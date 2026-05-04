@@ -400,6 +400,36 @@ button:disabled {
     @apply my-0;
 }
 
+/* Docs2: responsive screenshot variants */
+.screenshot-desktop-only {
+    @apply hidden md:block;
+}
+.screenshot-desktop-duo {
+    @apply hidden md:flex flex-row gap-4 my-8 items-start;
+}
+.screenshot-desktop-duo .screenshot-container {
+    @apply my-0;
+    flex: 3;
+}
+.screenshot-desktop-duo .screenshot-phone {
+    @apply my-0;
+    flex: 1;
+    align-self: flex-start;
+}
+.screenshot-desktop-duo .screenshot-phone-content {
+    flex: none;
+}
+.screenshot-desktop-duo .screenshot-phone-content img {
+    height: auto;
+    object-fit: initial;
+}
+.screenshot-mobile-only {
+    @apply md:hidden my-8;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* --- Mobile phone frame --- */
 .screenshot-phone {
     @apply my-0 rounded-3xl border-4 border-slate-700 shadow-sm overflow-hidden bg-slate-700 flex flex-col;

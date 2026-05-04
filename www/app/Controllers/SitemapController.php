@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Services\MarkdownService;
 use App\Services\DocImageSitemapService;
+use App\Services\Docs2ImageSitemapService;
 
 class SitemapController
 {
@@ -137,7 +138,34 @@ class SitemapController
             }
         }
 
-        $imageEntries = (new DocImageSitemapService())->getEntries($baseUrl);
+        // 4. Документація v2
+        $docs2MenuPath = dirname(__DIR__, 2) . '/content/docs2/menu.json';
+        if (file_exists($docs2MenuPath)) {
+            $docs2Menu = json_decode(file_get_contents($docs2MenuPath), true) ?? [];
+            foreach ($docs2Menu as $group) {
+                foreach ($group['items'] as $item) {
+                    $urls[] = [
+                        'loc'        => $baseUrl . '/docs2/' . $item['slug'],
+                        'lastmod'    => date('Y-m-d'),
+                        'changefreq' => 'monthly',
+                        'priority'   => '0.7',
+                    ];
+                    foreach ($item['tabs'] ?? [] as $tab) {
+                        $urls[] = [
+                            'loc'        => $baseUrl . '/docs2/' . $tab['slug'],
+                            'lastmod'    => date('Y-m-d'),
+                            'changefreq' => 'monthly',
+                            'priority'   => '0.6',
+                        ];
+                    }
+                }
+            }
+        }
+
+        $imageEntries = array_merge(
+            (new DocImageSitemapService())->getEntries($baseUrl),
+            (new Docs2ImageSitemapService())->getEntries($baseUrl)
+        );
         $imageIndex   = [];
         foreach ($imageEntries as $entry) {
             $imageIndex[$entry['loc']] = $entry['images'];

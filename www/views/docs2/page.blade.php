@@ -22,7 +22,9 @@
                         <p class="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2">{{ $group['title'] }}</p>
                         <ul>
                             @foreach($group['items'] as $menuItem)
-                                @php $isActive = $slug === $menuItem['slug']; @endphp
+                                @php
+                                    $isActive = $slug === $menuItem['slug'] || ($isTab && $parentSlug === $menuItem['slug']);
+                                @endphp
                                 <li>
                                     <a href="/docs2/{{ $menuItem['slug'] }}"
                                        class="block px-3 py-2 rounded-md text-sm transition-colors duration-200
@@ -30,6 +32,20 @@
                                        {{ $isActive ? 'aria-current="page"' : '' }}>
                                         {{ $menuItem['title'] }}
                                     </a>
+                                    @if($isActive && !empty($menuItem['tabs']))
+                                    <ul aria-label="Розділи: {{ $menuItem['title'] }}" class="mt-0.5 ml-3 border-l border-slate-200 pl-2">
+                                        @foreach($menuItem['tabs'] as $tab)
+                                        <li>
+                                            <a href="/docs2/{{ $tab['slug'] }}"
+                                               class="block px-2 py-1 text-xs transition-colors duration-200
+                                                      {{ $activeTabSlug === $tab['slug'] ? 'text-primary font-medium' : 'text-slate-400 hover:text-slate-700' }}"
+                                               {{ $activeTabSlug === $tab['slug'] ? 'aria-current="page"' : '' }}>
+                                                {{ $tab['title'] }}
+                                            </a>
+                                        </li>
+                                        @endforeach
+                                    </ul>
+                                    @endif
                                 </li>
                             @endforeach
                         </ul>
@@ -66,14 +82,49 @@
     $breadcrumbs = [
         ["position" => 1, "name" => "Garage24", "item" => "$baseUrl/"],
         ["position" => 2, "name" => "Документація", "item" => "$baseUrl/docs2"],
-        ["position" => 3, "name" => $docTitle, "item" => "$baseUrl/docs2/$slug"],
     ];
+    if ($isTab && $parentItem) {
+        $breadcrumbs[] = ["position" => 3, "name" => $parentItem['title'], "item" => "$baseUrl/docs2/{$parentItem['slug']}"];
+        $breadcrumbs[] = ["position" => 4, "name" => $docTitle, "item" => "$baseUrl/docs2/$slug"];
+    } else {
+        $breadcrumbs[] = ["position" => 3, "name" => $docTitle, "item" => "$baseUrl/docs2/$slug"];
+    }
 @endphp
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "BreadcrumbList",
   "itemListElement": @json(array_map(fn($b) => ["@type" => "ListItem"] + $b, $breadcrumbs))
+}
+</script>
+@php
+    $articleImage = !empty($meta['image'])
+        ? (str_starts_with($meta['image'], 'http') ? $meta['image'] : $baseUrl . $meta['image'])
+        : $baseUrl . '/assets/img/landing/og-image.jpg';
+@endphp
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "{{ addslashes($docTitle) }}",
+  "description": "{{ addslashes($meta['description'] ?? '') }}",
+  "image": "{{ $articleImage }}",
+  "url": "{{ $baseUrl }}/docs2/{{ $slug }}",
+  "inLanguage": "uk",
+  "publisher": {
+    "@type": "Organization",
+    "name": "Garage24",
+    "url": "{{ $baseUrl }}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "{{ $baseUrl }}/assets/img/logo.jpg"
+    }
+  },
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "Garage24",
+    "url": "{{ $baseUrl }}"
+  }
 }
 </script>
 <script src="/assets/js/docs.js?v={{ time() }}"></script>

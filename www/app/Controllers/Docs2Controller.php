@@ -37,24 +37,37 @@ class Docs2Controller
             $group['items'] = array_values(array_filter($group['items'], function ($item) {
                 return !empty($item['docFile']) && file_exists($this->resolveDocFile($item['docFile']));
             }));
+
+            foreach ($group['items'] as &$item) {
+                if (!empty($item['tabs'])) {
+                    $item['tabs'] = array_values(array_filter($item['tabs'], function ($tab) {
+                        return !empty($tab['docFile']) && file_exists($this->resolveDocFile($tab['docFile']));
+                    }));
+                }
+            }
+            unset($item);
         }
         unset($group);
 
-        // Прибираємо порожні групи
         $menu = array_values(array_filter($menu, fn($g) => !empty($g['items'])));
 
         return $menu;
     }
 
     /**
-     * Знайти пункт меню за slug
+     * Знайти пункт меню за slug (батьківський або таб)
      */
     protected function findMenuItem($menu, $slug)
     {
         foreach ($menu as $group) {
             foreach ($group['items'] as $item) {
                 if ($item['slug'] === $slug) {
-                    return $item;
+                    return ['item' => $item, 'tab' => null];
+                }
+                foreach ($item['tabs'] ?? [] as $tab) {
+                    if ($tab['slug'] === $slug) {
+                        return ['item' => $item, 'tab' => $tab];
+                    }
                 }
             }
         }
@@ -62,7 +75,81 @@ class Docs2Controller
     }
 
     /**
-     * Перезаписує відносні шляхи до скріншотів на абсолютні URL
+     * Будує HTML для одного скріншота (десктопний контейнер з заголовком)
+     */
+    protected function buildDesktopHtml($src, $alt)
+    {
+        $alt = htmlspecialchars($alt, ENT_QUOTES);
+        return <<<HTML
+<div class="screenshot-container">
+    <div class="screenshot-header">
+        <div class="screenshot-dots">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+        </div>
+        <div class="screenshot-title">{$alt}</div>
+    </div>
+    <div class="screenshot-content"><img src="{$src}" alt="{$alt}"></div>
+</div>
+HTML;
+    }
+
+    /**
+     * Будує HTML для мобільного телефону-фрейму
+     */
+    protected function buildMobileHtml($src, $alt)
+    {
+        $alt = htmlspecialchars($alt, ENT_QUOTES);
+        return <<<HTML
+<div class="screenshot-phone">
+    <div class="screenshot-phone-notch"><div class="screenshot-phone-notch-bar"></div></div>
+    <div class="screenshot-phone-content"><img src="{$src}" alt="{$alt} (mobile)"></div>
+    <div class="screenshot-phone-chin"><div class="screenshot-phone-chin-bar"></div></div>
+</div>
+HTML;
+    }
+
+    /**
+     * Обробляє standalone <img> зі скріншотами: замінює на responsive-блоки.
+     * Desktop (md+): desktop + mobile поруч (якщо є мобільний).
+     * Mobile (<md): тільки mobile; якщо немає — desktop.
+     */
+    protected function processScreenshots($html)
+    {
+        $screenshotsDir = $this->contentPath . '/screenshots/light';
+        $screenshotsUrl = $this->screenshotsWebPath . '/light';
+
+        return preg_replace_callback(
+            '/<p>\s*<img\s+src="screenshots\/light\/desktop\/([^"]+)"\s+alt="([^"]*)"\s*\/?>\s*<\/p>/',
+            function ($m) use ($screenshotsDir, $screenshotsUrl) {
+                $filename   = $m[1];
+                $alt        = $m[2];
+                $desktopSrc = $screenshotsUrl . '/desktop/' . $filename;
+                $mobilePath = $screenshotsDir . '/mobile/' . $filename;
+                $mobileSrc  = $screenshotsUrl . '/mobile/' . $filename;
+                $hasMobile  = file_exists($mobilePath);
+
+                $desktopHtml = $this->buildDesktopHtml($desktopSrc, $alt);
+                $mobileHtml  = $hasMobile ? $this->buildMobileHtml($mobileSrc, $alt) : '';
+
+                if ($hasMobile) {
+                    // Desktop: показуємо обидва поруч
+                    $duoHtml = '<div class="screenshot-desktop-duo">' . $desktopHtml . $mobileHtml . '</div>';
+                    // Mobile: тільки телефон
+                    $mobileOnlyHtml = '<div class="screenshot-mobile-only">' . $mobileHtml . '</div>';
+                    return $duoHtml . $mobileOnlyHtml;
+                } else {
+                    // Немає мобільного — тільки desktop (видно на всіх розмірах)
+                    return '<div class="screenshot-desktop-only">' . $desktopHtml . '</div>' . $desktopHtml;
+                }
+            },
+            $html
+        );
+    }
+
+    /**
+     * Перезаписує залишкові відносні шляхи screenshots/ що не потрапили в processScreenshots
      */
     protected function rewriteImagePaths($html)
     {
@@ -88,26 +175,41 @@ class Docs2Controller
     public function show($slug)
     {
         $menu = $this->getMenu();
-        $item = $this->findMenuItem($menu, $slug);
+        $found = $this->findMenuItem($menu, $slug);
 
-        if (!$item) {
+        if (!$found) {
             response()->exit(404);
         }
 
-        $filePath = $this->resolveDocFile($item['docFile']);
+        $parentItem = $found['item'];
+        $activeTab  = $found['tab'];
+        $isTab      = $activeTab !== null;
+        $parentSlug = $isTab ? $parentItem['slug'] : null;
+
+        $docFile  = $isTab ? $activeTab['docFile'] : $parentItem['docFile'];
+        $filePath = $this->resolveDocFile($docFile);
         $data = MarkdownService::parseFile($filePath);
 
         if (!$data) {
             response()->exit(404);
         }
 
-        $htmlContent = $this->rewriteImagePaths(MarkdownService::render($data['content']));
+        $rendered    = MarkdownService::render($data['content']);
+        $htmlContent = $this->rewriteImagePaths($this->processScreenshots($rendered));
 
-        // Плоский список для навігації prev/next
+        // OG image — конвертуємо відносний шлях скріншота в абсолютний web-шлях
+        if (!empty($data['meta']['image']) && str_starts_with($data['meta']['image'], 'screenshots/')) {
+            $data['meta']['image'] = '/content/docs2/' . $data['meta']['image'];
+        }
+
+        // Плоский список для навігації prev/next (батьківські + таби після кожного)
         $flatList = [];
         foreach ($menu as $group) {
-            foreach ($group['items'] as $menuItem) {
-                $flatList[] = $menuItem;
+            foreach ($group['items'] as $item) {
+                $flatList[] = $item;
+                foreach ($item['tabs'] ?? [] as $tab) {
+                    $flatList[] = $tab;
+                }
             }
         }
 
@@ -123,13 +225,17 @@ class Docs2Controller
         }
 
         echo $this->blade->make('docs2.page', [
-            'slug'    => $slug,
-            'content' => $htmlContent,
-            'menu'    => $menu,
-            'meta'    => $data['meta'],
-            'prev'    => $prev,
-            'next'    => $next,
-            'item'    => $item,
+            'slug'          => $slug,
+            'content'       => $htmlContent,
+            'menu'          => $menu,
+            'meta'          => $data['meta'],
+            'prev'          => $prev,
+            'next'          => $next,
+            'isTab'         => $isTab,
+            'parentSlug'    => $parentSlug,
+            'parentItem'    => $parentItem,
+            'currentTabs'   => $parentItem['tabs'] ?? [],
+            'activeTabSlug' => $slug,
         ])->render();
     }
 }
