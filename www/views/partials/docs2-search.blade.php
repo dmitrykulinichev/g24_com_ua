@@ -2,7 +2,13 @@
     <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
     </svg>
-    <input type="text" id="searchInput" onkeyup="liveSearch()" class="search-input" placeholder="Пошук...">
+    <input type="text" id="searchInput" oninput="liveSearch()" class="search-input" placeholder="Пошук...">
+
+    <button id="searchClear" onclick="clearSearch()" style="display:none; position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#9ca3af; padding:0; line-height:1;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
 
     <!-- Результати пошуку -->
     <div id="searchResults" class="search-results"></div>
@@ -86,10 +92,30 @@
 <script>
     let debounceTimer;
 
+    function clearSearch() {
+        const input = document.getElementById('searchInput');
+        input.value = '';
+        document.getElementById('searchClear').style.display = 'none';
+        document.getElementById('searchResults').style.display = 'none';
+
+        // Прибираємо підсвічування зі сторінки
+        document.querySelectorAll('#docsContent mark').forEach(mark => {
+            mark.replaceWith(document.createTextNode(mark.textContent));
+        });
+
+        // Прибираємо ?highlight з URL без перезавантаження
+        const url = new URL(window.location);
+        url.searchParams.delete('highlight');
+        window.history.replaceState({}, '', url);
+
+        input.focus();
+    }
+
     function liveSearch() {
         clearTimeout(debounceTimer);
         let query = document.getElementById('searchInput').value;
         let resultsContainer = document.getElementById('searchResults');
+        document.getElementById('searchClear').style.display = query.length > 0 ? 'block' : 'none';
 
         if (query.length < 2) {
             resultsContainer.style.display = 'none';
@@ -121,6 +147,13 @@
                 });
         }, 300);
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('searchInput');
+        if (input && input.value.length > 0) {
+            document.getElementById('searchClear').style.display = 'block';
+        }
+    });
 
     document.addEventListener('click', function(event) {
         let container = document.querySelector('.search-container');

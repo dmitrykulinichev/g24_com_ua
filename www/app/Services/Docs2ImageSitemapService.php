@@ -82,7 +82,7 @@ class Docs2ImageSitemapService
         return $images;
     }
 
-    public function getEntries(string $baseUrl): array
+    public function getEntries(string $baseUrl, string $urlPrefix = '/docs2'): array
     {
         $entries = [];
 
@@ -90,7 +90,7 @@ class Docs2ImageSitemapService
             $images = $this->extractImages($entry['docFile'], $baseUrl);
             if (!empty($images)) {
                 $entries[] = [
-                    'loc'    => $baseUrl . '/docs2/' . $entry['slug'],
+                    'loc'    => $baseUrl . $urlPrefix . '/' . $entry['slug'],
                     'images' => $images,
                 ];
             }

@@ -30,7 +30,7 @@
                                     <a href="/docs2/{{ $menuItem['slug'] }}"
                                        class="block px-3 py-2 rounded-md text-sm transition-colors duration-200
                                               {{ $isActive ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
-                                       {{ $isActive ? 'aria-current="page"' : '' }}>
+                                       @if($isActive) aria-current="page" @endif>
                                         {{ $menuItem['title'] }}
                                     </a>
                                     @if($isActive && !empty($menuItem['tabs']))
@@ -40,7 +40,7 @@
                                             <a href="/docs2/{{ $tab['slug'] }}"
                                                class="block px-2 py-1 text-xs transition-colors duration-200
                                                       {{ $activeTabSlug === $tab['slug'] ? 'text-primary font-medium' : 'text-slate-400 hover:text-slate-700' }}"
-                                               {{ $activeTabSlug === $tab['slug'] ? 'aria-current="page"' : '' }}>
+                                               @if($activeTabSlug === $tab['slug']) aria-current="page" @endif>
                                                 {{ $tab['title'] }}
                                             </a>
                                         </li>
@@ -146,12 +146,24 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const nav = document.querySelector('.sidebar-nav');
+        const activeLink = nav?.querySelector('[aria-current="page"]');
+        if (nav && activeLink) {
+            const navRect = nav.getBoundingClientRect();
+            const linkRect = activeLink.getBoundingClientRect();
+            nav.scrollTop += linkRect.top - navRect.top - nav.clientHeight / 2 + activeLink.clientHeight / 2;
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const query = urlParams.get('highlight');
 
         if (query) {
             const searchInput = document.getElementById('searchInput');
-            if (searchInput) { searchInput.value = query; }
+            if (searchInput) {
+                searchInput.value = query;
+                const clearBtn = document.getElementById('searchClear');
+                if (clearBtn) clearBtn.style.display = 'block';
+            }
 
             const content = document.getElementById('docsContent');
             if (content) {
