@@ -17,10 +17,14 @@ $app->get('/pricing', 'App\Controllers\PricingController@index');
 // Контакти
 $app->get('/contacts', 'App\Controllers\ContactsController@index');
 
-// Документація
+// Документація v1
 $app->get('/docs', 'App\Controllers\DocsController@index');
 $app->get('/docs/{slug}', 'App\Controllers\DocsController@show');
 $app->get('/api/docs/search', 'App\Controllers\SearchController@search');
+
+// Документація v2
+$app->get('/docs2', 'App\Controllers\Docs2Controller@index');
+$app->get('/docs2/{slug}', 'App\Controllers\Docs2Controller@show');
 
 // Блог
 $app->get('/blog', 'App\Controllers\BlogController@index');
