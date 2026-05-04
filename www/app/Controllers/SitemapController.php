@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\MarkdownService;
-use App\Services\DocImageSitemapService;
+use App\Services\Docs2ImageSitemapService;
 
 class SitemapController
 {
@@ -113,22 +113,22 @@ class SitemapController
             }
         }
 
-        // 3. Документація
-        $docsMenuPath = dirname(__DIR__, 2) . '/content/docs/menu.json';
-        if (file_exists($docsMenuPath)) {
-            $docsMenu = json_decode(file_get_contents($docsMenuPath), true) ?? [];
-            foreach ($docsMenu as $group) {
+        // 3. Документація (новий контент docs2, шлях /docs)
+        $docs2MenuPath = dirname(__DIR__, 2) . '/content/docs2/menu.json';
+        if (file_exists($docs2MenuPath)) {
+            $docs2Menu = json_decode(file_get_contents($docs2MenuPath), true) ?? [];
+            foreach ($docs2Menu as $group) {
                 foreach ($group['items'] as $item) {
                     $urls[] = [
                         'loc'        => $baseUrl . '/docs/' . $item['slug'],
-                        'lastmod'    => '2025-10-01',
+                        'lastmod'    => date('Y-m-d'),
                         'changefreq' => 'monthly',
                         'priority'   => '0.7',
                     ];
                     foreach ($item['tabs'] ?? [] as $tab) {
                         $urls[] = [
                             'loc'        => $baseUrl . '/docs/' . $tab['slug'],
-                            'lastmod'    => '2025-10-01',
+                            'lastmod'    => date('Y-m-d'),
                             'changefreq' => 'monthly',
                             'priority'   => '0.6',
                         ];
@@ -137,7 +137,7 @@ class SitemapController
             }
         }
 
-        $imageEntries = (new DocImageSitemapService())->getEntries($baseUrl);
+        $imageEntries = (new Docs2ImageSitemapService())->getEntries($baseUrl, '/docs');
         $imageIndex   = [];
         foreach ($imageEntries as $entry) {
             $imageIndex[$entry['loc']] = $entry['images'];

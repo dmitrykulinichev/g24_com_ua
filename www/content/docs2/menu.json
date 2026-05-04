@@ -1,0 +1,2291 @@
+[
+  {
+    "title": "Основний функціонал",
+    "items": [
+      {
+        "title": "Головна",
+        "slug": "dashboard",
+        "image": "page_dashboard_main.png",
+        "description": "Головна панель: огляд ключових показників вашого автопарку, стану ТО, задач та фінансової активності Uklon.",
+        "docFile": "_data/dashboard.md",
+        "modals": [
+          {
+            "slug": "dashboard-settings",
+            "docFile": "_data/modals/modal_dashboard_settings.md",
+            "screenshots": [
+              {
+                "id": "modal_dashboard_settings",
+                "type": "modal",
+                "idoc": "modal:dashboard-settings",
+                "selector": "[data-i-doc=\"modal:dashboard-settings\"]",
+                "url": "/",
+                "page": "page:dashboard"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_dashboard_main",
+            "type": "page",
+            "idoc": "page:dashboard",
+            "selector": "[data-i-doc=\"page:dashboard\"]",
+            "url": "/",
+            "page": "page:dashboard"
+          }
+        ]
+      },
+      {
+        "title": "Графік роботи",
+        "slug": "driver-schedule",
+        "image": "page_driver_schedule_main.png",
+        "description": "Графік роботи: планувальник змін водіїв, облік технічного обслуговування та ремонтів у зручному матричному форматі.",
+        "docFile": "_data/driver-schedule.md",
+        "modals": [
+          {
+            "slug": "schedule-delete-confirm",
+            "docFile": "_data/modals/modal_schedule_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_schedule_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:schedule-delete-confirm",
+                "selector": "[data-i-doc=\"modal:schedule-delete-confirm\"]",
+                "url": "/driver-schedule",
+                "page": "page:driver-schedule"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_driver_schedule_main",
+            "type": "page",
+            "idoc": "page:driver-schedule",
+            "selector": "[data-i-doc=\"page:driver-schedule\"]",
+            "url": "/driver-schedule",
+            "page": "page:driver-schedule"
+          }
+        ]
+      },
+      {
+        "title": "Задачі",
+        "slug": "tasks",
+        "image": "page_tasks_main.png",
+        "description": "Ваш список задач: тут ви можете створювати нові задачі, призначати відповідальних, прив'язувати їх до автомобілів та відстежувати статус виконання.",
+        "docFile": "_data/tasks.md",
+        "modals": [
+          {
+            "slug": "task-filters",
+            "docFile": "_data/modals/modal_task_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_task_filters",
+                "type": "modal",
+                "idoc": "modal:task-filters",
+                "selector": "[data-i-doc=\"modal:task-filters\"]",
+                "url": "/tasks",
+                "page": "page:tasks"
+              }
+            ]
+          },
+          {
+            "slug": "task-form",
+            "docFile": "_data/modals/modal_task_form.md",
+            "screenshots": [
+              {
+                "id": "modal_task_form",
+                "type": "modal",
+                "idoc": "modal:task-form",
+                "selector": "[data-i-doc=\"modal:task-form\"]",
+                "url": "/tasks",
+                "page": "page:tasks"
+              }
+            ]
+          },
+          {
+            "slug": "task-details",
+            "docFile": "_data/modals/modal_task_details.md",
+            "screenshots": [
+              {
+                "id": "modal_task_details",
+                "type": "modal",
+                "idoc": "modal:task-details",
+                "selector": "[data-i-doc=\"modal:task-details\"]",
+                "url": "/tasks",
+                "page": "page:tasks"
+              }
+            ]
+          },
+          {
+            "slug": "task-delete-confirm",
+            "docFile": "_data/modals/modal_task_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_task_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:task-delete-confirm",
+                "selector": "[data-i-doc=\"modal:task-delete-confirm\"]",
+                "url": "/tasks",
+                "page": "page:tasks"
+              }
+            ]
+          },
+          {
+            "slug": "task-complete-confirm",
+            "docFile": "_data/modals/modal_task_complete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_task_complete_confirm",
+                "type": "modal",
+                "idoc": "modal:task-complete-confirm",
+                "selector": "[data-i-doc=\"modal:task-complete-confirm\"]",
+                "url": "/tasks",
+                "page": "page:tasks"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_tasks_main",
+            "type": "page",
+            "idoc": "page:tasks",
+            "selector": "[data-i-doc=\"page:tasks\"]",
+            "url": "/tasks",
+            "page": "page:tasks"
+          }
+        ]
+      },
+      {
+        "title": "Профіль",
+        "slug": "profile",
+        "image": "page_profile_main.png",
+        "description": "Ваш персональний кабінет: керуйте особистими даними, налаштовуйте безпеку та підключення Telegram-бота.",
+        "docFile": "_data/profile/index.md",
+        "tabs": [
+          {
+            "title": "Загальні дані",
+            "slug": "profile--general",
+            "docFile": "_data/profile/general.md",
+            "screenshots": [
+              {
+                "id": "tab_profile_general_main",
+                "type": "tab",
+                "idoc": "tab:profile-general",
+                "selector": "[data-i-doc=\"tab:profile-general\"]",
+                "url": "/profile",
+                "page": "page:profile"
+              }
+            ]
+          },
+          {
+            "title": "Зміна паролю",
+            "slug": "profile--password",
+            "docFile": "_data/profile/password.md",
+            "screenshots": [
+              {
+                "id": "tab_profile_password_main",
+                "type": "tab",
+                "idoc": "tab:profile-password",
+                "selector": "[data-i-doc=\"tab:profile-password\"]",
+                "url": "/profile",
+                "page": "page:profile"
+              }
+            ]
+          },
+          {
+            "title": "Telegram",
+            "slug": "profile--telegram",
+            "docFile": "_data/profile/telegram.md",
+            "screenshots": [
+              {
+                "id": "tab_profile_telegram_main",
+                "type": "tab",
+                "idoc": "tab:profile-telegram",
+                "selector": "[data-i-doc=\"tab:profile-telegram\"]",
+                "url": "/profile",
+                "page": "page:profile"
+              }
+            ]
+          },
+          {
+            "title": "Розсилки",
+            "slug": "profile--notifications",
+            "docFile": "_data/profile/notifications.md",
+            "screenshots": [
+              {
+                "id": "tab_profile_notifications_main",
+                "type": "tab",
+                "idoc": "tab:profile-notifications",
+                "selector": "[data-i-doc=\"tab:profile-notifications\"]",
+                "url": "/profile",
+                "page": "page:profile"
+              }
+            ]
+          },
+          {
+            "title": "Доступ та Безпека",
+            "slug": "profile--access",
+            "docFile": "_data/profile/access.md",
+            "screenshots": [
+              {
+                "id": "tab_profile_access_main",
+                "type": "tab",
+                "idoc": "tab:profile-access",
+                "selector": "[data-i-doc=\"tab:profile-access\"]",
+                "url": "/profile",
+                "page": "page:profile"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_profile_main",
+            "type": "page",
+            "idoc": "page:profile",
+            "selector": "[data-i-doc=\"page:profile\"]",
+            "url": "/profile",
+            "page": "page:profile"
+          }
+        ]
+      },
+      {
+        "title": "Налаштування",
+        "slug": "settings",
+        "image": "page_settings_main.png",
+        "description": "Налаштування системи: персоналізуйте інтерфейс, керуйте сповіщеннями та інтеграціями з іншими сервісами.",
+        "docFile": "_data/settings/index.md",
+        "tabs": [
+          {
+            "title": "settings-appearance",
+            "slug": "settings--appearance",
+            "docFile": "_data/settings/appearance.md",
+            "screenshots": [
+              {
+                "id": "tab_settings_appearance_main",
+                "type": "tab",
+                "idoc": "tab:settings-appearance",
+                "selector": "[data-i-doc=\"tab:settings-appearance\"]",
+                "url": "/settings",
+                "page": "page:settings"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_settings_main",
+            "type": "page",
+            "idoc": "page:settings",
+            "selector": "[data-i-doc=\"page:settings\"]",
+            "url": "/settings",
+            "page": "page:settings"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Водії",
+    "items": [
+      {
+        "title": "Список водіїв",
+        "slug": "drivers",
+        "image": "page_drivers_main.png",
+        "description": "Список водіїв: додавайте нових водіїв, закріплюйте їх за автомобілями та керуйте їхніми доступами до системи.",
+        "docFile": "_data/drivers/drivers.md",
+        "modals": [
+          {
+            "slug": "driver-filters",
+            "docFile": "_data/modals/modal_driver_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_filters",
+                "type": "modal",
+                "idoc": "modal:driver-filters",
+                "selector": "[data-i-doc=\"modal:driver-filters\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-form",
+            "docFile": "_data/modals/modal_driver_form.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_form",
+                "type": "modal",
+                "idoc": "modal:driver-form",
+                "selector": "[data-i-doc=\"modal:driver-form\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-details",
+            "docFile": "_data/modals/modal_driver_details.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_details",
+                "type": "modal",
+                "idoc": "modal:driver-details",
+                "selector": "[data-i-doc=\"modal:driver-details\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-delete-confirm",
+            "docFile": "_data/modals/modal_driver_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:driver-delete-confirm",
+                "selector": "[data-i-doc=\"modal:driver-delete-confirm\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-assignment",
+            "docFile": "_data/modals/modal_driver_assignment.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_assignment",
+                "type": "modal",
+                "idoc": "modal:driver-assignment",
+                "selector": "[data-i-doc=\"modal:driver-assignment\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-telegram",
+            "docFile": "_data/modals/modal_driver_telegram.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_telegram",
+                "type": "modal",
+                "idoc": "modal:driver-telegram",
+                "selector": "[data-i-doc=\"modal:driver-telegram\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-import",
+            "docFile": "_data/modals/modal_driver_import.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_import",
+                "type": "modal",
+                "idoc": "modal:driver-import",
+                "selector": "[data-i-doc=\"modal:driver-import\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-copy",
+            "docFile": "_data/modals/modal_driver_copy.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_copy",
+                "type": "modal",
+                "idoc": "modal:driver-copy",
+                "selector": "[data-i-doc=\"modal:driver-copy\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-uklon-info",
+            "docFile": "_data/modals/modal_driver_uklon_info.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_uklon_info",
+                "type": "modal",
+                "idoc": "modal:driver-uklon-info",
+                "selector": "[data-i-doc=\"modal:driver-uklon-info\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          },
+          {
+            "slug": "driver-comments",
+            "docFile": "_data/modals/modal_driver_comments.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_comments",
+                "type": "modal",
+                "idoc": "modal:driver-comments",
+                "selector": "[data-i-doc=\"modal:driver-comments\"]",
+                "url": "/drivers",
+                "page": "page:drivers"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_drivers_main",
+            "type": "page",
+            "idoc": "page:drivers",
+            "selector": "[data-i-doc=\"page:drivers\"]",
+            "url": "/drivers",
+            "page": "page:drivers"
+          }
+        ]
+      },
+      {
+        "title": "Призначення",
+        "slug": "assignments",
+        "image": "page_vehicle_assignments_main.png",
+        "description": "Журнал призначень: відстежуйте історію закріплення автомобілів за водіями, переглядайте акти прийому-передачі та контролюйте пробіг на момент зміни водія.",
+        "docFile": "_data/drivers/assignments.md",
+        "modals": [
+          {
+            "slug": "assignment-filters",
+            "docFile": "_data/modals/modal_assignment_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_assignment_filters",
+                "type": "modal",
+                "idoc": "modal:assignment-filters",
+                "selector": "[data-i-doc=\"modal:assignment-filters\"]",
+                "url": "/assignments",
+                "page": "page:vehicle-assignments"
+              }
+            ]
+          },
+          {
+            "slug": "assignment-form",
+            "docFile": "_data/modals/modal_assignment_form.md",
+            "screenshots": [
+              {
+                "id": "modal_assignment_form",
+                "type": "modal",
+                "idoc": "modal:assignment-form",
+                "selector": "[data-i-doc=\"modal:assignment-form\"]",
+                "url": "/assignments",
+                "page": "page:vehicle-assignments"
+              }
+            ]
+          },
+          {
+            "slug": "assignment-details",
+            "docFile": "_data/modals/modal_assignment_details.md",
+            "screenshots": [
+              {
+                "id": "modal_assignment_details",
+                "type": "modal",
+                "idoc": "modal:assignment-details",
+                "selector": "[data-i-doc=\"modal:assignment-details\"]",
+                "url": "/assignments",
+                "page": "page:vehicle-assignments"
+              }
+            ]
+          },
+          {
+            "slug": "assignment-delete-confirm",
+            "docFile": "_data/modals/modal_assignment_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_assignment_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:assignment-delete-confirm",
+                "selector": "[data-i-doc=\"modal:assignment-delete-confirm\"]",
+                "url": "/assignments",
+                "page": "page:vehicle-assignments"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_vehicle_assignments_main",
+            "type": "page",
+            "idoc": "page:vehicle-assignments",
+            "selector": "[data-i-doc=\"page:vehicle-assignments\"]",
+            "url": "/assignments",
+            "page": "page:vehicle-assignments"
+          }
+        ]
+      },
+      {
+        "title": "Звернення",
+        "slug": "issue-reports",
+        "image": "page_issue_reports_main.png",
+        "description": "Журнал проблем та інцидентів: відстежуйте всі технічні та оперативні інциденти, що виникають під час роботи парку, та керуйте їх вирішенням.",
+        "docFile": "_data/drivers/issue-reports.md",
+        "modals": [
+          {
+            "slug": "issue-reports-filters",
+            "docFile": "_data/modals/modal_issue_reports_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_issue_reports_filters",
+                "type": "modal",
+                "idoc": "modal:issue-reports-filters",
+                "selector": "[data-i-doc=\"modal:issue-reports-filters\"]",
+                "url": "/issue-reports",
+                "page": "page:issue-reports"
+              }
+            ]
+          },
+          {
+            "slug": "issue-report-form",
+            "docFile": "_data/modals/modal_issue_report_form.md",
+            "screenshots": [
+              {
+                "id": "modal_issue_report_form",
+                "type": "modal",
+                "idoc": "modal:issue-report-form",
+                "selector": "[data-i-doc=\"modal:issue-report-form\"]",
+                "url": "/issue-reports",
+                "page": "page:issue-reports"
+              }
+            ]
+          },
+          {
+            "slug": "issue-report-actions",
+            "docFile": "_data/modals/modal_issue_report_actions.md",
+            "screenshots": [
+              {
+                "id": "modal_issue_report_actions",
+                "type": "modal",
+                "idoc": "modal:issue-report-actions",
+                "selector": "[data-i-doc=\"modal:issue-report-actions\"]",
+                "url": "/issue-reports",
+                "page": "page:issue-reports"
+              }
+            ]
+          },
+          {
+            "slug": "issue-report-details",
+            "docFile": "_data/modals/modal_issue_report_details.md",
+            "screenshots": [
+              {
+                "id": "modal_issue_report_details",
+                "type": "modal",
+                "idoc": "modal:issue-report-details",
+                "selector": "[data-i-doc=\"modal:issue-report-details\"]",
+                "url": "/issue-reports",
+                "page": "page:issue-reports"
+              }
+            ]
+          },
+          {
+            "slug": "task-info",
+            "docFile": "_data/modals/modal_task_info.md",
+            "screenshots": [
+              {
+                "id": "modal_task_info",
+                "type": "modal",
+                "idoc": "modal:task-info",
+                "selector": "[data-i-doc=\"modal:task-info\"]",
+                "url": "/issue-reports",
+                "page": "page:issue-reports"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_issue_reports_main",
+            "type": "page",
+            "idoc": "page:issue-reports",
+            "selector": "[data-i-doc=\"page:issue-reports\"]",
+            "url": "/issue-reports",
+            "page": "page:issue-reports"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Автомобілі",
+    "items": [
+      {
+        "title": "Автомобілі",
+        "slug": "vehicles",
+        "image": "page_vehicles_main.png",
+        "description": "Управління автомобілями: реєструйте нові авто, слідкуйте за їх станом, пробігом та термінами технічного обслуговування.",
+        "docFile": "_data/fleet/vehicles.md",
+        "modals": [
+          {
+            "slug": "vehicle-filters",
+            "docFile": "_data/modals/modal_vehicle_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_filters",
+                "type": "modal",
+                "idoc": "modal:vehicle-filters",
+                "selector": "[data-i-doc=\"modal:vehicle-filters\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-form",
+            "docFile": "_data/modals/modal_vehicle_form.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_form",
+                "type": "modal",
+                "idoc": "modal:vehicle-form",
+                "selector": "[data-i-doc=\"modal:vehicle-form\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-details",
+            "docFile": "_data/modals/modal_vehicle_details.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_details",
+                "type": "modal",
+                "idoc": "modal:vehicle-details",
+                "selector": "[data-i-doc=\"modal:vehicle-details\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-delete-confirm",
+            "docFile": "_data/modals/modal_vehicle_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:vehicle-delete-confirm",
+                "selector": "[data-i-doc=\"modal:vehicle-delete-confirm\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-mileage-update",
+            "docFile": "_data/modals/modal_vehicle_mileage_update.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_mileage_update",
+                "type": "modal",
+                "idoc": "modal:vehicle-mileage-update",
+                "selector": "[data-i-doc=\"modal:vehicle-mileage-update\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-maintenance-form",
+            "docFile": "_data/modals/modal_vehicle_maintenance_form.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_maintenance_form",
+                "type": "modal",
+                "idoc": "modal:vehicle-maintenance-form",
+                "selector": "[data-i-doc=\"modal:vehicle-maintenance-form\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-assignment-form",
+            "docFile": "_data/modals/modal_vehicle_assignment_form.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_assignment_form",
+                "type": "modal",
+                "idoc": "modal:vehicle-assignment-form",
+                "selector": "[data-i-doc=\"modal:vehicle-assignment-form\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-unassign-confirm",
+            "docFile": "_data/modals/modal_vehicle_unassign_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_unassign_confirm",
+                "type": "modal",
+                "idoc": "modal:vehicle-unassign-confirm",
+                "selector": "[data-i-doc=\"modal:vehicle-unassign-confirm\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-issue-report-form",
+            "docFile": "_data/modals/modal_vehicle_issue_report_form.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_issue_report_form",
+                "type": "modal",
+                "idoc": "modal:vehicle-issue-report-form",
+                "selector": "[data-i-doc=\"modal:vehicle-issue-report-form\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-qr",
+            "docFile": "_data/modals/modal_vehicle_qr.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_qr",
+                "type": "modal",
+                "idoc": "modal:vehicle-qr",
+                "selector": "[data-i-doc=\"modal:vehicle-qr\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-import",
+            "docFile": "_data/modals/modal_vehicle_import.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_import",
+                "type": "modal",
+                "idoc": "modal:vehicle-import",
+                "selector": "[data-i-doc=\"modal:vehicle-import\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-tag-settings",
+            "docFile": "_data/modals/modal_vehicle_tag_settings.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_tag_settings",
+                "type": "modal",
+                "idoc": "modal:vehicle-tag-settings",
+                "selector": "[data-i-doc=\"modal:vehicle-tag-settings\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-transfer",
+            "docFile": "_data/modals/modal_vehicle_transfer.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_transfer",
+                "type": "modal",
+                "idoc": "modal:vehicle-transfer",
+                "selector": "[data-i-doc=\"modal:vehicle-transfer\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-unavailability-form",
+            "docFile": "_data/modals/modal_vehicle_unavailability_form.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_unavailability_form",
+                "type": "modal",
+                "idoc": "modal:vehicle-unavailability-form",
+                "selector": "[data-i-doc=\"modal:vehicle-unavailability-form\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-close-unavailability",
+            "docFile": "_data/modals/modal_vehicle_close_unavailability.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_close_unavailability",
+                "type": "modal",
+                "idoc": "modal:vehicle-close-unavailability",
+                "selector": "[data-i-doc=\"modal:vehicle-close-unavailability\"]",
+                "url": "/vehicles",
+                "page": "page:vehicles"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_vehicles_main",
+            "type": "page",
+            "idoc": "page:vehicles",
+            "selector": "[data-i-doc=\"page:vehicles\"]",
+            "url": "/vehicles",
+            "page": "page:vehicles"
+          }
+        ]
+      },
+      {
+        "title": "Тех. обслуговування",
+        "slug": "vehicle-maintenance",
+        "image": "page_vehicle_maintenance_main.png",
+        "description": "Журнал технічного обслуговування: історія всіх сервісних робіт та ремонтів вашого автопарку з деталізацією по вартості та запчастинах.",
+        "docFile": "_data/fleet/vehicle-maintenance.md",
+        "modals": [
+          {
+            "slug": "maintenance-filters",
+            "docFile": "_data/modals/modal_maintenance_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_maintenance_filters",
+                "type": "modal",
+                "idoc": "modal:maintenance-filters",
+                "selector": "[data-i-doc=\"modal:maintenance-filters\"]",
+                "url": "/vehicle-maintenance",
+                "page": "page:vehicle-maintenance"
+              }
+            ]
+          },
+          {
+            "slug": "maintenance-details",
+            "docFile": "_data/modals/modal_maintenance_details.md",
+            "screenshots": [
+              {
+                "id": "modal_maintenance_details",
+                "type": "modal",
+                "idoc": "modal:maintenance-details",
+                "selector": "[data-i-doc=\"modal:maintenance-details\"]",
+                "url": "/vehicle-maintenance",
+                "page": "page:vehicle-maintenance"
+              }
+            ]
+          },
+          {
+            "slug": "maintenance-delete-confirm",
+            "docFile": "_data/modals/modal_maintenance_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_maintenance_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:maintenance-delete-confirm",
+                "selector": "[data-i-doc=\"modal:maintenance-delete-confirm\"]",
+                "url": "/vehicle-maintenance",
+                "page": "page:vehicle-maintenance"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_vehicle_maintenance_main",
+            "type": "page",
+            "idoc": "page:vehicle-maintenance",
+            "selector": "[data-i-doc=\"page:vehicle-maintenance\"]",
+            "url": "/vehicle-maintenance",
+            "page": "page:vehicle-maintenance"
+          }
+        ]
+      },
+      {
+        "title": "Недоступності",
+        "slug": "vehicle-unavailabilities",
+        "image": "page_vehicle_unavailabilities_main.png",
+        "description": "Журнал простоїв: відстежуйте періоди, коли автомобілі були недоступні для роботи через ремонт, ТО або інші причини.",
+        "docFile": "_data/fleet/vehicle-unavailabilities.md",
+        "modals": [
+          {
+            "slug": "unavailability-filters",
+            "docFile": "_data/modals/modal_unavailability_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_unavailability_filters",
+                "type": "modal",
+                "idoc": "modal:unavailability-filters",
+                "selector": "[data-i-doc=\"modal:unavailability-filters\"]",
+                "url": "/vehicle-unavailabilities",
+                "page": "page:vehicle-unavailabilities"
+              }
+            ]
+          },
+          {
+            "slug": "unavailability-details",
+            "docFile": "_data/modals/modal_unavailability_details.md",
+            "screenshots": [
+              {
+                "id": "modal_unavailability_details",
+                "type": "modal",
+                "idoc": "modal:unavailability-details",
+                "selector": "[data-i-doc=\"modal:unavailability-details\"]",
+                "url": "/vehicle-unavailabilities",
+                "page": "page:vehicle-unavailabilities"
+              }
+            ]
+          },
+          {
+            "slug": "unavailability-delete-confirm",
+            "docFile": "_data/modals/modal_unavailability_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_unavailability_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:unavailability-delete-confirm",
+                "selector": "[data-i-doc=\"modal:unavailability-delete-confirm\"]",
+                "url": "/vehicle-unavailabilities",
+                "page": "page:vehicle-unavailabilities"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_vehicle_unavailabilities_main",
+            "type": "page",
+            "idoc": "page:vehicle-unavailabilities",
+            "selector": "[data-i-doc=\"page:vehicle-unavailabilities\"]",
+            "url": "/vehicle-unavailabilities",
+            "page": "page:vehicle-unavailabilities"
+          }
+        ]
+      },
+      {
+        "title": "Документи",
+        "slug": "documents",
+        "image": "page_documents_main.png",
+        "description": "Управління документами: реєструйте страхові поліси, договори оренди та інші документи. Система нагадає вам про закінчення терміну дії.",
+        "docFile": "_data/fleet/documents.md",
+        "modals": [
+          {
+            "slug": "documents-filters",
+            "docFile": "_data/modals/modal_documents_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_documents_filters",
+                "type": "modal",
+                "idoc": "modal:documents-filters",
+                "selector": "[data-i-doc=\"modal:documents-filters\"]",
+                "url": "/documents",
+                "page": "page:documents"
+              }
+            ]
+          },
+          {
+            "slug": "document-delete-confirm",
+            "docFile": "_data/modals/modal_document_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_document_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:document-delete-confirm",
+                "selector": "[data-i-doc=\"modal:document-delete-confirm\"]",
+                "url": "/documents",
+                "page": "page:documents"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_documents_main",
+            "type": "page",
+            "idoc": "page:documents",
+            "selector": "[data-i-doc=\"page:documents\"]",
+            "url": "/documents",
+            "page": "page:documents"
+          }
+        ]
+      },
+      {
+        "title": "Звіти",
+        "slug": "reports",
+        "image": "page_reports_main.png",
+        "docFile": "_data/fleet/reports/index.md",
+        "tabs": [
+          {
+            "title": "Оперативна статистика",
+            "slug": "reports--operational",
+            "docFile": "_data/fleet/reports/operational.md",
+            "screenshots": [
+              {
+                "id": "tab_reports_operational_main",
+                "type": "tab",
+                "idoc": "tab:reports-operational",
+                "selector": "[data-i-doc=\"tab:reports-operational\"]",
+                "url": "/reports",
+                "page": "page:reports"
+              }
+            ]
+          },
+          {
+            "title": "Виконання нормативів",
+            "slug": "reports--performance",
+            "docFile": "_data/fleet/reports/performance.md",
+            "screenshots": [
+              {
+                "id": "tab_reports_performance_main",
+                "type": "tab",
+                "idoc": "tab:reports-performance",
+                "selector": "[data-i-doc=\"tab:reports-performance\"]",
+                "url": "/reports",
+                "page": "page:reports"
+              }
+            ]
+          },
+          {
+            "title": "Технічне обслуговування (Звіт)",
+            "slug": "reports--maintenance",
+            "docFile": "_data/fleet/reports/maintenance.md",
+            "screenshots": [
+              {
+                "id": "tab_reports_maintenance_main",
+                "type": "tab",
+                "idoc": "tab:reports-maintenance",
+                "selector": "[data-i-doc=\"tab:reports-maintenance\"]",
+                "url": "/reports",
+                "page": "page:reports"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_reports_main",
+            "type": "page",
+            "idoc": "page:reports",
+            "selector": "[data-i-doc=\"page:reports\"]",
+            "url": "/reports",
+            "page": "page:reports"
+          }
+        ]
+      },
+      {
+        "title": "Налаштування",
+        "slug": "fleet-settings",
+        "image": "page_fleet_settings_main.png",
+        "description": "Централізовані налаштування параметрів вашого автопарку: керування регламентами ТО, нормативними показниками та іншими системними правилами.",
+        "docFile": "_data/fleet/fleet-settings/index.md",
+        "tabs": [
+          {
+            "title": "Регламенти ТО",
+            "slug": "fleet-settings--schedules",
+            "docFile": "_data/fleet/fleet-settings/schedules.md",
+            "screenshots": [
+              {
+                "id": "tab_fleet_settings_schedules_main",
+                "type": "tab",
+                "idoc": "tab:fleet-settings-schedules",
+                "selector": "[data-i-doc=\"tab:fleet-settings-schedules\"]",
+                "url": "/fleet-settings",
+                "page": "page:fleet-settings"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_fleet_settings_main",
+            "type": "page",
+            "idoc": "page:fleet-settings",
+            "selector": "[data-i-doc=\"page:fleet-settings\"]",
+            "url": "/fleet-settings",
+            "page": "page:fleet-settings"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Фінанси",
+    "items": [
+      {
+        "title": "Транзакції",
+        "slug": "transactions",
+        "image": "page_transactions_main.png",
+        "description": "Фінансова звітність: відстежуйте всі грошові потоки, доходи та витрати вашого автопарку. Використовуйте фільтри для детального аналізу фінансових показників.",
+        "docFile": "_data/finance/transactions.md",
+        "modals": [
+          {
+            "slug": "transactions-filters",
+            "docFile": "_data/modals/modal_transactions_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_transactions_filters",
+                "type": "modal",
+                "idoc": "modal:transactions-filters",
+                "selector": "[data-i-doc=\"modal:transactions-filters\"]",
+                "url": "/transactions",
+                "page": "page:transactions"
+              }
+            ]
+          },
+          {
+            "slug": "transaction-form",
+            "docFile": "_data/modals/modal_transaction_form.md",
+            "screenshots": [
+              {
+                "id": "modal_transaction_form",
+                "type": "modal",
+                "idoc": "modal:transaction-form",
+                "selector": "[data-i-doc=\"modal:transaction-form\"]",
+                "url": "/transactions",
+                "page": "page:transactions"
+              }
+            ]
+          },
+          {
+            "slug": "transaction-delete-confirm",
+            "docFile": "_data/modals/modal_transaction_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_transaction_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:transaction-delete-confirm",
+                "selector": "[data-i-doc=\"modal:transaction-delete-confirm\"]",
+                "url": "/transactions",
+                "page": "page:transactions"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_transactions_main",
+            "type": "page",
+            "idoc": "page:transactions",
+            "selector": "[data-i-doc=\"page:transactions\"]",
+            "url": "/transactions",
+            "page": "page:transactions"
+          }
+        ]
+      },
+      {
+        "title": "Ручні поїздки",
+        "slug": "manual-trips",
+        "image": "page_manual_trips_main.png",
+        "description": "Облік ручних поїздок: реєструйте поїздки, виконані поза агрегаторами, контролюйте їх вартість та пробіг.",
+        "docFile": "_data/finance/manual-trips.md",
+        "modals": [
+          {
+            "slug": "manual-trip-form",
+            "docFile": "_data/modals/modal_manual_trip_form.md",
+            "screenshots": [
+              {
+                "id": "modal_manual_trip_form",
+                "type": "modal",
+                "idoc": "modal:manual-trip-form",
+                "selector": "[data-i-doc=\"modal:manual-trip-form\"]",
+                "url": "/manual-trips",
+                "page": "page:manual-trips"
+              }
+            ]
+          },
+          {
+            "slug": "manual-trip-details",
+            "docFile": "_data/modals/modal_manual_trip_details.md",
+            "screenshots": [
+              {
+                "id": "modal_manual_trip_details",
+                "type": "modal",
+                "idoc": "modal:manual-trip-details",
+                "selector": "[data-i-doc=\"modal:manual-trip-details\"]",
+                "url": "/manual-trips",
+                "page": "page:manual-trips"
+              }
+            ]
+          },
+          {
+            "slug": "manual-trip-filters",
+            "docFile": "_data/modals/modal_manual_trip_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_manual_trip_filters",
+                "type": "modal",
+                "idoc": "modal:manual-trip-filters",
+                "selector": "[data-i-doc=\"modal:manual-trip-filters\"]",
+                "url": "/manual-trips",
+                "page": "page:manual-trips"
+              }
+            ]
+          },
+          {
+            "slug": "manual-trip-delete-confirm",
+            "docFile": "_data/modals/modal_manual_trip_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_manual_trip_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:manual-trip-delete-confirm",
+                "selector": "[data-i-doc=\"modal:manual-trip-delete-confirm\"]",
+                "url": "/manual-trips",
+                "page": "page:manual-trips"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_manual_trips_main",
+            "type": "page",
+            "idoc": "page:manual-trips",
+            "selector": "[data-i-doc=\"page:manual-trips\"]",
+            "url": "/manual-trips",
+            "page": "page:manual-trips"
+          }
+        ]
+      },
+      {
+        "title": "Витрати водія",
+        "slug": "driver-expenses",
+        "image": "page_driver_expenses_main.png",
+        "description": "Облік витрат водіїв: фіксуйте додаткові витрати водіїв, прив'язуйте їх до конкретних авто та завантажуйте підтверджуючі документи.",
+        "docFile": "_data/finance/driver-expenses.md",
+        "modals": [
+          {
+            "slug": "driver-expense-form",
+            "docFile": "_data/modals/modal_driver_expense_form.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_expense_form",
+                "type": "modal",
+                "idoc": "modal:driver-expense-form",
+                "selector": "[data-i-doc=\"modal:driver-expense-form\"]",
+                "url": "/driver-expenses",
+                "page": "page:driver-expenses"
+              }
+            ]
+          },
+          {
+            "slug": "driver-expense-details",
+            "docFile": "_data/modals/modal_driver_expense_details.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_expense_details",
+                "type": "modal",
+                "idoc": "modal:driver-expense-details",
+                "selector": "[data-i-doc=\"modal:driver-expense-details\"]",
+                "url": "/driver-expenses",
+                "page": "page:driver-expenses"
+              }
+            ]
+          },
+          {
+            "slug": "driver-expense-filters",
+            "docFile": "_data/modals/modal_driver_expense_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_expense_filters",
+                "type": "modal",
+                "idoc": "modal:driver-expense-filters",
+                "selector": "[data-i-doc=\"modal:driver-expense-filters\"]",
+                "url": "/driver-expenses",
+                "page": "page:driver-expenses"
+              }
+            ]
+          },
+          {
+            "slug": "driver-expense-delete-confirm",
+            "docFile": "_data/modals/modal_driver_expense_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_expense_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:driver-expense-delete-confirm",
+                "selector": "[data-i-doc=\"modal:driver-expense-delete-confirm\"]",
+                "url": "/driver-expenses",
+                "page": "page:driver-expenses"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_driver_expenses_main",
+            "type": "page",
+            "idoc": "page:driver-expenses",
+            "selector": "[data-i-doc=\"page:driver-expenses\"]",
+            "url": "/driver-expenses",
+            "page": "page:driver-expenses"
+          }
+        ]
+      },
+      {
+        "title": "Премії та Штрафи",
+        "slug": "bonuses-penalties",
+        "image": "page_bonuses_penalties_main.png",
+        "description": "Премії та штрафи: керуйте заохоченнями та стягненнями для водіїв, відстежуйте виконання планів по боргових зобов'язаннях.",
+        "docFile": "_data/finance/bonuses-penalties.md",
+        "modals": [
+          {
+            "slug": "bonus-penalty-form",
+            "docFile": "_data/modals/modal_bonus_penalty_form.md",
+            "screenshots": [
+              {
+                "id": "modal_bonus_penalty_form",
+                "type": "modal",
+                "idoc": "modal:bonus-penalty-form",
+                "selector": "[data-i-doc=\"modal:bonus-penalty-form\"]",
+                "url": "/bonuses-penalties",
+                "page": "page:bonuses-penalties"
+              }
+            ]
+          },
+          {
+            "slug": "bonus-penalty-details",
+            "docFile": "_data/modals/modal_bonus_penalty_details.md",
+            "screenshots": [
+              {
+                "id": "modal_bonus_penalty_details",
+                "type": "modal",
+                "idoc": "modal:bonus-penalty-details",
+                "selector": "[data-i-doc=\"modal:bonus-penalty-details\"]",
+                "url": "/bonuses-penalties",
+                "page": "page:bonuses-penalties"
+              }
+            ]
+          },
+          {
+            "slug": "bonus-penalty-filters",
+            "docFile": "_data/modals/modal_bonus_penalty_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_bonus_penalty_filters",
+                "type": "modal",
+                "idoc": "modal:bonus-penalty-filters",
+                "selector": "[data-i-doc=\"modal:bonus-penalty-filters\"]",
+                "url": "/bonuses-penalties",
+                "page": "page:bonuses-penalties"
+              }
+            ]
+          },
+          {
+            "slug": "bonus-penalty-delete-confirm",
+            "docFile": "_data/modals/modal_bonus_penalty_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_bonus_penalty_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:bonus-penalty-delete-confirm",
+                "selector": "[data-i-doc=\"modal:bonus-penalty-delete-confirm\"]",
+                "url": "/bonuses-penalties",
+                "page": "page:bonuses-penalties"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_bonuses_penalties_main",
+            "type": "page",
+            "idoc": "page:bonuses-penalties",
+            "selector": "[data-i-doc=\"page:bonuses-penalties\"]",
+            "url": "/bonuses-penalties",
+            "page": "page:bonuses-penalties"
+          }
+        ]
+      },
+      {
+        "title": "Борги водіїв",
+        "slug": "driver-debt-plans",
+        "image": "page_driver_debt_plans_main.png",
+        "description": "Плани погашення боргів: створюйте графіки списання боргів водіїв, контролюйте залишки та фіксуйте платежі.",
+        "docFile": "_data/finance/driver-debt-plans.md",
+        "modals": [
+          {
+            "slug": "driver-debt-plan-form",
+            "docFile": "_data/modals/modal_driver_debt_plan_form.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_debt_plan_form",
+                "type": "modal",
+                "idoc": "modal:driver-debt-plan-form",
+                "selector": "[data-i-doc=\"modal:driver-debt-plan-form\"]",
+                "url": "/driver-debt-plans",
+                "page": "page:driver-debt-plans"
+              }
+            ]
+          },
+          {
+            "slug": "driver-debt-plan-details",
+            "docFile": "_data/modals/modal_driver_debt_plan_details.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_debt_plan_details",
+                "type": "modal",
+                "idoc": "modal:driver-debt-plan-details",
+                "selector": "[data-i-doc=\"modal:driver-debt-plan-details\"]",
+                "url": "/driver-debt-plans",
+                "page": "page:driver-debt-plans"
+              }
+            ]
+          },
+          {
+            "slug": "manual-debt-payment-form",
+            "docFile": "_data/modals/modal_manual_debt_payment_form.md",
+            "screenshots": [
+              {
+                "id": "modal_manual_debt_payment_form",
+                "type": "modal",
+                "idoc": "modal:manual-debt-payment-form",
+                "selector": "[data-i-doc=\"modal:manual-debt-payment-form\"]",
+                "url": "/driver-debt-plans",
+                "page": "page:driver-debt-plans"
+              }
+            ]
+          },
+          {
+            "slug": "driver-debt-plan-filters",
+            "docFile": "_data/modals/modal_driver_debt_plan_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_debt_plan_filters",
+                "type": "modal",
+                "idoc": "modal:driver-debt-plan-filters",
+                "selector": "[data-i-doc=\"modal:driver-debt-plan-filters\"]",
+                "url": "/driver-debt-plans",
+                "page": "page:driver-debt-plans"
+              }
+            ]
+          },
+          {
+            "slug": "driver-debt-plan-delete-confirm",
+            "docFile": "_data/modals/modal_driver_debt_plan_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_debt_plan_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:driver-debt-plan-delete-confirm",
+                "selector": "[data-i-doc=\"modal:driver-debt-plan-delete-confirm\"]",
+                "url": "/driver-debt-plans",
+                "page": "page:driver-debt-plans"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_driver_debt_plans_main",
+            "type": "page",
+            "idoc": "page:driver-debt-plans",
+            "selector": "[data-i-doc=\"page:driver-debt-plans\"]",
+            "url": "/driver-debt-plans",
+            "page": "page:driver-debt-plans"
+          }
+        ]
+      },
+      {
+        "title": "Зароб. водіїв",
+        "slug": "driver-earnings-new",
+        "image": "page_driver_earnings_main.png",
+        "description": "Заробіток водіїв: фінансовий звіт по персоналу, де ви можете аналізувати доходи, витрати, ефективність та підсумкові виплати водіям.",
+        "docFile": "_data/finance/driver-earnings-new.md",
+        "modals": [
+          {
+            "slug": "driver-earnings-calc-info",
+            "docFile": "_data/modals/modal_driver_earnings_calc_info.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_earnings_calc_info",
+                "type": "modal",
+                "idoc": "modal:driver-earnings-calc-info",
+                "selector": "[data-i-doc=\"modal:driver-earnings-calc-info\"]",
+                "url": "/driver-earnings-new",
+                "page": "page:driver-earnings"
+              }
+            ]
+          },
+          {
+            "slug": "driver-earnings-details",
+            "docFile": "_data/modals/modal_driver_earnings_details.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_earnings_details",
+                "type": "modal",
+                "idoc": "modal:driver-earnings-details",
+                "selector": "[data-i-doc=\"modal:driver-earnings-details\"]",
+                "url": "/driver-earnings-new",
+                "page": "page:driver-earnings"
+              }
+            ]
+          },
+          {
+            "slug": "driver-earnings-raw-data",
+            "docFile": "_data/modals/modal_driver_earnings_raw_data.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_earnings_raw_data",
+                "type": "modal",
+                "idoc": "modal:driver-earnings-raw-data",
+                "selector": "[data-i-doc=\"modal:driver-earnings-raw-data\"]",
+                "url": "/driver-earnings-new",
+                "page": "page:driver-earnings"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_driver_earnings_main",
+            "type": "page",
+            "idoc": "page:driver-earnings",
+            "selector": "[data-i-doc=\"page:driver-earnings\"]",
+            "url": "/driver-earnings-new",
+            "page": "page:driver-earnings"
+          }
+        ]
+      },
+      {
+        "title": "Заробіток авто",
+        "slug": "vehicle-earnings",
+        "image": "page_vehicle_earnings_main.png",
+        "description": "Заробіток автомобілів: фінансова аналітика кожного авто у флоті. Аналізуйте доходи, витрати, ефективність роботи та чистий прибуток.",
+        "docFile": "_data/finance/vehicle-earnings.md",
+        "modals": [
+          {
+            "slug": "vehicle-earnings-details",
+            "docFile": "_data/modals/modal_vehicle_earnings_details.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_earnings_details",
+                "type": "modal",
+                "idoc": "modal:vehicle-earnings-details",
+                "selector": "[data-i-doc=\"modal:vehicle-earnings-details\"]",
+                "url": "/vehicle-earnings",
+                "page": "page:vehicle-earnings"
+              }
+            ]
+          },
+          {
+            "slug": "vehicle-earnings-calc-info",
+            "docFile": "_data/modals/modal_vehicle_earnings_calc_info.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_earnings_calc_info",
+                "type": "modal",
+                "idoc": "modal:vehicle-earnings-calc-info",
+                "selector": "[data-i-doc=\"modal:vehicle-earnings-calc-info\"]",
+                "url": "/vehicle-earnings",
+                "page": "page:vehicle-earnings"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_vehicle_earnings_main",
+            "type": "page",
+            "idoc": "page:vehicle-earnings",
+            "selector": "[data-i-doc=\"page:vehicle-earnings\"]",
+            "url": "/vehicle-earnings",
+            "page": "page:vehicle-earnings"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Парк",
+    "items": [
+      {
+        "title": "Статистика",
+        "slug": "park-statistics",
+        "image": "page_park_statistics_main.png",
+        "description": "Статистика парку: глобальна аналітика діяльності автопарку, візуалізація трендів поїздок та використання автомобілів.",
+        "docFile": "_data/park/park-statistics.md",
+        "screenshots": [
+          {
+            "id": "page_park_statistics_main",
+            "type": "page",
+            "idoc": "page:park-statistics",
+            "selector": "[data-i-doc=\"page:park-statistics\"]",
+            "url": "/park-statistics",
+            "page": "page:park-statistics"
+          }
+        ]
+      },
+      {
+        "title": "Команда",
+        "slug": "park-users",
+        "image": "page_park_users_main.png",
+        "description": "Команда парку: управління доступом менеджерів, перегляд ролей, налаштування прав та активності користувачів системи.",
+        "docFile": "_data/park/park-users.md",
+        "modals": [
+          {
+            "slug": "user-form",
+            "docFile": "_data/modals/modal_user_form.md",
+            "screenshots": [
+              {
+                "id": "modal_user_form",
+                "type": "modal",
+                "idoc": "modal:user-form",
+                "selector": "[data-i-doc=\"modal:user-form\"]",
+                "url": "/park-users",
+                "page": "page:park-users"
+              }
+            ]
+          },
+          {
+            "slug": "user-permissions",
+            "docFile": "_data/modals/modal_user_permissions.md",
+            "screenshots": [
+              {
+                "id": "modal_user_permissions",
+                "type": "modal",
+                "idoc": "modal:user-permissions",
+                "selector": "[data-i-doc=\"modal:user-permissions\"]",
+                "url": "/park-users",
+                "page": "page:park-users"
+              }
+            ]
+          },
+          {
+            "slug": "user-delete-confirm",
+            "docFile": "_data/modals/modal_user_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_user_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:user-delete-confirm",
+                "selector": "[data-i-doc=\"modal:user-delete-confirm\"]",
+                "url": "/park-users",
+                "page": "page:park-users"
+              }
+            ]
+          },
+          {
+            "slug": "user-reset-password",
+            "docFile": "_data/modals/modal_user_reset_password.md",
+            "screenshots": [
+              {
+                "id": "modal_user_reset_password",
+                "type": "modal",
+                "idoc": "modal:user-reset-password",
+                "selector": "[data-i-doc=\"modal:user-reset-password\"]",
+                "url": "/park-users",
+                "page": "page:park-users"
+              }
+            ]
+          },
+          {
+            "slug": "user-activation-link",
+            "docFile": "_data/modals/modal_user_activation_link.md",
+            "screenshots": [
+              {
+                "id": "modal_user_activation_link",
+                "type": "modal",
+                "idoc": "modal:user-activation-link",
+                "selector": "[data-i-doc=\"modal:user-activation-link\"]",
+                "url": "/park-users",
+                "page": "page:park-users"
+              }
+            ]
+          },
+          {
+            "slug": "user-filters",
+            "docFile": "_data/modals/modal_user_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_user_filters",
+                "type": "modal",
+                "idoc": "modal:user-filters",
+                "selector": "[data-i-doc=\"modal:user-filters\"]",
+                "url": "/park-users",
+                "page": "page:park-users"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_park_users_main",
+            "type": "page",
+            "idoc": "page:park-users",
+            "selector": "[data-i-doc=\"page:park-users\"]",
+            "url": "/park-users",
+            "page": "page:park-users"
+          }
+        ]
+      },
+      {
+        "title": "Файли",
+        "slug": "park-files",
+        "image": "page_park_files_main.png",
+        "description": "Файли парку: централізоване сховище документів та медіа-файлів автопарку. Використовуйте пошук та фільтри для швидкого доступу.",
+        "docFile": "_data/park/park-files.md",
+        "modals": [
+          {
+            "slug": "park-file-form",
+            "docFile": "_data/modals/modal_park_file_form.md",
+            "screenshots": [
+              {
+                "id": "modal_park_file_form",
+                "type": "modal",
+                "idoc": "modal:park-file-form",
+                "selector": "[data-i-doc=\"modal:park-file-form\"]",
+                "url": "/park-files",
+                "page": "page:park-files"
+              }
+            ]
+          },
+          {
+            "slug": "park-file-delete-confirm",
+            "docFile": "_data/modals/modal_park_file_delete_confirm.md",
+            "screenshots": [
+              {
+                "id": "modal_park_file_delete_confirm",
+                "type": "modal",
+                "idoc": "modal:park-file-delete-confirm",
+                "selector": "[data-i-doc=\"modal:park-file-delete-confirm\"]",
+                "url": "/park-files",
+                "page": "page:park-files"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_park_files_main",
+            "type": "page",
+            "idoc": "page:park-files",
+            "selector": "[data-i-doc=\"page:park-files\"]",
+            "url": "/park-files",
+            "page": "page:park-files"
+          }
+        ]
+      },
+      {
+        "title": "Білінг",
+        "slug": "billing",
+        "image": "page_billing_main.png",
+        "description": "Білінг та тарифи: переглядайте історію оплат, поточний стан підписки та деталізацію нарахувань по кожному автомобілю за період.",
+        "docFile": "_data/park/billing.md",
+        "screenshots": [
+          {
+            "id": "page_billing_main",
+            "type": "page",
+            "idoc": "page:billing",
+            "selector": "[data-i-doc=\"page:billing\"]",
+            "url": "/billing",
+            "page": "page:billing"
+          }
+        ]
+      },
+      {
+        "title": "Лендінг",
+        "slug": "landing-settings",
+        "image": "page_landing_settings_main.png",
+        "description": "Налаштування лендінгу: керуйте контентом вашої посадкової сторінки для водіїв, редагуйте акції, контакти та візуальні елементи.",
+        "docFile": "_data/park/landing-settings/index.md",
+        "tabs": [
+          {
+            "title": "Загальні налаштування",
+            "slug": "landing-settings--landing-general",
+            "docFile": "_data/park/landing-settings/landing-general.md",
+            "screenshots": [
+              {
+                "id": "tab_landing_general_main",
+                "type": "tab",
+                "idoc": "tab:landing-general",
+                "selector": "[data-i-doc=\"tab:landing-general\"]",
+                "url": "/landing-settings",
+                "page": "page:landing-settings"
+              }
+            ]
+          },
+          {
+            "title": "Новини та акції",
+            "slug": "landing-settings--landing-news",
+            "docFile": "_data/park/landing-settings/landing-news.md",
+            "screenshots": [
+              {
+                "id": "tab_landing_news_main",
+                "type": "tab",
+                "idoc": "tab:landing-news",
+                "selector": "[data-i-doc=\"tab:landing-news\"]",
+                "url": "/landing-settings",
+                "page": "page:landing-settings"
+              }
+            ]
+          }
+        ],
+        "modals": [
+          {
+            "slug": "landing-news-form",
+            "docFile": "_data/modals/modal_landing_news_form.md",
+            "screenshots": [
+              {
+                "id": "modal_landing_news_form",
+                "type": "modal",
+                "idoc": "modal:landing-news-form",
+                "selector": "[data-i-doc=\"modal:landing-news-form\"]",
+                "url": "/landing-settings",
+                "page": "page:landing-settings"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_landing_settings_main",
+            "type": "page",
+            "idoc": "page:landing-settings",
+            "selector": "[data-i-doc=\"page:landing-settings\"]",
+            "url": "/landing-settings",
+            "page": "page:landing-settings"
+          }
+        ]
+      },
+      {
+        "title": "Матеріали",
+        "slug": "resources",
+        "image": "page_materials_main.png",
+        "description": "Матеріали для друку: завантажуйте та друкуйте рекламні листівки, QR-коди для авто та пам'ятки водіїв для залучення персоналу.",
+        "docFile": "_data/park/resources.md",
+        "screenshots": [
+          {
+            "id": "page_materials_main",
+            "type": "page",
+            "idoc": "page:materials",
+            "selector": "[data-i-doc=\"page:materials\"]",
+            "url": "—",
+            "page": "page:materials"
+          }
+        ]
+      },
+      {
+        "title": "Журнали",
+        "slug": "activity-logs",
+        "image": "page_activity_logs_main.png",
+        "description": "Журнал подій: повна історія всіх дій у системи, включаючи системні операції та розсилки.",
+        "docFile": "_data/park/activity-logs/index.md",
+        "tabs": [
+          {
+            "title": "Журнал подій",
+            "slug": "activity-logs--logs-system",
+            "docFile": "_data/park/activity-logs/logs-system.md",
+            "screenshots": [
+              {
+                "id": "tab_logs_system_main",
+                "type": "tab",
+                "idoc": "tab:logs-system",
+                "selector": "[data-i-doc=\"tab:logs-system\"]",
+                "url": "/activity-logs",
+                "page": "page:activity-logs"
+              }
+            ]
+          },
+          {
+            "title": "Журнал розсилок",
+            "slug": "activity-logs--logs-subscription",
+            "docFile": "_data/park/activity-logs/logs-subscription.md",
+            "screenshots": [
+              {
+                "id": "tab_logs_subscription_main",
+                "type": "tab",
+                "idoc": "tab:logs-subscription",
+                "selector": "[data-i-doc=\"tab:logs-subscription\"]",
+                "url": "/activity-logs",
+                "page": "page:activity-logs"
+              }
+            ]
+          }
+        ],
+        "modals": [
+          {
+            "slug": "logs-filters",
+            "docFile": "_data/modals/modal_logs_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_logs_filters",
+                "type": "modal",
+                "idoc": "modal:logs-filters",
+                "selector": "[data-i-doc=\"modal:logs-filters\"]",
+                "url": "/activity-logs",
+                "page": "page:activity-logs"
+              }
+            ]
+          },
+          {
+            "slug": "logs-statistics",
+            "docFile": "_data/modals/modal_logs_statistics.md",
+            "screenshots": [
+              {
+                "id": "modal_logs_statistics",
+                "type": "modal",
+                "idoc": "modal:logs-statistics",
+                "selector": "[data-i-doc=\"modal:logs-statistics\"]",
+                "url": "/activity-logs",
+                "page": "page:activity-logs"
+              }
+            ]
+          },
+          {
+            "slug": "logs-details",
+            "docFile": "_data/modals/modal_logs_details.md",
+            "screenshots": [
+              {
+                "id": "modal_logs_details",
+                "type": "modal",
+                "idoc": "modal:logs-details",
+                "selector": "[data-i-doc=\"modal:logs-details\"]",
+                "url": "/activity-logs",
+                "page": "page:activity-logs"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_activity_logs_main",
+            "type": "page",
+            "idoc": "page:activity-logs",
+            "selector": "[data-i-doc=\"page:activity-logs\"]",
+            "url": "/activity-logs",
+            "page": "page:activity-logs"
+          }
+        ]
+      },
+      {
+        "title": "Налаштування",
+        "slug": "finance-settings",
+        "image": "page_finance_settings_main.png",
+        "description": "Фінансові налаштування: керуйте відсотковими ставками комісій, нормами виробітку та іншими фінансовими правилами парку.",
+        "docFile": "_data/park/finance-settings.md",
+        "screenshots": [
+          {
+            "id": "page_finance_settings_main",
+            "type": "page",
+            "idoc": "page:finance-settings",
+            "selector": "[data-i-doc=\"page:finance-settings\"]",
+            "url": "/finance-settings",
+            "page": "page:finance-settings"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Інтеграція Uklon",
+    "items": [
+      {
+        "title": "Замовлення",
+        "slug": "orders",
+        "image": "page_orders_main.png",
+        "description": "Замовлення Uklon: переглядайте всі замовлення, історію статусів, розрахунки комісій та дані водіїв.",
+        "docFile": "_data/uklon/orders.md",
+        "modals": [
+          {
+            "slug": "order-filters",
+            "docFile": "_data/modals/modal_order_filters.md",
+            "screenshots": [
+              {
+                "id": "modal_order_filters",
+                "type": "modal",
+                "idoc": "modal:order-filters",
+                "selector": "[data-i-doc=\"modal:order-filters\"]",
+                "url": "/orders",
+                "page": "page:orders"
+              }
+            ]
+          },
+          {
+            "slug": "order-details",
+            "docFile": "_data/modals/modal_order_details.md",
+            "screenshots": [
+              {
+                "id": "modal_order_details",
+                "type": "modal",
+                "idoc": "modal:order-details",
+                "selector": "[data-i-doc=\"modal:order-details\"]",
+                "url": "/orders",
+                "page": "page:orders"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_orders_main",
+            "type": "page",
+            "idoc": "page:orders",
+            "selector": "[data-i-doc=\"page:orders\"]",
+            "url": "/orders",
+            "page": "page:orders"
+          }
+        ]
+      },
+      {
+        "title": "Автомобілі",
+        "slug": "uklon-vehicles",
+        "image": "page_uklon_vehicles_main.png",
+        "description": "Інтеграція з Uklon: переглядайте та керуйте автомобілями, що працюють у системі Uklon, синхронізуйте статуси та бонуси.",
+        "docFile": "_data/uklon/uklon-vehicles.md",
+        "modals": [
+          {
+            "slug": "vehicle-integration",
+            "docFile": "_data/modals/modal_vehicle_integration.md",
+            "screenshots": [
+              {
+                "id": "modal_vehicle_integration",
+                "type": "modal",
+                "idoc": "modal:vehicle-integration",
+                "selector": "[data-i-doc=\"modal:vehicle-integration\"]",
+                "url": "/uklon-vehicles",
+                "page": "page:uklon-vehicles"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_uklon_vehicles_main",
+            "type": "page",
+            "idoc": "page:uklon-vehicles",
+            "selector": "[data-i-doc=\"page:uklon-vehicles\"]",
+            "url": "/uklon-vehicles",
+            "page": "page:uklon-vehicles"
+          }
+        ]
+      },
+      {
+        "title": "Водії",
+        "slug": "uklon-drivers",
+        "image": "page_uklon_drivers_main.png",
+        "description": "Інтеграція з Uklon: переглядайте та керуйте водіями, що працюють у системі Uklon, синхронізуйте статуси та баланси.",
+        "docFile": "_data/uklon/uklon-drivers.md",
+        "modals": [
+          {
+            "slug": "driver-integration",
+            "docFile": "_data/modals/modal_driver_integration.md",
+            "screenshots": [
+              {
+                "id": "modal_driver_integration",
+                "type": "modal",
+                "idoc": "modal:driver-integration",
+                "selector": "[data-i-doc=\"modal:driver-integration\"]",
+                "url": "/uklon-drivers",
+                "page": "page:uklon-drivers"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_uklon_drivers_main",
+            "type": "page",
+            "idoc": "page:uklon-drivers",
+            "selector": "[data-i-doc=\"page:uklon-drivers\"]",
+            "url": "/uklon-drivers",
+            "page": "page:uklon-drivers"
+          }
+        ]
+      },
+      {
+        "title": "Звіти",
+        "slug": "uklon-reports",
+        "image": "page_uklon_reports_main.png",
+        "description": "Звіти Uklon: детальна фінансова та операційна аналітика по роботі з Uklon.",
+        "docFile": "_data/uklon/uklon-reports/index.md",
+        "tabs": [
+          {
+            "title": "Огляд",
+            "slug": "uklon-reports--dashboard",
+            "docFile": "_data/uklon/uklon-reports/dashboard.md",
+            "screenshots": [
+              {
+                "id": "tab_uklon_reports_dashboard_main",
+                "type": "tab",
+                "idoc": "tab:uklon-reports-dashboard",
+                "selector": "[data-i-doc=\"tab:uklon-reports-dashboard\"]",
+                "url": "/uklon-reports",
+                "page": "page:uklon-reports"
+              }
+            ]
+          },
+          {
+            "title": "Водії",
+            "slug": "uklon-reports--drivers",
+            "docFile": "_data/uklon/uklon-reports/drivers.md",
+            "screenshots": [
+              {
+                "id": "tab_uklon_reports_drivers_main",
+                "type": "tab",
+                "idoc": "tab:uklon-reports-drivers",
+                "selector": "[data-i-doc=\"tab:uklon-reports-drivers\"]",
+                "url": "/uklon-reports",
+                "page": "page:uklon-reports"
+              }
+            ]
+          },
+          {
+            "title": "Автомобілі",
+            "slug": "uklon-reports--vehicles",
+            "docFile": "_data/uklon/uklon-reports/vehicles.md",
+            "screenshots": [
+              {
+                "id": "tab_uklon_reports_vehicles_main",
+                "type": "tab",
+                "idoc": "tab:uklon-reports-vehicles",
+                "selector": "[data-i-doc=\"tab:uklon-reports-vehicles\"]",
+                "url": "/uklon-reports",
+                "page": "page:uklon-reports"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_uklon_reports_main",
+            "type": "page",
+            "idoc": "page:uklon-reports",
+            "selector": "[data-i-doc=\"page:uklon-reports\"]",
+            "url": "/uklon-reports",
+            "page": "page:uklon-reports"
+          }
+        ]
+      },
+      {
+        "title": "Бонуси (Брендування)",
+        "slug": "uklon-branding",
+        "image": "page_uklon_branding_main.png",
+        "description": "Бонуси за брендування: аналізуйте нарахування бонусів за розміщення бренду Uklon на автомобілях.",
+        "docFile": "_data/uklon/uklon-branding.md",
+        "screenshots": [
+          {
+            "id": "page_uklon_branding_main",
+            "type": "page",
+            "idoc": "page:uklon-branding",
+            "selector": "[data-i-doc=\"page:uklon-branding\"]",
+            "url": "/uklon-branding",
+            "page": "page:uklon-branding"
+          }
+        ]
+      },
+      {
+        "title": "Логи",
+        "slug": "uklon-logs",
+        "image": "page_uklon_logs_main.png",
+        "description": "Логи інтеграції Uklon: технічний журнал запитів та відповідей до API Uklon для діагностики підключення.",
+        "docFile": "_data/uklon/uklon-logs.md",
+        "modals": [
+          {
+            "slug": "uklon-log-details",
+            "docFile": "_data/modals/modal_uklon_log_details.md",
+            "screenshots": [
+              {
+                "id": "modal_uklon_log_details",
+                "type": "modal",
+                "idoc": "modal:uklon-log-details",
+                "selector": "[data-i-doc=\"modal:uklon-log-details\"]",
+                "url": "/uklon-logs",
+                "page": "page:uklon-logs"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_uklon_logs_main",
+            "type": "page",
+            "idoc": "page:uklon-logs",
+            "selector": "[data-i-doc=\"page:uklon-logs\"]",
+            "url": "/uklon-logs",
+            "page": "page:uklon-logs"
+          }
+        ]
+      },
+      {
+        "title": "Налаштування",
+        "slug": "uklon-settings",
+        "image": "page_uklon_settings_main.png",
+        "description": "Налаштування інтеграції Uklon: керуйте ключами API, налаштуваннями синхронізації та іншими параметрами підключення до системи Uklon.",
+        "docFile": "_data/uklon/uklon-settings.md",
+        "screenshots": [
+          {
+            "id": "page_uklon_settings_main",
+            "type": "page",
+            "idoc": "page:uklon-settings",
+            "selector": "[data-i-doc=\"page:uklon-settings\"]",
+            "url": "/uklon-settings",
+            "page": "page:uklon-settings"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "title": "Інтеграція Telegram",
+    "items": [
+      {
+        "title": "Налаштування",
+        "slug": "telegram-settings",
+        "image": "page_telegram_settings_main.png",
+        "description": "Налаштування Telegram: інтеграція з ботами для розсилки повідомлень, сповіщень та керування командою через месенджер.",
+        "docFile": "_data/telegram/telegram-settings.md",
+        "screenshots": [
+          {
+            "id": "page_telegram_settings_main",
+            "type": "page",
+            "idoc": "page:telegram-settings",
+            "selector": "[data-i-doc=\"page:telegram-settings\"]",
+            "url": "/telegram-settings",
+            "page": "page:telegram-settings"
+          }
+        ]
+      },
+      {
+        "title": "Логи",
+        "slug": "telegram-logs",
+        "image": "page_telegram_logs_main.png",
+        "description": "Логи Telegram: технічний журнал запитів та відповідей боту для відстеження статусу розсилок.",
+        "docFile": "_data/telegram/telegram-logs.md",
+        "modals": [
+          {
+            "slug": "telegram-log-details",
+            "docFile": "_data/modals/modal_telegram_log_details.md",
+            "screenshots": [
+              {
+                "id": "modal_telegram_log_details",
+                "type": "modal",
+                "idoc": "modal:telegram-log-details",
+                "selector": "[data-i-doc=\"modal:telegram-log-details\"]",
+                "url": "/telegram-logs",
+                "page": "page:telegram-logs"
+              }
+            ]
+          }
+        ],
+        "screenshots": [
+          {
+            "id": "page_telegram_logs_main",
+            "type": "page",
+            "idoc": "page:telegram-logs",
+            "selector": "[data-i-doc=\"page:telegram-logs\"]",
+            "url": "/telegram-logs",
+            "page": "page:telegram-logs"
+          }
+        ]
+      }
+    ]
+  }
+]
