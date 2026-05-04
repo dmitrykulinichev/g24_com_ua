@@ -111,7 +111,25 @@ HTML;
     }
 
     /**
+     * Заглушка для відсутнього скріншота
+     */
+    protected function buildPlaceholderHtml(string $alt): string
+    {
+        $label = htmlspecialchars($alt ?: 'Скріншот', ENT_QUOTES);
+        return <<<HTML
+<div class="screenshot-placeholder">
+    <div class="screenshot-placeholder-icon">&#128247;</div>
+    <div class="screenshot-placeholder-label">
+        <strong>Тут скоро буде зображення</strong>
+        <span>Ми працюємо над документацією</span>
+    </div>
+</div>
+HTML;
+    }
+
+    /**
      * Обробляє standalone <img> зі скріншотами: замінює на responsive-блоки.
+     * Якщо файл не існує — показує заглушку.
      * Desktop (md+): desktop + mobile поруч (якщо є мобільний).
      * Mobile (<md): тільки mobile; якщо немає — desktop.
      */
@@ -121,28 +139,36 @@ HTML;
         $screenshotsUrl = $this->screenshotsWebPath . '/light';
 
         return preg_replace_callback(
-            '/<p>\s*<img\s+src="screenshots\/light\/desktop\/([^"]+)"\s+alt="([^"]*)"\s*\/?>\s*<\/p>/',
+            '/<img\s+src="(?:\.\.\/)*screenshots\/light\/desktop\/([^"]+)"\s+alt="([^"]*)"\s*\/?>/',
             function ($m) use ($screenshotsDir, $screenshotsUrl) {
-                $filename   = $m[1];
-                $alt        = $m[2];
-                $desktopSrc = $screenshotsUrl . '/desktop/' . $filename;
-                $mobilePath = $screenshotsDir . '/mobile/' . $filename;
-                $mobileSrc  = $screenshotsUrl . '/mobile/' . $filename;
-                $hasMobile  = file_exists($mobilePath);
+                $filename    = $m[1];
+                $alt         = $m[2];
+                $desktopPath = $screenshotsDir . '/desktop/' . $filename;
+                $mobilePath  = $screenshotsDir . '/mobile/' . $filename;
+                $hasDesktop  = file_exists($desktopPath);
+                $hasMobile   = file_exists($mobilePath);
 
-                $desktopHtml = $this->buildDesktopHtml($desktopSrc, $alt);
-                $mobileHtml  = $hasMobile ? $this->buildMobileHtml($mobileSrc, $alt) : '';
+                if (!$hasDesktop && !$hasMobile) {
+                    return $this->buildPlaceholderHtml($alt);
+                }
 
-                if ($hasMobile) {
-                    // Desktop: показуємо обидва поруч
-                    $duoHtml = '<div class="screenshot-desktop-duo">' . $desktopHtml . $mobileHtml . '</div>';
-                    // Mobile: тільки телефон
+                $desktopSrc  = $screenshotsUrl . '/desktop/' . $filename;
+                $mobileSrc   = $screenshotsUrl . '/mobile/' . $filename;
+                $desktopHtml = $hasDesktop ? $this->buildDesktopHtml($desktopSrc, $alt) : '';
+                $mobileHtml  = $hasMobile  ? $this->buildMobileHtml($mobileSrc, $alt)  : '';
+
+                if ($hasDesktop && $hasMobile) {
+                    $duoHtml        = '<div class="screenshot-desktop-duo">' . $desktopHtml . $mobileHtml . '</div>';
                     $mobileOnlyHtml = '<div class="screenshot-mobile-only">' . $mobileHtml . '</div>';
                     return $duoHtml . $mobileOnlyHtml;
-                } else {
-                    // Немає мобільного — тільки desktop (видно на всіх розмірах)
-                    return '<div class="screenshot-desktop-only">' . $desktopHtml . '</div>' . $desktopHtml;
                 }
+
+                if ($hasDesktop) {
+                    return $desktopHtml;
+                }
+
+                // Тільки мобільний (рідкісний кейс)
+                return '<div class="screenshot-mobile-only">' . $mobileHtml . '</div>';
             },
             $html
         );
@@ -154,7 +180,7 @@ HTML;
     protected function rewriteImagePaths($html)
     {
         return preg_replace(
-            '/(<img\s[^>]*src=")screenshots\//',
+            '/(<img\s[^>]*src=")(?:\.\.\/)*screenshots\//',
             '$1' . $this->screenshotsWebPath . '/',
             $html
         );

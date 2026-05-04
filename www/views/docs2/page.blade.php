@@ -13,7 +13,7 @@
 
             <div class="lg:block" :class="{ 'hidden': !docsMenuOpen }">
                 <div class="mb-6">
-                    @include('partials.docs-search')
+                    @include('partials.docs2-search')
                 </div>
 
                 <nav aria-label="Документація">
@@ -128,6 +128,19 @@
 }
 </script>
 <script src="/assets/js/docs.js?v={{ time() }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('#docsContent img').forEach(img => {
+            img.addEventListener('error', function () {
+                const placeholder = document.createElement('div');
+                placeholder.className = 'screenshot-placeholder';
+                placeholder.innerHTML = '<div class="screenshot-placeholder-icon">&#128247;</div><div class="screenshot-placeholder-label"><strong>Тут скоро буде зображення</strong><span>Ми працюємо над документацією</span></div>';
+                this.closest('p, .screenshot-content, .screenshot-phone-content')?.replaceWith(placeholder)
+                    ?? this.replaceWith(placeholder);
+            });
+        });
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {

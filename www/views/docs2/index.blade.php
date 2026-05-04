@@ -8,7 +8,7 @@
                 <p class="text-lg text-slate-600 mb-8">Інструкції, поради та відповіді на часті запитання.</p>
 
                 <div class="max-w-xl mx-auto">
-                    @include('partials.docs-search')
+                    @include('partials.docs2-search')
                 </div>
             </div>
 
