@@ -11,11 +11,12 @@
                 </svg>
             </button>
 
-            <div class="lg:block" :class="{ 'hidden': !docsMenuOpen }">
-                <div class="mb-6">
+            <div class="lg:flex lg:flex-col lg:flex-1 lg:min-h-0" :class="{ 'hidden': !docsMenuOpen }">
+                <div class="sidebar-search">
                     @include('partials.docs2-search')
                 </div>
 
+                <div class="sidebar-nav">
                 <nav aria-label="Документація">
                 @foreach($menu as $group)
                     <div class="mb-6">
@@ -52,6 +53,7 @@
                     </div>
                 @endforeach
                 </nav>
+                </div>
             </div>
         </aside>
 
