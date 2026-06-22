@@ -43,6 +43,11 @@ $app->get('/api/sitemap/generate', 'App\Controllers\SitemapController@generate')
 // API для статичних сторінок (модалки)
 $app->get('/api/page/{slug}', 'App\Controllers\PageController@apiShow');
 
+// Статичні сторінки документів (SEO-friendly)
+$app->get('/privacy', 'App\Controllers\PageController@showPrivacy');
+$app->get('/terms', 'App\Controllers\PageController@showTerms');
+$app->get('/offer', 'App\Controllers\PageController@showOffer');
+
 // Обробка заявки (Lead)
 $app->post('/api/lead', 'App\Controllers\LeadController@submit');
 

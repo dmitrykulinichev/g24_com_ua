@@ -46,9 +46,9 @@ class="modal-overlay">
         </div>
 
         <div class="modal-footer">
-            <button 
-                @click="showModal = false; if(title === 'Політика конфіденційності') window.dispatchEvent(new CustomEvent('cookie-consent-trigger'));" 
-                class="btn-primary" 
+            <button
+                @click="showModal = false; if(title === 'Політика конфіденційності') window.dispatchEvent(new CustomEvent('cookie-consent-trigger'));"
+                class="btn-primary"
                 style="padding: 0.5rem 2rem;"
                 x-text="title === 'Політика конфіденційності' ? 'Згоден' : 'Зрозуміло'"
             ></button>

@@ -37,11 +37,6 @@
                 this.showCookie = true;
             }, 1000);
         }
-
-        // Listen for external consent trigger (e.g., from Privacy Policy modal)
-        window.addEventListener('cookie-consent-trigger', () => {
-            this.accept();
-        });
     }
 }"
 x-show="showCookie"
@@ -56,7 +51,7 @@ class="cookie-banner">
 
     <div class="cookie-content">
         <div class="cookie-text">
-            <p>🍪 Ми використовуємо файли cookie для покращення роботи сайту. Продовжуючи перегляд, ви погоджуєтесь з нашою <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Політика конфіденційності', slug: 'privacy' })">політикою конфіденційності</a>.</p>
+            <p>🍪 Ми використовуємо файли cookie для покращення роботи сайту. Продовжуючи перегляд, ви погоджуєтесь з нашою <a href="/privacy" target="_blank">політикою конфіденційності</a>.</p>
         </div>
         <div class="cookie-actions">
             <button @click="accept()" class="btn-primary btn-sm">Зрозуміло</button>

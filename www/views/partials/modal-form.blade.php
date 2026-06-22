@@ -632,9 +632,9 @@
                     <input type="checkbox" x-model="formData.agreement" required>
                     <span>
                         Я погоджуюсь з
-                        <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Політика конфіденційності', slug: 'privacy' })">Політикою конфіденційності</a>
+                        <a href="/privacy" target="_blank">Політикою конфіденційності</a>
                         та
-                        <a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Публічна оферта', slug: 'offer' })">Публічною офертою</a>
+                        <a href="/offer" target="_blank">Публічною офертою</a>
                     </span>
                 </label>
             </div>

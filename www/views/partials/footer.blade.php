@@ -21,9 +21,9 @@
                 <h4 class="text-white font-bold text-lg mb-4">Інформація</h4>
                 <ul class="space-y-2 text-sm">
                     <li><a href="/contacts" class="hover:text-white transition-colors">Зв'язатися з нами</a></li>
-                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Політика конфіденційності', slug: 'privacy' })" class="hover:text-white transition-colors">Політика конфіденційності</a></li>
-                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Угода користувача', slug: 'terms' })" class="hover:text-white transition-colors">Угода користувача</a></li>
-                    <li><a href="#" @click.prevent="$dispatch('open-text-modal', { title: 'Публічна оферта', slug: 'offer' })" class="hover:text-white transition-colors">Публічна оферта</a></li>
+                    <li><a href="/privacy" class="hover:text-white transition-colors">Політика конфіденційності</a></li>
+                    <li><a href="/terms" class="hover:text-white transition-colors">Угода користувача</a></li>
+                    <li><a href="/offer" class="hover:text-white transition-colors">Публічна оферта</a></li>
                 </ul>
             </div>
         </div>
