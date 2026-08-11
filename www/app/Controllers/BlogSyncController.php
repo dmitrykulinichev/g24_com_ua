@@ -124,11 +124,13 @@ class BlogSyncController
         if (!is_dir($this->contentPath) && !mkdir($this->contentPath, 0755, true) && !is_dir($this->contentPath)) {
             http_response_code(500);
             echo json_encode(['error' => 'Cannot create content/blog directory']);
+            $this->telegram->sendMessage("🔴 <b>Синхронізація блогу — помилка</b>\nНе вдалось створити директорію content/blog.");
             return;
         }
         if (!is_dir($this->imagesPath) && !mkdir($this->imagesPath, 0755, true) && !is_dir($this->imagesPath)) {
             http_response_code(500);
             echo json_encode(['error' => 'Cannot create assets/img/blog/synced directory']);
+            $this->telegram->sendMessage("🔴 <b>Синхронізація блогу — помилка</b>\nНе вдалось створити директорію assets/img/blog/synced.");
             return;
         }
 
@@ -182,6 +184,7 @@ class BlogSyncController
                 'date' => $date,
                 'preview' => $post['excerpt'] ?? '',
                 'image' => $localCover ?? $coverImage,
+                'tags' => $post['tags'] ?? [],
             ];
         }
 
@@ -213,6 +216,14 @@ class BlogSyncController
             'images_downloaded' => $imagesDownloaded,
             'images_failed' => $imagesFailed,
         ]);
+
+        // Клієнт (крон чи кнопка "Синхронізувати" в адмінці) не повинен чекати
+        // ще й на Telegram (до 5с) — якщо середовище дозволяє (PHP-FPM),
+        // завершуємо HTTP-відповідь тут і шлемо повідомлення вже "у фоні"
+        // того самого процесу.
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
 
         $icon = ($writeErrors > 0 || $imagesFailed > 0) ? '🟡' : '🟢';
         $summary = "{$icon} <b>Синхронізація блогу</b>\n"

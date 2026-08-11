@@ -67,6 +67,12 @@ class SitemapController
             'saved'   => $this->sitemapPath,
         ]);
 
+        // Не змушуємо клієнта чекати ще й на Telegram (до 5с) — завершуємо
+        // відповідь тут, якщо середовище дозволяє (PHP-FPM).
+        if (function_exists('fastcgi_finish_request')) {
+            fastcgi_finish_request();
+        }
+
         $this->telegram->sendMessage(
             "🟢 <b>Карта сайту згенерована</b>\nURL у файлі: {$urlsCount}"
         );
