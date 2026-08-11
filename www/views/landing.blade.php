@@ -1,6 +1,13 @@
 @extends('layout')
 
 @push('scripts')
+@php
+    // Дочірній шаблон рендериться до батьківського layout.blade.php, тож
+    // $canonicalUrl/$pageDesc, обчислені там у @php, тут ще недоступні —
+    // рахуємо локально тими самими формулами.
+    $__canonicalUrl = rtrim($_ENV['APP_URL'] ?? ('https://' . $_SERVER['HTTP_HOST']), '/') . parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+    $__pageDesc = $meta['description'] ?? 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.';
+@endphp
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -38,7 +45,7 @@
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "Garage24",
-  "url": "{{ $canonicalUrl }}",
+  "url": "{{ $__canonicalUrl }}",
   "applicationCategory": "BusinessApplication",
   "operatingSystem": "Web, iOS, Android",
   "offers": {
@@ -47,7 +54,7 @@
     "priceCurrency": "UAH",
     "description": "Безкоштовний старт, оплата по факту використання"
   },
-  "description": "{{ $pageDesc }}"
+  "description": "{{ $__pageDesc }}"
 }
 </script>
 @endpush

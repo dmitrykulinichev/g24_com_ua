@@ -37,7 +37,7 @@ class SitemapController
     {
         $expectedKey = $_ENV['SITEMAP_KEY'] ?? null;
 
-        if (!$expectedKey || ($_GET['key'] ?? '') !== $expectedKey) {
+        if (!$expectedKey || !hash_equals($expectedKey, $_GET['key'] ?? '')) {
             http_response_code(403);
             header('Content-Type: application/json');
             echo json_encode(['error' => 'Forbidden']);

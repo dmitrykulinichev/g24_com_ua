@@ -1,9 +1,14 @@
 <?php
 
-require __DIR__ . '/vendor/autoload.php';
-
-// Illuminate/Blade не сумісні з PHP 8.4 deprecation notices — пригнічуємо до оновлення пакетів
+// Illuminate/Blade не сумісні з PHP 8.4 deprecation notices — пригнічуємо до оновлення пакетів.
+// Має стояти ДО autoload.php: самі попередження виникають ще під час парсингу
+// vendor/illuminate/support/helpers.php при автозавантаженні, тож раніше (коли
+// error_reporting() йшов після require) вони встигали "прослизнути" у вивід —
+// зокрема псуючи JSON-відповіді API-ендпоінтів (/api/blog/sync, /api/sitemap/generate
+// тощо), бо перед валідним JSON опинявся сторонній HTML-текст попереджень.
 error_reporting(E_ALL & ~E_DEPRECATED);
+
+require __DIR__ . '/vendor/autoload.php';
 
 use Jenssegers\Blade\Blade;
 

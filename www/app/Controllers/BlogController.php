@@ -39,8 +39,22 @@ class BlogController
 
     public function index()
     {
-        $posts = $this->getList();
-        echo $this->blade->make('blog.index', ['posts' => $posts])->render();
+        $perPage = 10;
+        $posts = $this->getList(); // уже відсортовано новіші зверху (порядок з menu.json)
+
+        $totalPosts = count($posts);
+        $totalPages = max(1, (int) ceil($totalPosts / $perPage));
+
+        $page = (int) ($_GET['page'] ?? 1);
+        $page = max(1, min($page, $totalPages));
+
+        $pagedPosts = array_slice($posts, ($page - 1) * $perPage, $perPage);
+
+        echo $this->blade->make('blog.index', [
+            'posts' => $pagedPosts,
+            'currentPage' => $page,
+            'totalPages' => $totalPages,
+        ])->render();
     }
 
     public function show($slug)
@@ -79,7 +93,10 @@ class BlogController
             }
         }
 
-        $htmlContent = MarkdownService::render($data['content']);
+        // escapeMarkup=true: контент статей редагується через адмінку СААС —
+        // сирий HTML у markdown екранується, щоб автор не міг вставити
+        // <script>/довільний HTML, який виконається у відвідувачів сайту.
+        $htmlContent = MarkdownService::render($data['content'], true);
 
         // Навігація
         $posts = $this->getList();

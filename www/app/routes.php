@@ -35,6 +35,11 @@ $app->get('/docs2/{slug}', function($slug) { response()->redirect('/docs/' . $sl
 $app->get('/blog', 'App\Controllers\BlogController@index');
 $app->get('/blog/{slug}', 'App\Controllers\BlogController@show');
 $app->get('/api/blog/search', 'App\Controllers\SearchController@searchBlog');
+// Синхронізація статей з СААС у локальний файловий кеш (див. workspace/plans/landing-blog-cms.md).
+// Секрет — частина шляху (BLOG_SYNC_KEY), не query-параметр: довгий випадковий
+// токен, який неможливо підібрати перебором. Той самий URL і для крону,
+// і для ручного тестування — просто відкрити його дає звіт синхронізації.
+$app->get('/api/blog/sync/{token}', 'App\Controllers\BlogSyncController@sync');
 
 // Sitemap
 $app->get('/sitemap.xml', 'App\Controllers\SitemapController@index');

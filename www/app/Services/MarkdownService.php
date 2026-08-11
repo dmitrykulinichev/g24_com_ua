@@ -241,9 +241,28 @@ HTML;
 
     /**
      * Рендерить Markdown в HTML
+     *
+     * @param bool $escapeMarkup Екранувати сирий HTML і небезпечні URL-схеми
+     *   (`javascript:`, `data:` тощо) у вихідному markdown — щоб автор не міг
+     *   вставити <script>/довільний HTML чи `[текст](javascript:...)`, який
+     *   виконається у відвідувачів. Вмикає і setMarkupEscaped (сирий HTML), і
+     *   setSafeMode (URL-схеми в markdown-посиланнях/картинках — markupEscaped
+     *   сам по собі їх НЕ фільтрує). Вмикати для контенту, що редагується через
+     *   адмінку (блог). Шорткоди ({{screenshot}}) у цьому режимі НЕ
+     *   обробляються — вони самі генерують HTML, який в цьому режимі все одно
+     *   заекранувався б, а в блозі шорткоди й не використовуються. За
+     *   замовчуванням false — без змін для docs/сторінок (файловий, довірений
+     *   контент з доступом лише через сервер).
      */
-    public static function render($content)
+    public static function render($content, bool $escapeMarkup = false)
     {
+        if ($escapeMarkup) {
+            $Parsedown = new Parsedown();
+            $Parsedown->setMarkupEscaped(true);
+            $Parsedown->setSafeMode(true);
+            return $Parsedown->text($content);
+        }
+
         // Спочатку обробляємо шорткоди
         $content = self::processShortcodes($content);
 

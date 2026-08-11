@@ -39,6 +39,20 @@
                         </article>
                     @endforeach
                 </div>
+
+                @if($totalPages > 1)
+                    <nav class="flex items-center justify-center gap-2 mt-12" aria-label="Сторінки блогу">
+                        @if($currentPage > 1)
+                            <a href="/blog?page={{ $currentPage - 1 }}" class="px-4 py-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">&larr; Новіші</a>
+                        @endif
+
+                        <span class="px-4 py-2 text-slate-500 text-sm">Сторінка {{ $currentPage }} з {{ $totalPages }}</span>
+
+                        @if($currentPage < $totalPages)
+                            <a href="/blog?page={{ $currentPage + 1 }}" class="px-4 py-2 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition-colors">Старіші &rarr;</a>
+                        @endif
+                    </nav>
+                @endif
             @else
                 <p class="text-center text-slate-500 py-12">Поки що немає новин.</p>
             @endif

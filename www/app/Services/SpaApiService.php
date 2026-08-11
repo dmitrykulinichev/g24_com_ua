@@ -55,6 +55,14 @@ class SpaApiService
         return $this->post('/api/v1/public/landing/lead', $data);
     }
 
+    /**
+     * Список опублікованих статей блогу (з повним content) для синхронізації
+     */
+    public function getBlogFeed()
+    {
+        return $this->get('/api/v1/public/landing/blog');
+    }
+
     // --- Базові методи ---
 
     protected function get(string $endpoint, array $params = [])
