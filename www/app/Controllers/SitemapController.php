@@ -4,14 +4,17 @@ namespace App\Controllers;
 
 use App\Services\MarkdownService;
 use App\Services\Docs2ImageSitemapService;
+use App\Services\TelegramService;
 
 class SitemapController
 {
     protected $sitemapPath;
+    protected $telegram;
 
     public function __construct()
     {
         $this->sitemapPath = dirname(__DIR__, 2) . '/sitemap.xml';
+        $this->telegram = new TelegramService();
     }
 
     public function index()
@@ -45,20 +48,28 @@ class SitemapController
         }
 
         $xml = $this->buildXml();
+        $urlsCount = substr_count($xml, '<url>');
 
         if (file_put_contents($this->sitemapPath, $xml) === false) {
             http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode(['error' => 'Failed to write sitemap.xml']);
+            $this->telegram->sendMessage(
+                "🔴 <b>Генерація карти сайту — помилка</b>\nНе вдалось записати sitemap.xml ({$urlsCount} URL мали потрапити в файл)."
+            );
             return;
         }
 
         header('Content-Type: application/json');
         echo json_encode([
             'success' => true,
-            'urls'    => substr_count($xml, '<url>'),
+            'urls'    => $urlsCount,
             'saved'   => $this->sitemapPath,
         ]);
+
+        $this->telegram->sendMessage(
+            "🟢 <b>Карта сайту згенерована</b>\nURL у файлі: {$urlsCount}"
+        );
     }
 
     protected function buildXml(): string

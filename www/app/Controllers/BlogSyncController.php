@@ -213,6 +213,18 @@ class BlogSyncController
             'images_downloaded' => $imagesDownloaded,
             'images_failed' => $imagesFailed,
         ]);
+
+        $icon = ($writeErrors > 0 || $imagesFailed > 0) ? '🟡' : '🟢';
+        $summary = "{$icon} <b>Синхронізація блогу</b>\n"
+            . "Статей: {$written}, видалено: {$deleted}\n"
+            . "Картинок: {$imagesDownloaded} завантажено";
+        if ($imagesFailed > 0) {
+            $summary .= ", {$imagesFailed} не вдалось";
+        }
+        if ($writeErrors > 0) {
+            $summary .= "\nПомилок запису статей: {$writeErrors}";
+        }
+        $this->telegram->sendMessage($summary);
     }
 
     /**
