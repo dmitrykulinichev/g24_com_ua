@@ -58,7 +58,9 @@ class DocsController
         $data = MarkdownService::parseFile($path);
 
         if (!$data) {
-            response()->exit(404);
+            http_response_code(404);
+            echo $this->blade->make('errors.404')->render();
+            return;
         }
 
         $htmlContent = MarkdownService::render($data['content']);

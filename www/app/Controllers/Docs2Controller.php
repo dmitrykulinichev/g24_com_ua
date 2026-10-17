@@ -204,7 +204,9 @@ HTML;
         $found = $this->findMenuItem($menu, $slug);
 
         if (!$found) {
-            response()->exit(404);
+            http_response_code(404);
+            echo $this->blade->make('errors.404')->render();
+            return;
         }
 
         $parentItem = $found['item'];
@@ -217,7 +219,9 @@ HTML;
         $data = MarkdownService::parseFile($filePath);
 
         if (!$data) {
-            response()->exit(404);
+            http_response_code(404);
+            echo $this->blade->make('errors.404')->render();
+            return;
         }
 
         $rendered    = MarkdownService::render($data['content']);

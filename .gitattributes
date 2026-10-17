@@ -1,0 +1,22 @@
+# Нормалізація кінців рядків: у репозиторії завжди LF, незалежно від ОС (macOS/Windows).
+* text=auto eol=lf
+
+# Windows-скрипти мають лишатися CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+
+# Бінарні файли — не чіпати
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.jar binary
+*.keystore binary
+*.jks binary
+*.ttf binary
+*.woff binary
+*.woff2 binary

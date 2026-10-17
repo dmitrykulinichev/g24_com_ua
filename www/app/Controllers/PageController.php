@@ -16,6 +16,10 @@ class PageController
     public function showPrivacy() { $this->show('privacy'); }
     public function showTerms()   { $this->show('terms'); }
     public function showOffer()   { $this->show('offer'); }
+    // Застосунок Taxi Garage — сторінки, яких вимагають App Store і Google Play.
+    public function showTaxiPrivacy()       { $this->show('taxi-privacy'); }
+    public function showTaxiDeleteAccount() { $this->show('taxi-delete-account'); }
+    public function showTaxiTerms()         { $this->show('taxi-terms'); }
 
     public function show($slug)
     {

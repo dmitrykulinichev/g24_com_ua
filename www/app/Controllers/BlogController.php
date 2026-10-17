@@ -72,7 +72,9 @@ class BlogController
         $data = MarkdownService::parseFile($path);
 
         if (!$data) {
-            response()->exit(404);
+            http_response_code(404);
+            echo $this->blade->make('errors.404')->render();
+            return;
         }
 
         $data['meta']['updated'] = filemtime($path);

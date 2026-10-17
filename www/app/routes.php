@@ -52,6 +52,9 @@ $app->get('/api/page/{slug}', 'App\Controllers\PageController@apiShow');
 $app->get('/privacy', 'App\Controllers\PageController@showPrivacy');
 $app->get('/terms', 'App\Controllers\PageController@showTerms');
 $app->get('/offer', 'App\Controllers\PageController@showOffer');
+$app->get('/taxi/privacy', 'App\Controllers\PageController@showTaxiPrivacy');
+$app->get('/taxi/delete-account', 'App\Controllers\PageController@showTaxiDeleteAccount');
+$app->get('/taxi/terms', 'App\Controllers\PageController@showTaxiTerms');
 
 // Обробка заявки (Lead)
 $app->post('/api/lead', 'App\Controllers\LeadController@submit');
