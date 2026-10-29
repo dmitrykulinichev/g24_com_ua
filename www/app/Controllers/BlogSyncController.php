@@ -155,11 +155,13 @@ class BlogSyncController
 
             $keepSlugs[] = $slug;
 
+            $keptImages = [];
             $coverImage = $post['cover_image'] ?? null;
-            $localCover = $this->syncImage($coverImage, $slug, 'cover', $imagesDownloaded, $imagesFailed);
+            $localCover = $this->syncImage($coverImage, $slug, 'cover', $keptImages, $imagesDownloaded, $imagesFailed);
 
             $content = $post['content'] ?? '';
-            $content = $this->syncInlineImages($content, $slug, $imagesDownloaded, $imagesFailed);
+            $content = $this->syncInlineImages($content, $slug, $keptImages, $imagesDownloaded, $imagesFailed);
+            $this->removeStaleImages($slug, $keptImages);
 
             $date = $post['published_at'] ?? date('Y-m-d');
             $filename = $date . '-' . $slug . '.md';
@@ -242,17 +244,14 @@ class BlogSyncController
      * Завантажує вбудовані в markdown картинки (![alt](https://...)), лишає
      * локальні/відносні посилання як є.
      */
-    private function syncInlineImages(string $content, string $slug, int &$downloaded, int &$failed): string
+    private function syncInlineImages(string $content, string $slug, array &$kept, int &$downloaded, int &$failed): string
     {
-        $index = 0;
-
         return preg_replace_callback(
             '/!\[([^\]]*)\]\((https?:\/\/[^\)\s]+)\)/',
-            function ($matches) use ($slug, &$index, &$downloaded, &$failed) {
-                $index++;
+            function ($matches) use ($slug, &$kept, &$downloaded, &$failed) {
                 $alt = $matches[1];
                 $url = $matches[2];
-                $local = $this->syncImage($url, $slug, 'inline-' . $index, $downloaded, $failed);
+                $local = $this->syncImage($url, $slug, 'img', $kept, $downloaded, $failed);
                 $finalUrl = $local ?? $url;
                 return "![{$alt}]({$finalUrl})";
             },
@@ -260,12 +259,24 @@ class BlogSyncController
         );
     }
 
+    /** Розширення локального файлу — за типом, який віддав сервер (у посиланнях СААС розширення немає). */
+    private const IMAGE_TYPES = [
+        'image/jpeg' => 'jpg',
+        'image/png' => 'png',
+        'image/webp' => 'webp',
+        'image/gif' => 'gif',
+    ];
+
     /**
-     * Завантажує одну картинку за абсолютним URL у локальний кеш.
-     * Локальні/відносні шляхи (старі статті з ручним `/assets/...`) не чіпає —
-     * повертає null, і виклик лишає оригінальне значення.
+     * Завантажує одну картинку за абсолютним URL у локальний кеш і повертає локальний шлях.
+     * Ім'я файлу — від хешу URL: уже завантажену картинку не качаємо вдруге (посилання СААС
+     * на файл не змінюється, нова картинка — нове посилання). Розширення — за Content-Type,
+     * не-картинку не зберігаємо. Локальні/відносні шляхи (старі статті з ручним `/assets/...`)
+     * не чіпає — повертає null, і виклик лишає оригінальне значення.
+     *
+     * @param array $kept імена файлів статті, які лишаються (решту прибирає removeStaleImages)
      */
-    private function syncImage(?string $url, string $slug, string $name, int &$downloaded, int &$failed): ?string
+    private function syncImage(?string $url, string $slug, string $prefix, array &$kept, int &$downloaded, int &$failed): ?string
     {
         if (!$url || !preg_match('#^https?://#i', $url)) {
             return null;
@@ -276,16 +287,19 @@ class BlogSyncController
             return null;
         }
 
-        $ext = pathinfo(parse_url($url, PHP_URL_PATH) ?? '', PATHINFO_EXTENSION);
-        $ext = $ext && preg_match('/^[a-zA-Z0-9]{2,5}$/', $ext) ? strtolower($ext) : 'jpg';
-
         $dir = $this->imagesPath . '/' . $slug;
         if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
             $failed++;
             return null;
         }
 
-        $localFile = $dir . '/' . $name . '.' . $ext;
+        $name = $prefix . '-' . substr(sha1($url), 0, 16);
+        foreach (self::IMAGE_TYPES as $ext) {
+            if (is_file("{$dir}/{$name}.{$ext}")) {
+                $kept[] = "{$name}.{$ext}";
+                return "{$this->imagesUrlPrefix}/{$slug}/{$name}.{$ext}";
+            }
+        }
 
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -295,22 +309,37 @@ class BlogSyncController
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
         $data = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $contentType = strtolower(trim(explode(';', (string) curl_getinfo($ch, CURLINFO_CONTENT_TYPE))[0]));
         $error = curl_error($ch);
         curl_close($ch);
 
-        if ($error || $httpCode !== 200 || !$data) {
+        $ext = self::IMAGE_TYPES[$contentType] ?? null;
+        if ($error || $httpCode !== 200 || !$data || !$ext) {
             $failed++;
             return null;
         }
 
-        if (file_put_contents($localFile, $data) === false) {
+        $file = "{$name}.{$ext}";
+        if (file_put_contents("{$dir}/{$file}", $data) === false) {
             $failed++;
             return null;
         }
 
+        $kept[] = $file;
         $downloaded++;
 
-        return $this->imagesUrlPrefix . '/' . $slug . '/' . $name . '.' . $ext;
+        return "{$this->imagesUrlPrefix}/{$slug}/{$file}";
+    }
+
+    /** Прибирає з теки статті картинки, яких у ній більше немає (замінили обкладинку, прибрали з тексту). */
+    private function removeStaleImages(string $slug, array $kept): void
+    {
+        $dir = $this->imagesPath . '/' . $slug;
+        foreach (glob($dir . '/*') ?: [] as $file) {
+            if (is_file($file) && !in_array(basename($file), $kept, true)) {
+                unlink($file);
+            }
+        }
     }
 
     /**
