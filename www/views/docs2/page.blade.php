@@ -27,7 +27,7 @@
                                     $isActive = $slug === $menuItem['slug'] || ($isTab && $parentSlug === $menuItem['slug']);
                                 @endphp
                                 <li>
-                                    <a href="/docs/{{ $menuItem['slug'] }}"
+                                    <a href="{{ lurl('/docs/' . $menuItem['slug']) }}"
                                        class="block px-3 py-2 rounded-md text-sm transition-colors duration-200
                                               {{ $isActive ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
                                        @if($isActive) aria-current="page" @endif>
@@ -37,7 +37,7 @@
                                     <ul aria-label="Розділи: {{ $menuItem['title'] }}" class="mt-0.5 ml-3 border-l border-slate-200 pl-2">
                                         @foreach($menuItem['tabs'] as $tab)
                                         <li>
-                                            <a href="/docs/{{ $tab['slug'] }}"
+                                            <a href="{{ lurl('/docs/' . $tab['slug']) }}"
                                                class="block px-2 py-1 text-xs transition-colors duration-200
                                                       {{ $activeTabSlug === $tab['slug'] ? 'text-primary font-medium' : 'text-slate-400 hover:text-slate-700' }}"
                                                @if($activeTabSlug === $tab['slug']) aria-current="page" @endif>

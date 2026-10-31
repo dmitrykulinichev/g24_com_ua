@@ -14,8 +14,8 @@ class TargetController
     public function index()
     {
         $meta = [
-            'title' => 'Кому підійде Garage24',
-            'description' => 'Рішення для власників, партнерів та інвесторів автопарків. Дізнайтеся, як ми вирішуємо ваші проблеми.'
+            'title' => t('target.meta.title'),
+            'description' => t('target.meta.description'),
         ];
 
         // Передаємо darkBg = true

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="{{ \App\I18n\Locale::config()->meta(locale(), 'hreflang') }}">
 <head>
     @include('partials.analytics')
 
@@ -8,23 +8,38 @@
 
     <!-- SEO Meta Tags -->
     @php
-        $pageTitle = $meta['title'] ?? 'Garage24 - CRM для автопарків';
+        $pageTitle = $meta['title'] ?? t('meta.site_title');
         if (isset($meta['title'])) {
             $pageTitle .= ' | Garage24';
         }
-        $pageDesc = $meta['description'] ?? 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.';
+        $pageDesc = $meta['description'] ?? t('meta.site_description');
         $pageImage = $meta['image'] ?? '/assets/img/landing/og-image.jpg';
-        $baseUrl = rtrim($_ENV['APP_URL'] ?? ('https://' . $_SERVER['HTTP_HOST']), '/');
-        $canonicalUrl = $baseUrl . parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+        $baseUrl = \App\I18n\LocalizedUrl::base();
+        // Canonical і альтернативи — адреса сторінки поточною та іншими відкритими мовами (app/I18n)
+        $canonicalUrl = \App\I18n\LocalizedUrl::canonical();
+        $alternateUrls = \App\I18n\LocalizedUrl::alternates();
+        $defaultLocale = \App\I18n\Locale::config()->default();
         $pageImage = str_starts_with($pageImage, 'http') ? $pageImage : $baseUrl . $pageImage;
     @endphp
 
     <title>{{ $pageTitle }}</title>
     <meta name="description" content="{{ $pageDesc }}">
     <link rel="canonical" href="{{ $canonicalUrl }}">
+    @if (count($alternateUrls) > 1)
+        @foreach ($alternateUrls as $altLocale => $altUrl)
+    <link rel="alternate" hreflang="{{ \App\I18n\Locale::config()->meta($altLocale, 'hreflang') }}" href="{{ $altUrl }}">
+        @endforeach
+    <link rel="alternate" hreflang="x-default" href="{{ $alternateUrls[$defaultLocale] }}">
+    @endif
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
+    <meta property="og:locale" content="{{ \App\I18n\Locale::config()->meta(locale(), 'og') }}">
+    @foreach (array_keys($alternateUrls) as $altLocale)
+        @if ($altLocale !== locale())
+    <meta property="og:locale:alternate" content="{{ \App\I18n\Locale::config()->meta($altLocale, 'og') }}">
+        @endif
+    @endforeach
     <meta property="og:url" content="{{ $canonicalUrl }}">
     <meta property="og:title" content="{{ $pageTitle }}">
     <meta property="og:description" content="{{ $pageDesc }}">
@@ -46,6 +61,16 @@
       "logo": "{{ $baseUrl }}/assets/img/logo.jpg",
       "sameAs": []
     }
+    </script>
+
+    <!-- Мова сторінки для запитів до /api (app/I18n/LocaleResolver читає X-Locale): форми, пошук, модалки -->
+    <script>
+        window.LANDING_LOCALE = @json(locale());
+        window.apiFetch = function (url, options) {
+            options = options || {};
+            options.headers = Object.assign({ 'X-Locale': window.LANDING_LOCALE }, options.headers || {});
+            return fetch(url, options);
+        };
     </script>
 
     <!-- Основні стилі (зкомпільовані Tailwind) -->

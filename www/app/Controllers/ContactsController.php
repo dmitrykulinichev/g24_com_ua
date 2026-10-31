@@ -56,8 +56,8 @@ class ContactsController
         }
 
         $meta = [
-            'title' => 'Контакти',
-            'description' => 'Зв\'яжіться з нами для консультації або технічної підтримки. Ми завжди на зв\'язку.'
+            'title' => t('contacts.meta.title'),
+            'description' => t('contacts.meta.description'),
         ];
         
         $recaptchaEnabled = filter_var($_ENV['RECAPTCHA_ENABLED'] ?? true, FILTER_VALIDATE_BOOLEAN);

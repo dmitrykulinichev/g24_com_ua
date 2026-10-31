@@ -7,8 +7,8 @@
         <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-blue-900/50 to-transparent"></div>
 
         <div class="container mx-auto px-4 relative z-10">
-            <h1 class="text-4xl font-extrabold sm:text-5xl mb-6">Зв'яжіться з нами</h1>
-            <p class="text-xl text-slate-300 max-w-2xl mx-auto">Оберіть зручний спосіб комунікації залежно від вашого запиту.</p>
+            <h1 class="text-4xl font-extrabold sm:text-5xl mb-6">{{ t('contacts.hero.title') }}</h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto">{{ t('contacts.hero.subtitle') }}</p>
         </div>
     </section>
 
@@ -30,10 +30,10 @@
 
                     // Fallback конфігурація
                     fallbackFields: [
-                        {name: 'name', type: 'text', required: false, label: 'Ваше ім\'я', placeholder: 'Іван Іванов'},
-                        {name: 'email', type: 'email', required: true, label: 'Email', placeholder: 'email@example.com'},
-                        {name: 'phone', type: 'tel', required: false, label: 'Телефон', placeholder: '+380 ...'},
-                        {name: 'message', type: 'textarea', required: true, label: 'Ваше питання', placeholder: 'Наприклад: Чи є інтеграція з Bolt?'},
+                        {name: 'name', type: 'text', required: false, label: {{ t_js('contacts.form.fallback.name.label') }}, placeholder: {{ t_js('contacts.form.fallback.name.placeholder') }}},
+                        {name: 'email', type: 'email', required: true, label: {{ t_js('contacts.form.fallback.email.label') }}, placeholder: 'email@example.com'},
+                        {name: 'phone', type: 'tel', required: false, label: {{ t_js('contacts.form.fallback.phone.label') }}, placeholder: '+380 ...'},
+                        {name: 'message', type: 'textarea', required: true, label: {{ t_js('contacts.form.fallback.message.label') }}, placeholder: {{ t_js('contacts.form.fallback.message.placeholder') }}},
                         {name: 'type', type: 'hidden', required: false, default: 'contact'}
                     ],
 
@@ -132,7 +132,7 @@
                         let hasEmptyRequired = false;
                         this.fields.forEach(field => {
                             if (field.required && !this.formData[field.name] && field.type !== 'hidden') {
-                                this.fieldErrors[field.name] = 'Це поле обов\'язкове';
+                                this.fieldErrors[field.name] = {{ t_js('contacts.form.errors.required') }};
                                 hasEmptyRequired = true;
                             }
                         });
@@ -157,7 +157,7 @@
                         }
                         if (!payload.type) payload.type = 'contact';
 
-                        fetch('/api/lead', {
+                        apiFetch('/api/lead', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify(payload)
@@ -190,18 +190,18 @@
                                         this.generalError = apiErrors[unknownErrors[0]][0];
                                     }
                                 } else {
-                                    this.generalError = data.message || 'Сталася помилка. Спробуйте пізніше.';
+                                    this.generalError = data.message || {{ t_js('contacts.form.errors.general') }};
                                 }
                             }
                         })
                         .catch(() => {
                             this.loading = false;
-                            this.generalError = 'Сталася помилка мережі. Спробуйте пізніше.';
+                            this.generalError = {{ t_js('contacts.form.errors.network') }};
                         });
                     }
                 }">
-                    <h2 class="text-2xl font-bold text-slate-900 mb-2">Ще не з нами?</h2>
-                    <p class="text-slate-600 mb-8">Заповніть форму, якщо у вас є питання щодо підключення, тарифів або можливостей системи.</p>
+                    <h2 class="text-2xl font-bold text-slate-900 mb-2">{{ t('contacts.form.title') }}</h2>
+                    <p class="text-slate-600 mb-8">{{ t('contacts.form.text') }}</p>
 
                     <!-- Спінер завантаження -->
                     <div x-show="!ready" class="flex justify-center items-center h-64">
@@ -213,8 +213,8 @@
 
                     <div x-show="success" x-cloak class="bg-green-50 text-green-800 p-6 rounded-lg text-center mb-6 border border-green-100">
                         <div class="text-4xl mb-2">✅</div>
-                        <strong>Повідомлення відправлено!</strong><br>
-                        Ми зв'яжемося з вами найближчим часом.
+                        <strong>{{ t('contacts.form.success.title') }}</strong><br>
+                        {{ t('contacts.form.success.text') }}
                     </div>
 
                     <div x-show="generalError" x-cloak class="bg-red-50 text-red-800 p-4 rounded-lg mb-6 border border-red-100 text-sm" x-text="generalError"></div>
@@ -253,15 +253,15 @@
                         </template>
 
                         <button type="submit" class="w-full bg-primary text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition disabled:opacity-70" :disabled="loading">
-                            <span x-show="!loading">Відправити запит</span>
-                            <span x-show="loading">Відправка...</span>
+                            <span x-show="!loading">{{ t('contacts.form.submit') }}</span>
+                            <span x-show="loading">{{ t('contacts.form.sending') }}</span>
                         </button>
 
                         @if($recaptchaEnabled)
                         <div class="text-center text-xs text-gray-400 mt-2">
-                            Цей сайт захищений reCAPTCHA і застосовуються
-                            <a href="https://policies.google.com/privacy" class="underline" target="_blank">Політика конфіденційності</a> та
-                            <a href="https://policies.google.com/terms" class="underline" target="_blank">Умови використання</a> Google.
+                            {{ t('contacts.form.recaptcha.text') }}
+                            <a href="https://policies.google.com/privacy" class="underline" target="_blank">{{ t('contacts.form.recaptcha.privacy') }}</a> {{ t('contacts.form.recaptcha.and') }}
+                            <a href="https://policies.google.com/terms" class="underline" target="_blank">{{ t('contacts.form.recaptcha.terms') }}</a> Google.
                         </div>
                         @endif
                     </form>
@@ -271,22 +271,21 @@
                 <div class="md:col-span-2 bg-slate-50 rounded-2xl border border-slate-200 p-8 h-fit">
                     <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
                         <span class="text-2xl">🔑</span>
-                        Вже клієнт Garage24?
+                        {{ t('contacts.clients.title') }}
                     </h3>
                     <p class="text-slate-600 text-sm mb-4 leading-relaxed">
-                        Ця форма призначена для загальних питань.
-                        Для швидкого вирішення технічних проблем, будь ласка, створіть тікет у вашому особистому кабінеті.
+                        {{ t('contacts.clients.text') }}
                     </p>
                     <p class="text-slate-600 text-sm mb-6 leading-relaxed">
-                        Там ми бачимо історію вашого парку і зможемо допомогти набагато швидше.
+                        {{ t('contacts.clients.text_2') }}
                     </p>
 
                     <a href="https://app.g24.com.ua/support" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-100 hover:text-primary transition shadow-sm">
-                        Перейти в гараж
+                        {{ t('contacts.clients.cta') }}
                     </a>
 
                     <div class="mt-8 pt-8 border-t border-slate-200">
-                        <div class="text-slate-500 text-sm">Пн-Пт: 10:00 - 18:00</div>
+                        <div class="text-slate-500 text-sm">{{ t('contacts.clients.hours') }}</div>
                     </div>
                 </div>
 

@@ -6,8 +6,8 @@
         <div class="absolute inset-0 bg-[url('/assets/img/grid.svg')] opacity-10"></div>
 
         <div class="container mx-auto px-4 relative z-10 text-center">
-            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-6">Можливості системи</h1>
-            <p class="text-xl text-slate-300 max-w-2xl mx-auto">Garage24 — це комплексне рішення, яке закриває всі потреби сучасного автопарку.</p>
+            <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-6">{{ t('features.hero.title') }}</h1>
+            <p class="text-xl text-slate-300 max-w-2xl mx-auto">{{ t('features.hero.subtitle') }}</p>
         </div>
     </section>
 
@@ -57,14 +57,14 @@
     <!-- CTA Section -->
     <div class="bg-white border-t border-slate-200 py-16">
         <div class="container mx-auto px-4 text-center">
-            <h2 class="text-3xl font-bold text-slate-900 mb-4">Готові оптимізувати свій бізнес?</h2>
-            <p class="text-slate-600 mb-8 max-w-2xl mx-auto text-lg">Отримайте повний доступ до всіх функцій. Оплата тільки за активні авто в кінці місяця.</p>
+            <h2 class="text-3xl font-bold text-slate-900 mb-4">{{ t('features.cta.title') }}</h2>
+            <p class="text-slate-600 mb-8 max-w-2xl mx-auto text-lg">{{ t('features.cta.text') }}</p>
             <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <a href="/pricing" class="inline-block bg-blue-600 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg hover:bg-blue-700 transition duration-300">
-                    Почати роботу
+                <a href="{{ lurl('/pricing') }}" class="inline-block bg-blue-600 text-white font-bold text-lg px-8 py-3 rounded-xl shadow-lg hover:bg-blue-700 transition duration-300">
+                    {{ t('features.cta.start') }}
                 </a>
-                <a href="/docs" class="inline-block text-slate-700 font-semibold text-lg px-8 py-3 hover:text-blue-600 transition duration-300">
-                    Документація →
+                <a href="{{ lurl('/docs') }}" class="inline-block text-slate-700 font-semibold text-lg px-8 py-3 hover:text-blue-600 transition duration-300">
+                    {{ t('features.cta.docs') }}
                 </a>
             </div>
         </div>

@@ -17,11 +17,6 @@ $app->get('/pricing', 'App\Controllers\PricingController@index');
 // Контакти
 $app->get('/contacts', 'App\Controllers\ContactsController@index');
 
-// Документація v1 (збережено, але не активна)
-// $app->get('/docs', 'App\Controllers\DocsController@index');
-// $app->get('/docs/{slug}', 'App\Controllers\DocsController@show');
-// $app->get('/api/docs/search', 'App\Controllers\SearchController@search');
-
 // Документація v2 → основний шлях /docs
 $app->get('/docs', 'App\Controllers\Docs2Controller@index');
 $app->get('/docs/{slug}', 'App\Controllers\Docs2Controller@show');

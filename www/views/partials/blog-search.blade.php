@@ -35,7 +35,7 @@
         }
 
         blogDebounceTimer = setTimeout(() => {
-            fetch('/api/blog/search?q=' + encodeURIComponent(query))
+            apiFetch('/api/blog/search?q=' + encodeURIComponent(query))
                 .then(response => response.json())
                 .then(data => {
                     resultsContainer.innerHTML = '';

@@ -96,13 +96,18 @@ class SitemapController
             ['loc' => '/docs',      'lastmod' => '2025-10-01', 'changefreq' => 'monthly', 'priority' => '0.8'],
         ];
 
+        // Перекладені сторінки — кожною відкритою мовою з альтернативами (hreflang); решта — українською (app/I18n)
         foreach ($staticPages as $page) {
-            $urls[] = [
-                'loc'        => $baseUrl . $page['loc'],
-                'lastmod'    => $page['lastmod'],
-                'changefreq' => $page['changefreq'],
-                'priority'   => $page['priority'],
-            ];
+            $alternates = \App\I18n\LocalizedUrl::alternates($page['loc']);
+            foreach ($alternates as $loc) {
+                $urls[] = [
+                    'loc'        => $loc,
+                    'lastmod'    => $page['lastmod'],
+                    'changefreq' => $page['changefreq'],
+                    'priority'   => $page['priority'],
+                    'alternates' => count($alternates) > 1 ? $alternates : [],
+                ];
+            }
         }
 
         // 2. Блог
@@ -162,7 +167,8 @@ class SitemapController
 
         $xml  = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
-        $xml .= '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">' . "\n";
+        $xml .= '        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"' . "\n";
+        $xml .= '        xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
 
         foreach ($urls as $url) {
             $xml .= "  <url>\n";
@@ -170,6 +176,10 @@ class SitemapController
             $xml .= "    <lastmod>" . $url['lastmod'] . "</lastmod>\n";
             $xml .= "    <changefreq>" . $url['changefreq'] . "</changefreq>\n";
             $xml .= "    <priority>" . $url['priority'] . "</priority>\n";
+            foreach ($url['alternates'] ?? [] as $altLocale => $altLoc) {
+                $hreflang = \App\I18n\Locale::config()->meta($altLocale, 'hreflang');
+                $xml .= '    <xhtml:link rel="alternate" hreflang="' . $hreflang . '" href="' . htmlspecialchars($altLoc) . '"/>' . "\n";
+            }
             foreach ($imageIndex[$url['loc']] ?? [] as $img) {
                 $xml .= "    <image:image>\n";
                 $xml .= "      <image:loc>" . htmlspecialchars($img['loc']) . "</image:loc>\n";

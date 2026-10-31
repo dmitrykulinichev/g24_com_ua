@@ -9,6 +9,9 @@
 
 <!-- Логіка Alpine.js винесена в скрипт -->
 <script>
+    // Тексти форми мовою сторінки (lang/*.php → order_form.js)
+    const i18n = {!! t_json('order_form.js') !!};
+
     document.addEventListener('alpine:init', () => {
         Alpine.data('orderForm', () => ({
             showModal: false,
@@ -41,19 +44,19 @@
             forms: {
                 register_park: {
                     fields: [
-                        {name: "owner_name", type: "text", required: true, label: "Ваше ім'я", placeholder: "Іван Іванов"},
-                        {name: "owner_email", type: "email", required: true, label: "Email (Логін)", placeholder: "email@example.com"},
-                        {name: "park_name", type: "text", required: true, label: "Назва парку / Компанії", placeholder: "ТОВ Автопарк"},
-                        {name: "phone", type: "tel", required: true, label: "Телефон", placeholder: "+380 ..."},
+                        {name: "owner_name", type: "text", required: true, label: i18n.fields.name, placeholder: i18n.fields.name_placeholder},
+                        {name: "owner_email", type: "email", required: true, label: i18n.fields.email_login, placeholder: "email@example.com"},
+                        {name: "park_name", type: "text", required: true, label: i18n.fields.park_name, placeholder: i18n.fields.park_name_placeholder},
+                        {name: "phone", type: "tel", required: true, label: i18n.fields.phone, placeholder: "+380 ..."},
                         {name: "plan", type: "hidden", required: true, default: "monthly"}
                     ]
                 },
                 lead: {
                     fields: [
-                        {name: "name", type: "text", required: false, label: "Ваше ім'я", placeholder: "Іван Іванов"},
+                        {name: "name", type: "text", required: false, label: i18n.fields.name, placeholder: i18n.fields.name_placeholder},
                         {name: "email", type: "email", required: true, label: "Email", placeholder: "email@example.com"},
-                        {name: "phone", type: "tel", required: false, label: "Телефон", placeholder: "+380 ..."},
-                        {name: "message", type: "textarea", required: true, label: "Ваше повідомлення", placeholder: "Кількість авто, особливі побажання..."},
+                        {name: "phone", type: "tel", required: false, label: i18n.fields.phone, placeholder: "+380 ..."},
+                        {name: "message", type: "textarea", required: true, label: i18n.fields.message, placeholder: i18n.fields.message_placeholder},
                         {name: "type", type: "hidden", required: false, default: "general"}
                     ]
                 }
@@ -200,7 +203,7 @@
             async checkUserStatus(email) {
                 this.loading = true;
                 try {
-                    const response = await fetch('/api/check-status', {
+                    const response = await apiFetch('/api/check-status', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({ email: email })
@@ -212,10 +215,10 @@
                         this.registeredEmail = email;
                         if (data.is_activated) {
                             this.viewState = 'success_activated';
-                            this.successMessage = 'Ваш акаунт вже активовано.';
+                            this.successMessage = i18n.status.already_active;
                         } else {
                             this.viewState = 'success_exists';
-                            this.successMessage = 'Ви вже зареєстровані, але не активовані.';
+                            this.successMessage = i18n.status.not_activated;
                         }
                     } else {
                         // Якщо юзера немає в базі - показуємо форму
@@ -304,7 +307,7 @@
             },
 
             fetchConfig() {
-                fetch('/api/config')
+                apiFetch('/api/config')
                     .then(response => {
                         if (!response.ok) throw new Error('Network response was not ok');
                         return response.json();
@@ -329,14 +332,14 @@
             },
 
             get modalTitle() {
-                if (this.orderType === 'enterprise') return 'Індивідуальні умови';
-                return 'Реєстрація парку';
+                if (this.orderType === 'enterprise') return i18n.title.enterprise;
+                return i18n.title.register;
             },
 
             get buttonText() {
-                if (this.submitting) return 'Обробка...';
-                if (this.orderType === 'enterprise') return 'Замовити консультацію';
-                return 'Створити акаунт';
+                if (this.submitting) return i18n.button.processing;
+                if (this.orderType === 'enterprise') return i18n.button.consultation;
+                return i18n.button.create;
             },
 
             get activeFields() {
@@ -348,14 +351,14 @@
                 this.fieldErrors = {};
 
                 if (!this.formData.agreement) {
-                    this.generalError = 'Будь ласка, підтвердіть згоду з правилами.';
+                    this.generalError = i18n.errors.consent;
                     return;
                 }
 
                 let hasEmptyRequired = false;
                 this.activeFields.forEach(field => {
                     if (field.required && !this.formData[field.name] && field.type !== 'hidden') {
-                        this.fieldErrors[field.name] = 'Це поле обов\'язкове';
+                        this.fieldErrors[field.name] = i18n.errors.required;
                         hasEmptyRequired = true;
                     }
                 });
@@ -383,7 +386,7 @@
                     payload['g-recaptcha-response'] = captchaToken;
                 }
 
-                fetch(url, {
+                apiFetch(url, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
@@ -394,9 +397,9 @@
 
                     if (response.ok || response.status === 409) {
                         if (this.activeFormKey === 'register_park') {
-                            this.successMessage = 'Парк успішно зареєстровано.';
+                            this.successMessage = i18n.status.registered;
                         } else {
-                            this.successMessage = data.message || 'Дякуємо! Ваша заявка прийнята.';
+                            this.successMessage = data.message || i18n.status.lead_accepted;
                         }
 
                         // DataLayer Event
@@ -446,13 +449,13 @@
                                 this.generalError = apiErrors[unknownErrors[0]][0];
                             }
                         } else {
-                            this.generalError = data.message || 'Сталася помилка сервера.';
+                            this.generalError = data.message || i18n.errors.server;
                         }
                     }
                 })
                 .catch(() => {
                     this.submitting = false;
-                    this.generalError = 'Сталася помилка мережі. Спробуйте пізніше.';
+                    this.generalError = i18n.errors.network;
                 });
             },
 
@@ -469,7 +472,7 @@
                     captchaToken = '';
                 }
 
-                fetch('/api/resend', {
+                apiFetch('/api/resend', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -484,13 +487,13 @@
                     if (response.ok || response.status === 409) {
                         if (data.is_activated) {
                             this.viewState = 'success_activated';
-                            this.successMessage = data.message || 'Акаунт вже активовано.';
+                            this.successMessage = data.message || i18n.status.account_active;
                         } else {
-                            this.successMessage = data.message || 'Лист відправлено повторно!';
+                            this.successMessage = data.message || i18n.status.resent;
                             this.startResendTimer(60);
                         }
                     } else {
-                        this.successMessage = data.message || 'Помилка відправки.';
+                        this.successMessage = data.message || i18n.errors.send;
                         if (response.status === 429) {
                             this.startResendTimer(60);
                         }
@@ -498,7 +501,7 @@
                 })
                 .catch(() => {
                     this.resendLoading = false;
-                    this.successMessage = 'Помилка мережі.';
+                    this.successMessage = i18n.errors.network_short;
                 });
             },
 
@@ -544,15 +547,15 @@
 
             <!-- Якщо новий або існує, але не активований -->
             <div x-show="viewState === 'success_new' || viewState === 'success_exists'">
-                <p class="text-sm text-gray-500 mt-2">Перевірте вашу пошту для активації акаунту (включаючи папку Спам).</p>
+                <p class="text-sm text-gray-500 mt-2">{{ t('order_form.success.check_email') }}</p>
 
                 <div x-show="activeFormKey === 'register_park'" class="mt-6">
                     <button @click="resendEmail"
                             class="text-sm text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                             :disabled="resendLoading || resendTimer > 0">
-                        <span x-show="!resendLoading && resendTimer === 0">Надіслати лист ще раз</span>
-                        <span x-show="resendLoading">Відправка...</span>
-                        <span x-show="resendTimer > 0" x-text="'Зачекайте ' + resendTimer + 'с'"></span>
+                        <span x-show="!resendLoading && resendTimer === 0">{{ t('order_form.resend.button') }}</span>
+                        <span x-show="resendLoading">{{ t('order_form.resend.sending') }}</span>
+                        <span x-show="resendTimer > 0" x-text="{{ t_js('order_form.resend.wait_prefix') }} + resendTimer + {{ t_js('order_form.resend.wait_suffix') }}"></span>
                     </button>
                 </div>
             </div>
@@ -560,17 +563,17 @@
             <!-- Якщо активований -->
             <div x-show="viewState === 'success_activated'" class="mt-6">
                 <a href="https://app.g24.com.ua/login" target="_blank" class="inline-block bg-primary text-white font-bold py-2 px-6 rounded-lg hover:bg-blue-700 transition no-underline">
-                    Увійти в кабінет
+                    {{ t('order_form.success.login') }}
                 </a>
                 <div class="mt-4 text-xs text-gray-400">
-                    Забули пароль? <a href="https://app.g24.com.ua/password/reset" target="_blank" class="text-primary hover:underline">Відновити доступ</a>
+                    {{ t('order_form.success.forgot') }} <a href="https://app.g24.com.ua/password/reset" target="_blank" class="text-primary hover:underline">{{ t('order_form.success.restore') }}</a>
                 </div>
             </div>
 
             <div class="mt-8 pt-6 border-t border-gray-100 text-xs text-gray-400">
-                Якщо виникли проблеми з входом або реєстрацією —
-                <a href="/contacts" target="_blank" class="text-primary hover:underline inline-flex items-center gap-1">
-                    напишіть нам
+                {{ t('order_form.help.text') }}
+                <a href="{{ lurl('/contacts') }}" target="_blank" class="text-primary hover:underline inline-flex items-center gap-1">
+                    {{ t('order_form.help.link') }}
                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
                 </a>.
             </div>
@@ -584,21 +587,21 @@
                 <label class="radio-label" :class="{ 'checked': orderType === 'monthly' }">
                     <input type="radio" name="orderType" value="monthly" x-model="orderType">
                     <div class="radio-content">
-                        <span class="radio-title">Щомісячна оплата</span>
-                        <span class="radio-desc">Оплата по факту в кінці місяця</span>
+                        <span class="radio-title">{{ t('order_form.plans.monthly.title') }}</span>
+                        <span class="radio-desc">{{ t('order_form.plans.monthly.text') }}</span>
                     </div>
                 </label>
                 <label class="radio-label" :class="{ 'checked': orderType === 'yearly' }">
                     <input type="radio" name="orderType" value="yearly" x-model="orderType">
                     <div class="radio-content">
-                        <span class="radio-title">Річна передплата</span>
-                        <span class="radio-desc badge-green">-100 грн/авто знижка</span>
+                        <span class="radio-title">{{ t('order_form.plans.yearly.title') }}</span>
+                        <span class="radio-desc badge-green">{{ t('order_form.plans.yearly.text') }}</span>
                     </div>
                 </label>
             </div>
 
             <div x-show="orderType !== 'enterprise'" class="text-xs text-gray-400 mb-4 text-center">
-                Ви зможете змінити тарифний план у будь-який момент в особистому кабінеті.
+                {{ t('order_form.plans.note') }}
             </div>
 
             <template x-for="field in activeFields" :key="field.name">
@@ -631,10 +634,10 @@
                 <label class="checkbox-label">
                     <input type="checkbox" x-model="formData.agreement" required>
                     <span>
-                        Я погоджуюсь з
-                        <a href="/privacy" target="_blank">Політикою конфіденційності</a>
-                        та
-                        <a href="/offer" target="_blank">Публічною офертою</a>
+                        {!! t('order_form.consent', [
+                            'privacy' => '<a href="' . e(lurl('/privacy')) . '" target="_blank">' . e(t('order_form.consent_privacy')) . '</a>',
+                            'offer' => '<a href="' . e(lurl('/offer')) . '" target="_blank">' . e(t('order_form.consent_offer')) . '</a>',
+                        ]) !!}
                     </span>
                 </label>
             </div>

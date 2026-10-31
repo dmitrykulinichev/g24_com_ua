@@ -16,6 +16,17 @@ use Jenssegers\Blade\Blade;
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
 $dotenv->safeLoad();
 
+// Мова сторінки — з адреси, до маршрутизації (app/I18n): «/en/features» → мова en, маршрути бачать «/features»
+require __DIR__ . '/app/I18n/helpers.php';
+$localeResolution = (new App\I18n\LocaleResolver(App\I18n\Locale::config()))
+    ->resolve($_SERVER['REQUEST_URI'] ?? '/', $_SERVER['HTTP_X_LOCALE'] ?? null);
+if ($localeResolution['redirect'] !== null) {
+    header('Location: ' . $localeResolution['redirect'], true, 301);
+    exit;
+}
+App\I18n\Locale::set($localeResolution['locale'], $localeResolution['path']);
+$_SERVER['REQUEST_URI'] = $localeResolution['uri'];
+
 // Ініціалізація Leaf
 $app = new Leaf\App;
 
@@ -32,8 +43,8 @@ $app->set404(function () use ($blade) {
     // Рендеримо сторінку
     echo $blade->make('errors.404', [
         'meta' => [
-            'title' => '404 - Сторінку не знайдено',
-            'description' => 'Сторінка, яку ви шукаєте, не існує.'
+            'title' => t('errors.404.title'),
+            'description' => t('errors.404.description'),
         ]
     ])->render();
 });

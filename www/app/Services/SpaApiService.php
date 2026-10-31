@@ -87,7 +87,10 @@ class SpaApiService
         $headers = [
             'Content-Type: application/json',
             'Accept: application/json',
-            'X-Landing-Api-Key: ' . $this->apiKey
+            'X-Landing-Api-Key: ' . $this->apiKey,
+            // Мова сторінки, з якої прийшла заявка/реєстрація (app/I18n) — СААС відповідає нею й
+            // запам'ятовує новому користувачеві (SetLocale, users.locale)
+            'X-Locale: ' . \App\I18n\Locale::current(),
         ];
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);

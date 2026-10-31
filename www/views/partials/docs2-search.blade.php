@@ -123,7 +123,7 @@
         }
 
         debounceTimer = setTimeout(() => {
-            fetch('/api/docs2/search?q=' + encodeURIComponent(query))
+            apiFetch('/api/docs/search?q=' + encodeURIComponent(query))
                 .then(response => response.json())
                 .then(data => {
                     resultsContainer.innerHTML = '';

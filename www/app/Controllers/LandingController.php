@@ -14,8 +14,8 @@ class LandingController
     public function index()
     {
         $meta = [
-            'title' => 'CRM для автопарків',
-            'description' => 'Автоматизуйте виплати, контроль палива та роботу з водіями. Підключайтеся зараз і переходьте на новий рівень ефективності.',
+            'title' => t('landing.meta.title'),
+            'description' => t('landing.meta.description'),
             'image' => '/assets/img/landing/og-image.jpg'
         ];
 

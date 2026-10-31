@@ -7,11 +7,6 @@ use App\Services\MarkdownService;
 class SearchController
 {
     // Пошук по документації
-    public function search()
-    {
-        $this->performSearch('/../../content/docs/*.md', 'docs');
-    }
-
     // Пошук по документації v2
     public function searchDocs2()
     {

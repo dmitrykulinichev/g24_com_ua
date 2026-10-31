@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat /Users/dmytronovikov/wwwGarage24/www/.env 2>/dev/null || ls /Users/dmytronovikov/wwwGarage24/www/.env* 2>/dev/null || echo \"no .env\")",
+      "Bash(find /Users/dmytronovikov/wwwGarage24/www -maxdepth 1 -type f \\\\\\( -name \"*.php\" -o -name \"*.json\" -o -name \"Makefile\" \\\\\\) 2>/dev/null | head -20)",
+      "Bash(cat /Users/dmytronovikov/wwwGarage24/www/content/blog/menu.json | python3 -m json.tool | head -40)"
+    ]
+  }
+}

@@ -51,10 +51,10 @@ class="cookie-banner">
 
     <div class="cookie-content">
         <div class="cookie-text">
-            <p>🍪 Ми використовуємо файли cookie для покращення роботи сайту. Продовжуючи перегляд, ви погоджуєтесь з нашою <a href="/privacy" target="_blank">політикою конфіденційності</a>.</p>
+            <p>🍪 {{ t('cookies.text') }} <a href="{{ lurl('/privacy') }}" target="_blank">{{ t('cookies.privacy_link') }}</a>.</p>
         </div>
         <div class="cookie-actions">
-            <button @click="accept()" class="btn-primary btn-sm">Зрозуміло</button>
+            <button @click="accept()" class="btn-primary btn-sm">{{ t('cookies.accept') }}</button>
         </div>
     </div>
 

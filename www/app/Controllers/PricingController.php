@@ -29,18 +29,8 @@ class PricingController
                 'car' => 100,
                 'old_car' => 200
             ],
-            'currency' => 'грн',
-            'active_condition' => '5 змін',
-            'features' => [
-                'Повна інтеграція з Uklon Fleet API',
-                'Telegram-бот для водіїв та менеджерів',
-                'Розумний графік змін (Drag & Drop)',
-                'Розрахунок виплат водіям (Зарплата)',
-                'Облік ремонтів та склад запчастин',
-                'Мобільний додаток (PWA) для власника',
-                'Технічна підтримка 24/7',
-                'Щоденні бекапи бази даних'
-            ]
+            // Підписи (валюта, умова активності, перелік «Все включено») — у словнику: pricing.*
+            'features' => t_list('pricing.features'),
         ];
 
         // 2. Логіка кешування
@@ -109,8 +99,8 @@ class PricingController
         }
 
         $meta = [
-            'title' => 'Тарифи',
-            'description' => 'Чесна ціна без прихованих платежів. Оплата по факту використання. Спробуйте безкоштовно.'
+            'title' => t('pricing.meta.title'),
+            'description' => t('pricing.meta.description'),
         ];
 
         echo $this->blade->make('pricing', [
