@@ -70,6 +70,62 @@ return [
         ],
     ],
 
+    'blog' => [
+        'index' => [
+            'title' => 'Product blog',
+            'subtitle' => 'News, updates and practical tips on using Garage24.',
+            'read_more' => 'Read more',
+            'pagination' => 'Blog pages',
+            'newer' => 'Newer',
+            'older' => 'Older',
+            'page_of' => 'Page :page of :total',
+            'empty' => 'No news yet.',
+        ],
+        'post' => [
+            'all' => 'All news',
+            'published' => 'Published:',
+        ],
+        'search' => [
+            'placeholder' => 'Search news...',
+        ],
+    ],
+
+    'docs' => [
+        'meta' => [
+            'title' => 'Documentation',
+            'description' => 'Guides, tips and answers to common questions about Garage24, the CRM for running a vehicle fleet.',
+        ],
+        'index' => [
+            'title' => 'Garage24 knowledge base',
+            'subtitle' => 'Guides, tips and answers to common questions.',
+            'go_to_section' => 'Go to the ":title" section.',
+            'read' => 'Read',
+            'help' => [
+                'title' => 'Did not find an answer?',
+                'text' => 'Our support team is ready to help.',
+                'cta' => 'Contact support',
+            ],
+        ],
+        'page' => [
+            'contents' => 'Section contents',
+            'nav' => 'Documentation',
+            'sections' => 'Sections: :title',
+            'breadcrumb' => 'Documentation',
+        ],
+        'placeholder' => [
+            'alt' => 'Screenshot',
+            'title' => 'An image is coming soon',
+            'text' => 'We are working on the documentation',
+        ],
+        'search' => [
+            'placeholder' => 'Search...',
+        ],
+    ],
+
+    'search' => [
+        'nothing_found' => 'Nothing found',
+    ],
+
     'language' => [
         'label' => 'Language',
     ],

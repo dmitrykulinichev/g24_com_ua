@@ -115,13 +115,15 @@ HTML;
      */
     protected function buildPlaceholderHtml(string $alt): string
     {
-        $label = htmlspecialchars($alt ?: 'Скріншот', ENT_QUOTES);
+        $label = htmlspecialchars($alt ?: t('docs.placeholder.alt'), ENT_QUOTES);
+        $title = htmlspecialchars(t('docs.placeholder.title'), ENT_QUOTES);
+        $text = htmlspecialchars(t('docs.placeholder.text'), ENT_QUOTES);
         return <<<HTML
 <div class="screenshot-placeholder">
     <div class="screenshot-placeholder-icon">&#128247;</div>
     <div class="screenshot-placeholder-label">
-        <strong>Тут скоро буде зображення</strong>
-        <span>Ми працюємо над документацією</span>
+        <strong>{$title}</strong>
+        <span>{$text}</span>
     </div>
 </div>
 HTML;
@@ -192,8 +194,8 @@ HTML;
         echo $this->blade->make('docs2.index', [
             'menu' => $menu,
             'meta' => [
-                'title' => 'Документація v2',
-                'description' => 'Інструкції, поради та відповіді на часті запитання про Garage24 — CRM-систему для управління автопарком.',
+                'title' => t('docs.meta.title'),
+                'description' => t('docs.meta.description'),
             ]
         ])->render();
     }

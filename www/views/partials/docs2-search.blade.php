@@ -2,7 +2,7 @@
     <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
     </svg>
-    <input type="text" id="searchInput" oninput="liveSearch()" class="search-input" placeholder="Пошук...">
+    <input type="text" id="searchInput" oninput="liveSearch()" class="search-input" placeholder="{{ t('docs.search.placeholder') }}">
 
     <button id="searchClear" onclick="clearSearch()" style="display:none; position:absolute; right:0.75rem; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#9ca3af; padding:0; line-height:1;">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:16px;height:16px;">
@@ -141,7 +141,7 @@
                         });
                         resultsContainer.style.display = 'block';
                     } else {
-                        resultsContainer.innerHTML = '<div class="search-result-item" style="color: #6b7280;">Нічого не знайдено</div>';
+                        resultsContainer.innerHTML = '<div class="search-result-item" style="color: #6b7280;">' + {!! t_js('search.nothing_found') !!} + '</div>';
                         resultsContainer.style.display = 'block';
                     }
                 });

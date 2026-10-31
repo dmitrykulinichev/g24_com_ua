@@ -5,7 +5,7 @@
         <!-- Сайдбар з Alpine.js -->
         <aside class="w-full lg:w-64 flex-shrink-0 sidebar" x-data="{ docsMenuOpen: false }">
             <button class="lg:hidden w-full flex items-center justify-between p-4 bg-slate-50 rounded-lg border border-slate-200 mb-4 text-slate-700 font-medium" @click="docsMenuOpen = !docsMenuOpen">
-                <span>Зміст розділу</span>
+                <span>{{ t('docs.page.contents') }}</span>
                 <svg :class="{'rotate-180': docsMenuOpen}" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 transition-transform">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                 </svg>
@@ -17,7 +17,7 @@
                 </div>
 
                 <div class="sidebar-nav">
-                <nav aria-label="Документація">
+                <nav aria-label="{{ t('docs.page.nav') }}">
                 @foreach($menu as $group)
                     <div class="mb-6">
                         <p class="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2">{{ $group['title'] }}</p>
@@ -34,7 +34,7 @@
                                         {{ $menuItem['title'] }}
                                     </a>
                                     @if($isActive && !empty($menuItem['tabs']))
-                                    <ul aria-label="Розділи: {{ $menuItem['title'] }}" class="mt-0.5 ml-3 border-l border-slate-200 pl-2">
+                                    <ul aria-label="{{ t('docs.page.sections', ['title' => $menuItem['title']]) }}" class="mt-0.5 ml-3 border-l border-slate-200 pl-2">
                                         @foreach($menuItem['tabs'] as $tab)
                                         <li>
                                             <a href="{{ lurl('/docs/' . $tab['slug']) }}"
@@ -82,14 +82,14 @@
     $baseUrl = rtrim($_ENV['APP_URL'] ?? ('https://' . $_SERVER['HTTP_HOST']), '/');
     $docTitle = $meta['title'] ?? $slug;
     $breadcrumbs = [
-        ["position" => 1, "name" => "Garage24", "item" => "$baseUrl/"],
-        ["position" => 2, "name" => "Документація", "item" => "$baseUrl/docs"],
+        ["position" => 1, "name" => "Garage24", "item" => \App\I18n\LocalizedUrl::absolute('/')],
+        ["position" => 2, "name" => t('docs.page.breadcrumb'), "item" => \App\I18n\LocalizedUrl::absolute('/docs')],
     ];
     if ($isTab && $parentItem) {
-        $breadcrumbs[] = ["position" => 3, "name" => $parentItem['title'], "item" => "$baseUrl/docs/{$parentItem['slug']}"];
-        $breadcrumbs[] = ["position" => 4, "name" => $docTitle, "item" => "$baseUrl/docs/$slug"];
+        $breadcrumbs[] = ["position" => 3, "name" => $parentItem['title'], "item" => \App\I18n\LocalizedUrl::absolute('/docs/' . $parentItem['slug'])];
+        $breadcrumbs[] = ["position" => 4, "name" => $docTitle, "item" => \App\I18n\LocalizedUrl::absolute('/docs/' . $slug)];
     } else {
-        $breadcrumbs[] = ["position" => 3, "name" => $docTitle, "item" => "$baseUrl/docs/$slug"];
+        $breadcrumbs[] = ["position" => 3, "name" => $docTitle, "item" => \App\I18n\LocalizedUrl::absolute('/docs/' . $slug)];
     }
 @endphp
 <script type="application/ld+json">
@@ -136,7 +136,7 @@
             img.addEventListener('error', function () {
                 const placeholder = document.createElement('div');
                 placeholder.className = 'screenshot-placeholder';
-                placeholder.innerHTML = '<div class="screenshot-placeholder-icon">&#128247;</div><div class="screenshot-placeholder-label"><strong>Тут скоро буде зображення</strong><span>Ми працюємо над документацією</span></div>';
+                placeholder.innerHTML = '<div class="screenshot-placeholder-icon">&#128247;</div><div class="screenshot-placeholder-label"><strong>' + {!! t_js('docs.placeholder.title') !!} + '</strong><span>' + {!! t_js('docs.placeholder.text') !!} + '</span></div>';
                 this.closest('p, .screenshot-content, .screenshot-phone-content')?.replaceWith(placeholder)
                     ?? this.replaceWith(placeholder);
             });

@@ -7,11 +7,11 @@
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-1">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
                 </svg>
-                Всі новини
+                {{ t('blog.post.all') }}
             </a>
 
             <div class="text-sm text-slate-500 mb-4 border-b border-slate-100 pb-4">
-                Опубліковано: <time datetime="{{ date('Y-m-d', $meta['date']) }}">{{ date('d.m.Y', $meta['date']) }}</time>
+                {{ t('blog.post.published') }} <time datetime="{{ date('Y-m-d', $meta['date']) }}">{{ date('d.m.Y', $meta['date']) }}</time>
             </div>
 
             <article class="content" id="blogContent">
