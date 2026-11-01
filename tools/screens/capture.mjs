@@ -4,8 +4,8 @@
  *
  *   node capture.mjs app <кадр> --locale en     сирий кадр з Android-емулятора (adb) → src/en/app/<кадр>.png
  *   node capture.mjs compose [id…]              сирі кадри → рамка телефона → www/assets/img/screens/<мова>/<id>.webp
- *   node capture.mjs cabinet [id…] [--locale en] [--show]  скрін вебкабінету (бойовий, CABINET_URL) кожною мовою → одразу webp;
- *                                               --show — у видимому вікні, щоб бачити, що відбувається
+ *   node capture.mjs cabinet [id…] [--locale en] [--headless]  скрін вебкабінету (бойовий, CABINET_URL) кожною мовою → webp;
+ *                                               за замовчуванням у видимому вікні — людина бачить, де ходить скрипт
  *   node capture.mjs login                      відкрити браузер профілю знімання, щоб один раз увійти в кабінет
  *   node capture.mjs status                     які скріни якими мовами знято й складено
  *
@@ -196,9 +196,9 @@ switch (command) {
     case 'app': captureApp(rest[0], option('locale')); break;
     case 'compose': await compose(rest); break;
     case 'cabinet': {
-        const show = rest.includes('--show');
+        const show = !rest.includes('--headless');
         const locale = option('locale');
-        await captureCabinet(rest.filter((a) => a !== '--show'), locale, show);
+        await captureCabinet(rest.filter((a) => a !== '--headless' && a !== '--show'), locale, show);
         break;
     }
     case 'login': await login(); break;
