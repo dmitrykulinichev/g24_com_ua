@@ -303,7 +303,15 @@
                     }
                 }
 
-                if (data.forms) this.forms = data.forms;
+                // Склад полів — з кабінету; підписи й підказки — мовою сторінки зі словника лендінгу
+                // (кабінет віддає їх українською, а кеш конфігу один на всі мови)
+                if (data.forms) {
+                    for (const [key, form] of Object.entries(data.forms)) {
+                        const own = Object.fromEntries((this.forms[key]?.fields ?? []).map((f) => [f.name, f]));
+                        form.fields = (form.fields ?? []).map((f) => own[f.name] ? { ...f, label: own[f.name].label, placeholder: own[f.name].placeholder } : f);
+                    }
+                    this.forms = data.forms;
+                }
             },
 
             fetchConfig() {

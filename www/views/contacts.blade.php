@@ -79,7 +79,9 @@
                         }
 
                         if (data.forms && data.forms.lead && data.forms.lead.fields) {
-                            this.fields = data.forms.lead.fields;
+                            // Склад полів — з кабінету; підписи — мовою сторінки (кабінет віддає їх українською)
+                            const own = Object.fromEntries(this.fallbackFields.map((f) => [f.name, f]));
+                            this.fields = data.forms.lead.fields.map((f) => own[f.name] ? { ...f, label: own[f.name].label, placeholder: own[f.name].placeholder ?? f.placeholder } : f);
                             const typeField = this.fields.find(f => f.name === 'type');
                             if (typeField) {
                                 typeField.default = 'contact';
