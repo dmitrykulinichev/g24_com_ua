@@ -13,6 +13,7 @@
 | Тексти | `lang/{uk,en,ru}.php`, `Translator` | ключ через крапку, `:плейсхолдери`; немає перекладу → українська; немає й там → ключ |
 | Адреси з мовою | `LocalizedUrl` | `to()`, `canonical()`, `alternates()` (hreflang, перемикач, мапа сайту) |
 | Скріни трьома мовами | `content/screens.json`, `app/Screens/ScreenRegistry`, `views/partials/screen.blade.php` | реєстр скрінів; файл мовою сторінки, не знято — українська; alt — `lang/*.php` → `screens.<id>`; мапа сайту бере звідси картинки сторінок |
+| Блог за мовами | `app/Blog/BlogStore`, `BlogSync`, `LocalizedUrl::registerContent` | стаття є лише мовами, якими її написано: інші мови — українська з canonical на неї; hreflang і мапа сайту — лише наявні мови |
 | Помічники в Blade | `helpers.php` | `t()`, `t_list()`, `t_json()`, `lurl()`, `locale()` |
 
 ## Правила

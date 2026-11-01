@@ -1,0 +1,13 @@
+[
+    {
+        "slug": "driver-app-shift-overview",
+        "title": "Вся смена водителя в одном телефоне",
+        "date": "2026-11-01",
+        "preview": "Своё авто, график, рука и касса за день, кнопка для любой записи, контакты парка и SOS. Рассказываем, что водитель видит в приложении за одну смену.",
+        "image": "http://localhost:8000/api/v1/files/zQGv7RmzPU1CMT9LTCB1yqMmqycFMGhGGUHHmcAAFYArMNKbnJhP7wUiP7cYxVM4",
+        "tags": [
+            "застосунок водія",
+            "огляд"
+        ]
+    }
+]

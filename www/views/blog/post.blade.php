@@ -39,7 +39,7 @@
   "datePublished": "{{ date('c', $meta['date']) }}",
   "dateModified": "{{ date('c', $meta['updated'] ?? $meta['date']) }}",
   "image": "{{ isset($meta['image']) ? (str_starts_with($meta['image'], 'http') ? $meta['image'] : rtrim($_ENV['APP_URL'] ?? '', '/') . $meta['image']) : '' }}",
-  "url": "{{ rtrim($_ENV['APP_URL'] ?? '', '/') }}/blog/{{ $slug }}",
+  "url": "{{ \App\I18n\LocalizedUrl::canonical() }}",
   "author": {
     "@type": "Organization",
     "name": "Garage24",

@@ -43,7 +43,7 @@
                     if (data.length > 0) {
                         data.forEach(item => {
                             let link = document.createElement('a');
-                            link.href = '/blog/' + item.slug + '?highlight=' + encodeURIComponent(query);
+                            link.href = {!! json_encode(lurl('/blog/')) !!} + item.slug + '?highlight=' + encodeURIComponent(query);
                             link.className = 'search-result-item';
                             link.innerHTML = `
                                 <div class="result-title">${item.title}</div>

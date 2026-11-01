@@ -18,6 +18,8 @@ $dotenv->safeLoad();
 
 // Мова сторінки — з адреси, до маршрутизації (app/I18n): «/en/features» → мова en, маршрути бачать «/features»
 require __DIR__ . '/app/I18n/helpers.php';
+// Блог сам каже, якими мовами є його адреси (стаття — лише мовами, якими написана; app/Blog)
+App\I18n\LocalizedUrl::registerContent('blog', [App\Blog\BlogStore::class, 'localesOfPath']);
 $localeResolution = (new App\I18n\LocaleResolver(App\I18n\Locale::config()))
     ->resolve($_SERVER['REQUEST_URI'] ?? '/', $_SERVER['HTTP_X_LOCALE'] ?? null);
 if ($localeResolution['redirect'] !== null) {

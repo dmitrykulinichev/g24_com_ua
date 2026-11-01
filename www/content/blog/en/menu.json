@@ -1,0 +1,13 @@
+[
+    {
+        "slug": "driver-app-shift-overview",
+        "title": "A driver's whole shift on one phone",
+        "date": "2026-11-01",
+        "preview": "Their car, schedule, today's cash and manual trips, a button for any entry, fleet contacts and SOS. Here is what a driver sees in the app during one shift.",
+        "image": "http://localhost:8000/api/v1/files/dUyHVdtdxeBGxoy7dibVc7Wx3PTIErvj2hA7uQSeNwgvhykRff7vyuwD8zF6dEy0",
+        "tags": [
+            "застосунок водія",
+            "огляд"
+        ]
+    }
+]

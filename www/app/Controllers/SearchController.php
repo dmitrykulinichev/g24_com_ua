@@ -80,7 +80,8 @@ class SearchController
     // Пошук по блогу
     public function searchBlog()
     {
-        $this->performSearch('/../../content/blog/*.md', 'blog');
+        // Шукаємо серед статей мови сторінки (немає статей цією мовою — українських)
+        $this->performSearch('/../../content/blog/' . \App\Blog\BlogStore::contentLocale('/blog') . '/*.md', 'blog');
     }
 
     // Універсальний метод пошуку
@@ -99,7 +100,8 @@ class SearchController
 
         foreach ($files as $file) {
             $data = MarkdownService::parseFile($file);
-            $slug = basename($file, '.md');
+            // Файл статті — «<дата>-<slug>.md»; адреса статті — без дати
+            $slug = preg_replace('/^\d{4}-\d{2}-\d{2}-/', '', basename($file, '.md'));
             
             // Чистимо контент
             $plainText = strip_tags($data['content']);

@@ -2,7 +2,6 @@
 
 namespace App\Controllers;
 
-use App\Services\MarkdownService;
 use App\Services\Docs2ImageSitemapService;
 use App\Services\TelegramService;
 
@@ -116,27 +115,22 @@ class SitemapController
             }
         }
 
-        // 2. Блог
-        $menuPath = dirname(__DIR__, 2) . '/content/blog/menu.json';
-        if (file_exists($menuPath)) {
-            $posts = json_decode(file_get_contents($menuPath), true) ?? [];
-            foreach ($posts as $post) {
-                $lastmod = is_string($post['date']) ? $post['date'] : date('Y-m-d', $post['date']);
+        // 2. Блог — кожна стаття кожною мовою, якою вона є (app/Blog), з альтернативами й обкладинкою цієї мови
+        foreach (\App\I18n\Locale::config()->available() as $locale) {
+            foreach (\App\Blog\BlogStore::posts($locale) as $post) {
+                $path = '/blog/' . $post['slug'];
+                $alternates = \App\I18n\LocalizedUrl::alternates($path);
+                if (!isset($alternates[$locale])) {
+                    continue; // мова відкрита, але адреси цією мовою немає (стаття лише українською)
+                }
+                $image = $post['image'] ?? null;
                 $urls[] = [
-                    'loc'        => $baseUrl . '/blog/' . $post['slug'],
-                    'lastmod'    => $lastmod,
+                    'loc'        => $alternates[$locale],
+                    'lastmod'    => $post['date'],
                     'changefreq' => 'monthly',
                     'priority'   => '0.8',
-                ];
-            }
-        } else {
-            $posts = MarkdownService::getList(dirname(__DIR__, 2) . '/content/blog');
-            foreach ($posts as $post) {
-                $urls[] = [
-                    'loc'        => $baseUrl . '/blog/' . $post['slug'],
-                    'lastmod'    => date('Y-m-d', $post['date']),
-                    'changefreq' => 'monthly',
-                    'priority'   => '0.8',
+                    'alternates' => count($alternates) > 1 ? $alternates : [],
+                    'images'     => $image ? [['loc' => str_starts_with($image, 'http') ? $image : $baseUrl . $image]] : [],
                 ];
             }
         }
