@@ -3,6 +3,7 @@ module.exports = {
   content: [
     "./views/**/*.blade.php",
     "./app/Services/MarkdownService.php", // Там є HTML для скріншотів
+    "./app/Controllers/**/*.php", // Іконки розділів «Можливостей» (FeaturesController::ICONS)
     "./content/**/*.md" // Якщо в маркдауні є класи
   ],
   theme: {

@@ -16,7 +16,6 @@ class LandingController
         $meta = [
             'title' => t('landing.meta.title'),
             'description' => t('landing.meta.description'),
-            'image' => '/assets/img/landing/og-image.jpg'
         ];
 
         // Передаємо darkBg = true, бо на головній є картинка в Hero

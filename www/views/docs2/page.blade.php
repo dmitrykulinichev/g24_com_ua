@@ -102,7 +102,7 @@
 @php
     $articleImage = !empty($meta['image'])
         ? (str_starts_with($meta['image'], 'http') ? $meta['image'] : $baseUrl . $meta['image'])
-        : $baseUrl . '/assets/img/landing/og-image.jpg';
+        : $baseUrl . \App\Screens\ScreenRegistry::instance()->image('cabinet-dashboard')['path'];
 @endphp
 <script type="application/ld+json">
 {

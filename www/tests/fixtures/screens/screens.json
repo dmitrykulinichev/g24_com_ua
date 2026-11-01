@@ -1,0 +1,6 @@
+{
+  "screens": {
+    "both": { "pages": ["/"] },
+    "only-uk": { "pages": ["/", "/pricing"] }
+  }
+}

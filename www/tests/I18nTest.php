@@ -138,4 +138,31 @@ return [
             same([], array_keys($extra), "зайві ключі в {$locale}.php");
         }
     },
+
+    'перекладена сторінка — усі її тексти є в кожній мові (немає — сторінка вийде наполовину українською)' => function () {
+        // Адреса з localized_paths (config/i18n.php) => розділи словника, з яких вона бере тексти
+        $sections = ['/' => ['landing', 'screens', 'meta', 'nav', 'footer', 'cookies', 'language', 'order_form']];
+        $flatten = function (array $a, string $prefix = '') use (&$flatten): array {
+            $out = [];
+            foreach ($a as $k => $v) {
+                $key = $prefix === '' ? (string) $k : "{$prefix}.{$k}";
+                $out += is_array($v) ? $flatten($v, $key) : [$key => $v];
+            }
+
+            return $out;
+        };
+        $dir = __DIR__ . '/../lang';
+        $config = require __DIR__ . '/../config/i18n.php';
+        foreach ($config['localized_paths'] as $path) {
+            check(isset($sections[$path]), "для {$path} не вказано розділи словника в цьому тесті");
+            foreach ($sections[$path] as $section) {
+                $uk = $flatten((require "{$dir}/uk.php")[$section] ?? []);
+                foreach (['en', 'ru'] as $locale) {
+                    $tr = $flatten((require "{$dir}/{$locale}.php")[$section] ?? []);
+                    $missing = array_keys(array_filter($uk, fn ($v, $k) => trim((string) $v) !== '' && trim((string) ($tr[$k] ?? '')) === '', ARRAY_FILTER_USE_BOTH));
+                    same([], $missing, "{$path}: не перекладено в {$locale}.php ({$section})");
+                }
+            }
+        }
+    },
 ];

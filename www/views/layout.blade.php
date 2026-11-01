@@ -13,7 +13,8 @@
             $pageTitle .= ' | Garage24';
         }
         $pageDesc = $meta['description'] ?? t('meta.site_description');
-        $pageImage = $meta['image'] ?? '/assets/img/landing/og-image.jpg';
+        // Прев'ю в соцмережах і месенджерах — скрін кабінету мовою сторінки (content/screens.json)
+        $pageImage = $meta['image'] ?? \App\Screens\ScreenRegistry::instance()->image('cabinet-dashboard')['path'];
         $baseUrl = \App\I18n\LocalizedUrl::base();
         // Canonical і альтернативи — адреса сторінки поточною та іншими відкритими мовами (app/I18n)
         $canonicalUrl = \App\I18n\LocalizedUrl::canonical();

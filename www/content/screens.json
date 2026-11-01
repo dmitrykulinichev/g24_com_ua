@@ -1,0 +1,100 @@
+{
+  "_about": "Реєстр скрінів лендінгу (app/Screens). Файл: assets/img/screens/{мова}/{id}.webp, однакова назва в кожній мові; українська обов'язкова, решта — коли знято (немає — показується українська). Alt — lang/*.php, ключ screens.{id}. У шаблоні: @include('partials.screen', ['id' => '…']). pages — адреси без мовного префікса, де стоїть скрін (для мапи сайту). source — звідки й за яким сценарієм знімати: tools/screens/capture.mjs (застосунок: shots — кадри з емулятора, 1 кадр = один телефон, 3 = три поруч; кабінет: url, park_id, local_storage — налаштування браузера на час знімання (сховати підказки, онбординг), click — CSS-селектори, які натиснути перед знімком (не залежать від мови), viewport у 2x).",
+  "screens": {
+    "cabinet-dashboard": {
+      "source": {
+        "kind": "cabinet",
+        "url": "/",
+        "park_id": 15,
+        "scenario": "Парк «Київ», головна панель (графіки — останні 72 і 48 годин)",
+        "local_storage": {
+          "hide-all-hints": "true",
+          "dashboard_settings_v1": {
+            "enabledWidgets": [
+              "park_pulse",
+              "uklon_pulse",
+              "uklon_orders_stats",
+              "vehicle_status",
+              "open_reports",
+              "open_tasks",
+              "critical_maintenance",
+              "document_issues",
+              "fleet_overview",
+              "birthdays",
+              "drivers_without_deposit"
+            ],
+            "knownWidgets": [
+              "onboarding",
+              "park_pulse",
+              "uklon_pulse",
+              "uklon_orders_stats",
+              "vehicle_status",
+              "open_reports",
+              "open_tasks",
+              "critical_maintenance",
+              "document_issues",
+              "fleet_overview",
+              "birthdays",
+              "drivers_without_deposit"
+            ],
+            "hiddenOnboardingCards": []
+          }
+        }
+      },
+      "viewport": [
+        1440,
+        740
+      ],
+      "pages": [
+        "/"
+      ]
+    },
+    "uklon-reports": {
+      "source": {
+        "kind": "cabinet",
+        "url": "/uklon-reports",
+        "park_id": 15,
+        "scenario": "Парк «Київ», звіти Uklon, вкладка «Огляд», кнопка «Минулий місяць» (5-та швидка кнопка)",
+        "local_storage": {
+          "hide-all-hints": "true"
+        },
+        "click": [
+          "[data-i-doc=\"sec:uklon-reports-controls\"] button:nth-of-type(5)"
+        ]
+      },
+      "viewport": [
+        1440,
+        860
+      ],
+      "pages": [
+        "/"
+      ]
+    },
+    "app-home": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "home"
+        ],
+        "scenario": "Водій О.Петренко, парк «Київ», авто KA9001AR: вкладка «Головна»"
+      },
+      "pages": [
+        "/"
+      ]
+    },
+    "app-driver-trio": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "schedule",
+          "home-fab",
+          "issues"
+        ],
+        "scenario": "Той самий водій: «Графік»; «Головна» з відкритою кнопкою «+»; меню → «Звернення»"
+      },
+      "pages": [
+        "/"
+      ]
+    }
+  }
+}

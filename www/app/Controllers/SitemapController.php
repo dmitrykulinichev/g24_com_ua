@@ -87,7 +87,7 @@ class SitemapController
 
         // 1. Статичні сторінки (дати вказані вручну, оновлювати після змін)
         $staticPages = [
-            ['loc' => '/',          'lastmod' => '2025-10-01', 'changefreq' => 'weekly',  'priority' => '1.0'],
+            ['loc' => '/',          'lastmod' => '2026-11-01', 'changefreq' => 'weekly',  'priority' => '1.0'],
             ['loc' => '/features',  'lastmod' => '2025-10-01', 'changefreq' => 'monthly', 'priority' => '0.9'],
             ['loc' => '/target',    'lastmod' => '2025-10-01', 'changefreq' => 'monthly', 'priority' => '0.9'],
             ['loc' => '/pricing',   'lastmod' => '2025-10-01', 'changefreq' => 'weekly',  'priority' => '0.9'],
@@ -97,15 +97,21 @@ class SitemapController
         ];
 
         // Перекладені сторінки — кожною відкритою мовою з альтернативами (hreflang); решта — українською (app/I18n)
+        // Скріни сторінки (content/screens.json) — той файл, що бачить сторінка цією мовою (не знято — українська)
+        $screens = \App\Screens\ScreenRegistry::instance();
         foreach ($staticPages as $page) {
             $alternates = \App\I18n\LocalizedUrl::alternates($page['loc']);
-            foreach ($alternates as $loc) {
+            foreach ($alternates as $locale => $loc) {
                 $urls[] = [
                     'loc'        => $loc,
                     'lastmod'    => $page['lastmod'],
                     'changefreq' => $page['changefreq'],
                     'priority'   => $page['priority'],
                     'alternates' => count($alternates) > 1 ? $alternates : [],
+                    'images'     => array_map(
+                        fn ($id) => ['loc' => $baseUrl . $screens->image($id, $locale)['path']],
+                        $screens->forPage($page['loc'])
+                    ),
                 ];
             }
         }
@@ -180,10 +186,9 @@ class SitemapController
                 $hreflang = \App\I18n\Locale::config()->meta($altLocale, 'hreflang');
                 $xml .= '    <xhtml:link rel="alternate" hreflang="' . $hreflang . '" href="' . htmlspecialchars($altLoc) . '"/>' . "\n";
             }
-            foreach ($imageIndex[$url['loc']] ?? [] as $img) {
+            foreach (array_merge($url['images'] ?? [], $imageIndex[$url['loc']] ?? []) as $img) {
                 $xml .= "    <image:image>\n";
                 $xml .= "      <image:loc>" . htmlspecialchars($img['loc']) . "</image:loc>\n";
-                $xml .= "      <image:title>" . htmlspecialchars($img['title']) . "</image:title>\n";
                 $xml .= "    </image:image>\n";
             }
             $xml .= "  </url>\n";

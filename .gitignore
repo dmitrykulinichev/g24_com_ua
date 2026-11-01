@@ -18,3 +18,7 @@ www/storage/logs/
 .DS_Store
 Thumbs.db
 /www/node_modules/
+
+# Інструмент скрінів лендінгу
+/tools/screens/node_modules/
+/tools/screens/.chrome-profile/

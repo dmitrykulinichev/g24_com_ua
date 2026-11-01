@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Скріни лендінгу трьома мовами: знімання й складання за реєстром www/content/screens.json",
+  "dependencies": {
+    "puppeteer-core": "^23.11.1"
+  }
+}
