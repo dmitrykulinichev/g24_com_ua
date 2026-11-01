@@ -31,9 +31,9 @@
                             </div>
                         </div>
 
-                        <!-- Items -->
-                        <div class="p-6 md:p-8">
-                            <dl class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-8">
+                        <!-- Пункти й скрін розділу (сторони чергуються) -->
+                        <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
+                            <dl class="lg:col-span-2 grid grid-cols-1 gap-y-6 {{ $loop->even ? 'lg:order-2' : '' }}">
                                 @foreach($category['items'] as $item)
                                     <div class="relative pl-8">
                                         <dt class="font-bold text-slate-900 text-base flex items-center mb-2">
@@ -46,6 +46,14 @@
                                     </div>
                                 @endforeach
                             </dl>
+                            @if ($category['screen'])
+                                <div class="lg:col-span-3 {{ $loop->even ? 'lg:order-1' : '' }}">
+                                    {{-- Кабінет — широкий кадр з рамкою; застосунок — телефон уже в рамці, лише обмежити висоту --}}
+                                    @include('partials.screen', ['id' => $category['screen'], 'class' => str_starts_with($category['screen'], 'app-')
+                                        ? 'mx-auto h-auto max-h-[560px] w-auto max-w-full'
+                                        : 'w-full h-auto rounded-xl border border-slate-200 shadow-md'])
+                                </div>
+                            @endif
                         </div>
                     </div>
                 @endforeach

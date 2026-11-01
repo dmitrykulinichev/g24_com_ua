@@ -30,6 +30,11 @@ $usedIds = function () use ($root): array {
         }
     }
 
+    // Скріни, що підставляються з контролера (розділи «Можливостей»)
+    foreach (App\Controllers\FeaturesController::SCREENS as $id) {
+        $used[$id][] = 'app/Controllers/FeaturesController.php';
+    }
+
     return $used;
 };
 

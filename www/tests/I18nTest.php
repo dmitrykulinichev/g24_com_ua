@@ -141,7 +141,14 @@ return [
 
     'перекладена сторінка — усі її тексти є в кожній мові (немає — сторінка вийде наполовину українською)' => function () {
         // Адреса з localized_paths (config/i18n.php) => розділи словника, з яких вона бере тексти
-        $sections = ['/' => ['landing', 'screens', 'meta', 'nav', 'footer', 'cookies', 'language', 'order_form']];
+        $common = ['meta', 'nav', 'footer', 'cookies', 'language', 'order_form'];
+        $sections = [
+            '/' => ['landing', 'screens', ...$common],
+            '/features' => ['features', ...$common],
+            '/target' => ['target', ...$common],
+            '/pricing' => ['pricing', ...$common],
+            '/contacts' => ['contacts', ...$common],
+        ];
         $flatten = function (array $a, string $prefix = '') use (&$flatten): array {
             $out = [];
             foreach ($a as $k => $v) {

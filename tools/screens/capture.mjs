@@ -25,7 +25,10 @@ import puppeteer from 'puppeteer-core';
 const here = path.dirname(fileURLToPath(import.meta.url));
 const www = path.resolve(here, '../../www');
 const srcDir = path.join(here, 'src');
-const registry = JSON.parse(fs.readFileSync(path.join(www, 'content/screens.json'), 'utf8')).screens;
+const registryFile = JSON.parse(fs.readFileSync(path.join(www, 'content/screens.json'), 'utf8'));
+const registry = registryFile.screens;
+// Назви інших парків акаунта знімання — розмити на кожному скріні кабінету
+const BLUR_TEXT = registryFile.cabinet_blur_text ?? [];
 const LOCALES = ['uk', 'en', 'ru'];
 const ADB = process.env.ADB ?? path.join(os.homedir(), 'Library/Android/sdk/platform-tools/adb');
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -149,6 +152,13 @@ async function captureCabinet(ids, onlyLocale, show = false) {
                 }
                 await new Promise((r) => setTimeout(r, 2500));
                 if (await page.$('input[type="password"]')) throw new Error(`${id} ${locale}: замість сторінки — форма входу`);
+                await page.evaluate((texts) => {
+                    const wanted = texts.map((t) => t.toLowerCase());
+                    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+                    for (let node = walker.nextNode(); node; node = walker.nextNode()) {
+                        if (wanted.includes(node.textContent.trim().toLowerCase())) node.parentElement.style.filter = 'blur(6px)';
+                    }
+                }, BLUR_TEXT);
                 const png = path.join(os.tmpdir(), `screen-${id}-${locale}.png`);
                 await page.screenshot({ path: png });
                 const out = outPath(locale, id);

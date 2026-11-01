@@ -30,7 +30,7 @@ return [
     // український вміст із canonical на українську адресу — без дублів для пошуковиків.
     // «/docs/*» — адреса й усе під нею. Відкрили переклад сторінки — додати сюди.
     // Відкрили сторінку — додати її розділ словника в tests/I18nTest.php («перекладена сторінка — усі тексти…»).
-    'localized_paths' => ['/'],
+    'localized_paths' => ['/', '/contacts'],
 
     'preview' => filter_var($_ENV['LANDING_LOCALES_PREVIEW'] ?? false, FILTER_VALIDATE_BOOLEAN),
 ];

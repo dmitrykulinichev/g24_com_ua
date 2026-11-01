@@ -276,17 +276,10 @@
                     <p class="text-slate-600 text-sm mb-4 leading-relaxed">
                         {{ t('contacts.clients.text') }}
                     </p>
-                    <p class="text-slate-600 text-sm mb-6 leading-relaxed">
+                    <p class="text-slate-600 text-sm leading-relaxed">
                         {{ t('contacts.clients.text_2') }}
                     </p>
 
-                    <a href="https://app.g24.com.ua/support" target="_blank" class="block w-full text-center py-3 bg-white border border-slate-300 text-slate-700 font-semibold rounded-lg hover:bg-slate-100 hover:text-primary transition shadow-sm">
-                        {{ t('contacts.clients.cta') }}
-                    </a>
-
-                    <div class="mt-8 pt-8 border-t border-slate-200">
-                        <div class="text-slate-500 text-sm">{{ t('contacts.clients.hours') }}</div>
-                    </div>
                 </div>
 
             </div>
