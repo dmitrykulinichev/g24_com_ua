@@ -64,6 +64,14 @@ return [
             check(str_starts_with($en['image'], '/assets/img/blog/synced/en/shift/cover-'), 'англійська обкладинка — у теці en: ' . $en['image']);
             check(str_starts_with(BlogStore::post('shift', 'uk')['image'], '/assets/img/blog/synced/uk/shift/'), 'українська — у теці uk');
             check(str_contains(file_get_contents(BlogStore::file('shift', 'en')), '](/assets/img/blog/synced/en/shift/img-'), 'картинка тексту en — локальна, у теці en');
+            // Файли, на які посилаються стаття й обкладинка, справді лежать на диску (і після повторної синхронізації)
+            (new BlogSync($fetch))->run($feed());
+            foreach (['uk', 'en'] as $l) {
+                preg_match_all('#\]\((/assets/img/blog/synced/[^)]+)\)#', file_get_contents(BlogStore::file('shift', $l)), $m);
+                foreach ([...$m[1], BlogStore::post('shift', $l)['image']] as $url) {
+                    check(is_file($root . $url), "{$l}: немає файлу {$url}");
+                }
+            }
             same(['uk', 'en'], BlogStore::localesOf('shift'));
         } finally {
             $teardown($root);

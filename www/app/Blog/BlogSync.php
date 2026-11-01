@@ -141,7 +141,11 @@ final class BlogSync
     {
         return preg_replace_callback(
             '/!\[([^\]]*)\]\((https?:\/\/[^\)\s]+)\)/',
-            fn ($m) => '![' . $m[1] . '](' . ($this->syncImage($m[2], $locale, $slug, 'img', $kept) ?? $m[2]) . ')',
+            // Не стрілкова функція: вона захоплює $kept копією — картинки не потрапили б у «залишити» й одразу
+            // видалились би як застарілі
+            function ($m) use ($locale, $slug, &$kept) {
+                return '![' . $m[1] . '](' . ($this->syncImage($m[2], $locale, $slug, 'img', $kept) ?? $m[2]) . ')';
+            },
             $content
         );
     }
