@@ -151,6 +151,12 @@ async function captureCabinet(ids, onlyLocale, show = false) {
                     await page.waitForNetworkIdle({ idleTime: 800, timeout: 30000 }).catch(() => {});
                 }
                 await new Promise((r) => setTimeout(r, 2500));
+                // Кадр — з початку сторінки: деякі сторінки після завантаження самі прокручують таблицю
+                await page.evaluate(() => {
+                    window.scrollTo(0, 0);
+                    document.querySelectorAll('*').forEach((el) => { if (el.scrollTop > 0) el.scrollTop = 0; });
+                });
+                await new Promise((r) => setTimeout(r, 300));
                 if (await page.$('input[type="password"]')) throw new Error(`${id} ${locale}: замість сторінки — форма входу`);
                 await page.evaluate((texts) => {
                     const wanted = texts.map((t) => t.toLowerCase());
