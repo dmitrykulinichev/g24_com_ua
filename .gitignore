@@ -22,3 +22,4 @@ Thumbs.db
 # Інструмент скрінів лендінгу
 /tools/screens/node_modules/
 /tools/screens/.chrome-profile/
+/tools/screens/.cabinet-session.json

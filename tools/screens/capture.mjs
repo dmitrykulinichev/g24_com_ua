@@ -34,6 +34,9 @@ const ADB = process.env.ADB ?? path.join(os.homedir(), 'Library/Android/sdk/plat
 const CHROME = process.env.CHROME ?? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const CABINET_URL = (process.env.CABINET_URL ?? 'https://app.g24.com.ua').replace(/\/$/, '');
 const CHROME_PROFILE = process.env.CHROME_PROFILE ?? path.join(here, '.chrome-profile');
+// Cookie сесії кабінету — без терміну дії, Chrome стирає їх при закритті вікна; тому `login` зберігає їх сюди,
+// а знімання підставляє (файл у .gitignore — це вхід у кабінет)
+const SESSION_FILE = path.join(here, '.cabinet-session.json');
 // Хостинг кабінету не пускає «HeadlessChrome» (403) — представляємось звичайним Chrome
 const USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36';
 
@@ -125,6 +128,9 @@ async function captureCabinet(ids, onlyLocale, show = false) {
     try {
         const page = await browser.newPage();
         await page.setUserAgent(USER_AGENT);
+        if (fs.existsSync(SESSION_FILE)) {
+            await page.setCookie(...JSON.parse(fs.readFileSync(SESSION_FILE, 'utf8')));
+        }
         for (const id of targets) {
             const { source, viewport } = registry[id];
             const [width, height] = viewport;
@@ -179,11 +185,25 @@ async function captureCabinet(ids, onlyLocale, show = false) {
     }
 }
 
+/**
+ * Вікно входу: людина входить сама; щойно з'явився кабінет — cookie сесії зберігаються у файл. Вікно скрипт не
+ * закриває ніколи — людина закриває його сама, коли захоче (знімання бере сесію з файлу, вікно йому не потрібне).
+ */
 async function login() {
     const browser = await puppeteer.launch({ executablePath: CHROME, headless: false, userDataDir: CHROME_PROFILE, defaultViewport: null });
     const [page] = await browser.pages();
+    await page.setUserAgent(USER_AGENT);
     await page.goto(CABINET_URL + '/login');
-    console.log('Увійдіть у кабінет у вікні браузера, потім закрийте його.');
+    console.log('Увійдіть у кабінет у вікні браузера. Вікно можна не закривати — сесію буде збережено.');
+    for (;;) {
+        await new Promise((r) => setTimeout(r, 2000));
+        const loggedIn = await page.evaluate(() => !document.querySelector('input[type="password"]') && !!document.querySelector('nav, aside'))
+            .catch(() => false);
+        if (loggedIn) break;
+    }
+    const cookies = (await page.cookies(CABINET_URL)).map(({ name, value, domain, path: p, secure, httpOnly, sameSite }) => ({ name, value, domain, path: p, secure, httpOnly, sameSite }));
+    fs.writeFileSync(SESSION_FILE, JSON.stringify(cookies), { mode: 0o600 });
+    console.log(`✓ сесію збережено (${cookies.length} cookie) — вікно лишається відкритим`);
     await new Promise((r) => browser.on('disconnected', r));
 }
 
