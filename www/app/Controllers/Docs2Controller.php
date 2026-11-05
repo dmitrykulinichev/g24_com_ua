@@ -130,6 +130,21 @@ HTML;
     }
 
     /**
+     * Скріни з реєстру (content/screens.json): у Markdown — `![](screen:app-login)`, на сторінці — файл мовою
+     * сторінки з підписом зі словника (partials.screen), як на решті лендінгу.
+     */
+    protected function renderRegistryScreens(string $html): string
+    {
+        return preg_replace_callback(
+            '/(?:<p>)?<img\s+src="screen:([a-z0-9-]+)"[^>]*>(?:<\/p>)?/',
+            fn ($m) => '<figure class="docs-app-screen">'
+                . $this->blade->make('partials.screen', ['id' => $m[1], 'class' => 'mx-auto w-full max-w-[18rem]'])->render()
+                . '</figure>',
+            $html
+        );
+    }
+
+    /**
      * Обробляє standalone <img> зі скріншотами: замінює на responsive-блоки.
      * Якщо файл не існує — показує заглушку.
      * Desktop (md+): desktop + mobile поруч (якщо є мобільний).
@@ -227,11 +242,15 @@ HTML;
         }
 
         $rendered    = MarkdownService::render($data['content']);
-        $htmlContent = $this->rewriteImagePaths($this->processScreenshots($rendered));
+        $htmlContent = $this->rewriteImagePaths($this->processScreenshots($this->renderRegistryScreens($rendered)));
 
         // OG image — конвертуємо відносний шлях скріншота в абсолютний web-шлях
         if (!empty($data['meta']['image']) && str_starts_with($data['meta']['image'], 'screenshots/')) {
             $data['meta']['image'] = '/content/docs2/' . $data['meta']['image'];
+        }
+        // Скрін з реєстру (`screen:id`) — файл, який бачить сторінка
+        if (!empty($data['meta']['image']) && str_starts_with($data['meta']['image'], 'screen:')) {
+            $data['meta']['image'] = \App\Screens\ScreenRegistry::instance()->image(substr($data['meta']['image'], 7))['path'];
         }
 
         // Плоский список для навігації prev/next (батьківські + таби після кожного)

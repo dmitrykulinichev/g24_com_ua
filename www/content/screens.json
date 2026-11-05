@@ -227,6 +227,42 @@
       "pages": [
         "/features"
       ]
+    },
+    "app-login": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "login"
+        ],
+        "scenario": "Застосунок без входу (чисті дані): екран «Увійти» з вибором мови"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-register-park-code": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "register-park-code"
+        ],
+        "scenario": "«Зареєструватися» → крок «Код парку» з кодом парку «Київ» (WP7FR2), клавіатура схована"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-register-phone": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "register-phone"
+        ],
+        "scenario": "Після «Далі» — крок «Реєстрація» (телефон) з підтвердженням «Парк: Київ»"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
     }
   },
   "cabinet_blur_text": [

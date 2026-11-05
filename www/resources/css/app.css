@@ -41,6 +41,10 @@ body {
 .content li {
     @apply mb-2;
 }
+/* Лише посилання з тексту (Markdown, без класів): картки й кнопки всередині .content мають свій вигляд */
+.content a:not([class]) {
+    @apply text-primary underline underline-offset-2 hover:no-underline;
+}
 .content img {
     @apply rounded-xl border border-slate-200 my-8 w-full h-auto shadow-sm;
 }

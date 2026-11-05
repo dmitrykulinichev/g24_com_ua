@@ -146,6 +146,11 @@ class SitemapController
                         'lastmod'    => date('Y-m-d'),
                         'changefreq' => 'monthly',
                         'priority'   => '0.7',
+                        // Скріни з реєстру (`![](screen:…)` у сторінці); документація поки українською
+                        'images'     => array_map(
+                            fn ($id) => ['loc' => $baseUrl . $screens->image($id, 'uk')['path']],
+                            $screens->forPage('/docs/' . $item['slug'])
+                        ),
                     ];
                     foreach ($item['tabs'] ?? [] as $tab) {
                         $urls[] = [

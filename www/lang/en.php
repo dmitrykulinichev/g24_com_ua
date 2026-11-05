@@ -690,5 +690,8 @@ return [
         'cabinet-uklon-orders' => 'Web dashboard: Uklon orders',
         'cabinet-maintenance' => 'Web dashboard: vehicle maintenance',
         'cabinet-activity-logs' => 'Web dashboard: system activity log',
+        'app-login' => 'Garage24 app: sign-in screen with language selection',
+        'app-register-park-code' => 'Driver sign-up: the fleet code step',
+        'app-register-phone' => 'Driver sign-up: phone number, fleet confirmed',
     ],
 ];
