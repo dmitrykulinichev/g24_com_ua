@@ -5,10 +5,38 @@
       {
         "title": "Як почати",
         "slug": "driver-start",
-        "description": "Встановлення застосунку, реєстрація за кодом парку, вхід і відновлення пароля.",
-        "docFile": "_data/driver/start.md"
+        "description": "Вхід за номером телефону: для водія, якого вже додав парк, і для нового водія.",
+        "docFile": "_data/driver/start.md",
+        "badge": "new",
+        "screen": "app-signin",
+        "i18n": {
+          "en": {
+            "title": "Getting started",
+            "description": "Sign in with your phone number: for a driver your fleet has already added, and for a new driver."
+          },
+          "ru": {
+            "title": "Как начать",
+            "description": "Вход по номеру телефона: для водителя, которого уже добавил парк, и для нового водителя."
+          }
+        }
+      },
+      {
+        "title": "Зміна: прийняти й здати авто",
+        "slug": "driver-shift",
+        "description": "Прийняти автомобіль на початку зміни й здати в кінці: пробіг, «Скасувати», зайняте авто.",
+        "docFile": "_data/driver/shift.md",
+        "badge": "new",
+        "screen": "app-vehicle-mine"
       }
-    ]
+    ],
+    "i18n": {
+      "en": {
+        "title": "Driver app"
+      },
+      "ru": {
+        "title": "Приложение для водителя"
+      }
+    }
   },
   {
     "title": "Основний функціонал",

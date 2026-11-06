@@ -32,6 +32,7 @@
                                               {{ $isActive ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
                                        @if($isActive) aria-current="page" @endif>
                                         {{ $menuItem['title'] }}
+                                        @include('partials.docs-badge', ['badge' => $menuItem['badge'] ?? null, 'class' => 'ml-1'])
                                     </a>
                                     @if($isActive && !empty($menuItem['tabs']))
                                     <ul aria-label="{{ t('docs.page.sections', ['title' => $menuItem['title']]) }}" class="mt-0.5 ml-3 border-l border-slate-200 pl-2">
@@ -58,6 +59,7 @@
         </aside>
 
         <article class="flex-1 min-w-0 content" id="docsContent">
+            @include('partials.docs-badge', ['badge' => $parentItem['badge'] ?? null])
 
             {!! $content !!}
 

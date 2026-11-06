@@ -120,6 +120,9 @@ return [
                 'cta' => 'Написать в поддержку',
             ],
         ],
+        'badge' => [
+            'new' => 'Новая',
+        ],
         'page' => [
             'contents' => 'Содержание раздела',
             'nav' => 'Документация',
@@ -690,5 +693,27 @@ return [
         'cabinet-uklon-orders' => 'Веб-кабинет: заказы из Uklon',
         'cabinet-maintenance' => 'Веб-кабинет: техническое обслуживание авто',
         'cabinet-activity-logs' => 'Веб-кабинет: журнал действий в системе',
+        'app-signin' => 'Приложение Garage24: экран входа по номеру телефона',
+        'app-signin-code' => 'Вход в приложение: поле для кода',
+        'app-signin-code-telegram' => 'Вход в приложение: код отправлен в Telegram-бот парка',
+        'app-register-new-driver' => 'Регистрация нового водителя: приложение подсказывает, что номер ещё не зарегистрирован',
+        'app-register-profile-filled' => 'Регистрация водителя: личные данные заполнены',
+        'app-register-password' => 'Регистрация водителя: пароль для входа',
+        'app-first-permissions' => 'Приложение после регистрации: разрешения',
+        'app-new-driver-home' => 'Главный экран нового водителя: ещё без авто',
+        'app-telegram-code' => 'Сообщение с кодом входа от Telegram-бота парка',
+    ],
+
+    'screen_captions' => [
+        'app-signin' => 'Номер телефона',
+        'app-signin-code' => 'Код из SMS',
+        'app-signin-code-telegram' => 'Код в Telegram',
+        'app-home' => 'Главный экран',
+        'app-register-new-driver' => 'Код парка',
+        'app-register-profile-filled' => 'Ваши данные',
+        'app-register-password' => 'Пароль',
+        'app-first-permissions' => 'Разрешения',
+        'app-new-driver-home' => 'Главный экран',
+        'app-telegram-code' => 'Telegram',
     ],
 ];

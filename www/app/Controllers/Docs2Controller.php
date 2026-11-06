@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Docs\DocsStore;
 use App\Services\MarkdownService;
 
 class Docs2Controller
@@ -19,30 +20,24 @@ class Docs2Controller
         $this->screenshotsWebPath = '/content/docs2/screenshots';
     }
 
-    /**
-     * Перетворює docFile "_data/foo/bar.md" → реальний шлях до файлу
-     */
-    protected function resolveDocFile($docFile)
-    {
-        $relative = preg_replace('/^_data\//', '', $docFile);
-        return $this->contentPath . '/' . $relative;
-    }
-
     protected function getMenu()
     {
-        if (!file_exists($this->menuPath)) return [];
-        $menu = json_decode(file_get_contents($this->menuPath), true) ?? [];
+        // Українська — основна: у меню лише сторінки, що мають український файл; назви — мовою сторінки (DocsStore)
+        $default = \App\I18n\Locale::config()->default();
+        $menu = DocsStore::rawMenu();
 
         foreach ($menu as &$group) {
-            $group['items'] = array_values(array_filter($group['items'], function ($item) {
-                return !empty($item['docFile']) && file_exists($this->resolveDocFile($item['docFile']));
+            $group = DocsStore::localize($group);
+            $group['items'] = array_values(array_filter($group['items'], function ($item) use ($default) {
+                return !empty($item['docFile']) && file_exists(DocsStore::file($item['docFile'], $default));
             }));
 
             foreach ($group['items'] as &$item) {
+                $item = DocsStore::localize($item);
                 if (!empty($item['tabs'])) {
-                    $item['tabs'] = array_values(array_filter($item['tabs'], function ($tab) {
-                        return !empty($tab['docFile']) && file_exists($this->resolveDocFile($tab['docFile']));
-                    }));
+                    $item['tabs'] = array_values(array_map([DocsStore::class, 'localize'], array_filter($item['tabs'], function ($tab) use ($default) {
+                        return !empty($tab['docFile']) && file_exists(DocsStore::file($tab['docFile'], $default));
+                    })));
                 }
             }
             unset($item);
@@ -131,17 +126,48 @@ HTML;
 
     /**
      * Скріни з реєстру (content/screens.json): у Markdown — `![](screen:app-login)`, на сторінці — файл мовою
-     * сторінки з підписом зі словника (partials.screen), як на решті лендінгу.
+     * сторінки з підписом зі словника (partials.screen), як на решті лендінгу. Кілька через кому —
+     * `![](screen:app-signin,app-signin-code,app-home)` — потік кроками: телефони в ряд (на телефоні гортаються вбік),
+     * з номером кроку на кадрі й коротким підписом під ним — зі словника (`screen_captions.<id>`, один на скрін для
+     * всіх сторінок); сторінка може замінити своїм в alt через `|`: `![Вхід||Головна](screen:a,b,c)` (порожньо — зі словника).
      */
     protected function renderRegistryScreens(string $html): string
     {
         return preg_replace_callback(
-            '/(?:<p>)?<img\s+src="screen:([a-z0-9-]+)"[^>]*>(?:<\/p>)?/',
-            fn ($m) => '<figure class="docs-app-screen">'
-                . $this->blade->make('partials.screen', ['id' => $m[1], 'class' => 'mx-auto w-full max-w-[18rem]'])->render()
-                . '</figure>',
+            '/(?:<p>)?<img\s+src="screen:([a-z0-9-]+(?:,[a-z0-9-]+)*)"(?:\s+alt="([^"]*)")?[^>]*>(?:<\/p>)?/',
+            function ($m) {
+                $ids = explode(',', $m[1]);
+                $captions = ($m[2] ?? '') === '' ? [] : array_map('trim', explode('|', $m[2]));
+                if (count($ids) === 1) {
+                    return '<figure class="docs-app-screen">'
+                        . $this->blade->make('partials.screen', ['id' => $ids[0], 'class' => 'mx-auto w-full max-w-[18rem]'])->render()
+                        . '</figure>';
+                }
+
+                // Номер кроку в кружечку — той самий, що в нумерованому списку одразу після ряду (CSS `.docs-app-screens + ol`)
+                $items = array_map(
+                    fn ($id, $i) => '<div class="relative snap-start shrink-0 w-[70%] sm:w-auto sm:flex-1">'
+                        . '<span class="docs-step-badge" aria-hidden="true">' . ($i + 1) . '</span>'
+                        . $this->blade->make('partials.screen', ['id' => $id, 'class' => 'w-full'])->render()
+                        . $this->stepCaption($id, $captions[$i] ?? '')
+                        . '</div>',
+                    $ids,
+                    array_keys($ids)
+                );
+
+                return '<figure class="docs-app-screens flex gap-3 overflow-x-auto snap-x snap-mandatory pb-2">' . implode('', $items) . '</figure>';
+            },
             $html
         );
+    }
+
+    /** Підпис кроку: свій зі сторінки, інакше зі словника (`screen_captions.<id>`), немає — без підпису. */
+    protected function stepCaption(string $id, string $own): string
+    {
+        $key = 'screen_captions.' . $id;
+        $text = $own !== '' ? $own : (t($key) !== $key ? t($key) : '');
+
+        return $text === '' ? '' : '<figcaption class="docs-step-caption">' . htmlspecialchars($text) . '</figcaption>';
     }
 
     /**
@@ -232,7 +258,8 @@ HTML;
         $parentSlug = $isTab ? $parentItem['slug'] : null;
 
         $docFile  = $isTab ? $activeTab['docFile'] : $parentItem['docFile'];
-        $filePath = $this->resolveDocFile($docFile);
+        // Мовою сторінки, якщо є переклад; інакше українська (canonical — на неї, LocalizedUrl)
+        $filePath = DocsStore::file($docFile, DocsStore::contentLocale($slug));
         $data = MarkdownService::parseFile($filePath);
 
         if (!$data) {
@@ -250,7 +277,9 @@ HTML;
         }
         // Скрін з реєстру (`screen:id`) — файл, який бачить сторінка
         if (!empty($data['meta']['image']) && str_starts_with($data['meta']['image'], 'screen:')) {
-            $data['meta']['image'] = \App\Screens\ScreenRegistry::instance()->image(substr($data['meta']['image'], 7))['path'];
+            // Потік `screen:a,b,c` — перший скрін
+            $firstScreen = explode(',', substr($data['meta']['image'], 7))[0];
+            $data['meta']['image'] = \App\Screens\ScreenRegistry::instance()->image($firstScreen)['path'];
         }
 
         // Плоский список для навігації prev/next (батьківські + таби після кожного)

@@ -135,32 +135,26 @@ class SitemapController
             }
         }
 
-        // 3. Документація (новий контент docs2, шлях /docs)
-        $docs2MenuPath = dirname(__DIR__, 2) . '/content/docs2/menu.json';
-        if (file_exists($docs2MenuPath)) {
-            $docs2Menu = json_decode(file_get_contents($docs2MenuPath), true) ?? [];
-            foreach ($docs2Menu as $group) {
-                foreach ($group['items'] as $item) {
-                    $urls[] = [
-                        'loc'        => $baseUrl . '/docs/' . $item['slug'],
-                        'lastmod'    => date('Y-m-d'),
-                        'changefreq' => 'monthly',
-                        'priority'   => '0.7',
-                        // Скріни з реєстру (`![](screen:…)` у сторінці); документація поки українською
-                        'images'     => array_map(
-                            fn ($id) => ['loc' => $baseUrl . $screens->image($id, 'uk')['path']],
-                            $screens->forPage('/docs/' . $item['slug'])
-                        ),
-                    ];
-                    foreach ($item['tabs'] ?? [] as $tab) {
-                        $urls[] = [
-                            'loc'        => $baseUrl . '/docs/' . $tab['slug'],
-                            'lastmod'    => date('Y-m-d'),
-                            'changefreq' => 'monthly',
-                            'priority'   => '0.6',
-                        ];
-                    }
-                }
+        // 3. Документація (content/docs2, шлях /docs) — кожна сторінка кожною мовою, якою вона є (app/Docs),
+        //    з альтернативами й скрінами з реєстру мовою цієї адреси (документація без перекладу — лише українською)
+        foreach (\App\Docs\DocsStore::slugs() as $docSlug) {
+            $path = '/docs/' . $docSlug;
+            if (\App\Docs\DocsStore::pageLocales($docSlug) === null) {
+                continue;
+            }
+            $alternates = \App\I18n\LocalizedUrl::alternates($path);
+            foreach ($alternates as $locale => $loc) {
+                $urls[] = [
+                    'loc'        => $loc,
+                    'lastmod'    => date('Y-m-d'),
+                    'changefreq' => 'monthly',
+                    'priority'   => '0.7',
+                    'alternates' => count($alternates) > 1 ? $alternates : [],
+                    'images'     => array_map(
+                        fn ($id) => ['loc' => $baseUrl . $screens->image($id, $locale)['path']],
+                        $screens->forPage($path)
+                    ),
+                ];
             }
         }
 

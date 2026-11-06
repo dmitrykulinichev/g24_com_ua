@@ -22,7 +22,10 @@
                             <a href="{{ lurl('/docs/' . $item['slug']) }}" class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
                                 <!-- Зображення-прев'ю -->
                                 <div class="h-40 bg-slate-100 overflow-hidden border-b border-slate-100 relative">
-                                    @if(!empty($item['image']))
+                                    @if(!empty($item['screen']))
+                                        {{-- Нова документація: прев'ю — скрін з реєстру (content/screens.json) --}}
+                                        @include('partials.screen', ['id' => $item['screen'], 'class' => 'w-full h-full object-cover object-top'])
+                                    @elseif(!empty($item['image']))
                                         <img src="/content/docs2/screenshots/light/desktop/{{ $item['image'] }}" alt="{{ $item['title'] }}" loading="lazy" class="w-full h-full object-cover object-top transform group-hover:scale-105 transition-transform duration-500">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-slate-300">
@@ -33,7 +36,7 @@
                                 </div>
 
                                 <div class="p-6 flex flex-col flex-grow">
-                                    <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">{{ $item['title'] }}</h3>
+                                    <h3 class="text-lg font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">{{ $item['title'] }} @include('partials.docs-badge', ['badge' => $item['badge'] ?? null, 'class' => 'ml-1 align-middle'])</h3>
                                     <div class="text-sm text-slate-500 mb-4 flex-grow line-clamp-2">
                                         {{ $item['description'] ?? t('docs.index.go_to_section', ['title' => $item['title']]) }}
                                     </div>

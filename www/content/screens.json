@@ -82,7 +82,8 @@
       },
       "pages": [
         "/",
-        "/features"
+        "/features",
+        "/docs/driver-start"
       ]
     },
     "app-driver-trio": {
@@ -237,7 +238,8 @@
         "scenario": "Застосунок 2.0.26+, без входу: перший екран «Вхід» (номер телефону, вибір мови, «Увійти з паролем»); flows/driver-start.py"
       },
       "pages": [
-        "/docs/driver-start"
+        "/docs/driver-start",
+        "/docs"
       ]
     },
     "app-signin-code": {
@@ -246,10 +248,167 @@
         "shots": [
           "signin-code"
         ],
-        "scenario": "Той самий екран після «Надіслати код» з тестовим номером Firebase: поле коду, «Повторно через …»"
+        "scenario": "Новий водій для скрінів (0791112298, CAST.md): «Надіслати код» → поле коду, «Повторно через …»; flows/driver-register.py"
       },
       "pages": [
         "/docs/driver-start"
+      ]
+    },
+    "app-register-new-driver": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "register-new-driver"
+        ],
+        "scenario": "Новий водій для скрінів (0791112298, CAST.md) → код → перший крок реєстрації «Код парку» з «ви новий водій»; flows/driver-register.py"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-register-profile-filled": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "register-profile-filled"
+        ],
+        "scenario": "Реєстрація: «Ваші дані» заповнено, «✓ Парк: Київ»; flows/driver-register.py (новий водій 0791112298, CAST.md; приклад даних — Andrii Tkachenko, 14.03.1990, AXK 482917)"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-register-password": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "register-password"
+        ],
+        "scenario": "Реєстрація: «Створіть пароль» (порожнє поле); flows/driver-register.py (новий водій 0791112298, CAST.md; приклад даних — Andrii Tkachenko, 14.03.1990, AXK 482917)"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-first-permissions": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "first-permissions"
+        ],
+        "scenario": "Після реєстрації: «Дозволи додатку» (геолокацію дано); новий водій Andrii Tkachenko, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-new-driver-home": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "new-driver-home"
+        ],
+        "scenario": "Після реєстрації: «Головна» нового водія — «Ви не в автомобілі», «Обрати автомобіль»; Andrii Tkachenko (0791112299, CAST.md)"
+      },
+      "pages": [
+        "/docs/driver-start",
+        "/docs/driver-shift"
+      ]
+    },
+    "app-signin-code-telegram": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "signin-code-telegram"
+        ],
+        "scenario": "Тестовий водій Andrii Tkachenko (+380791112299), підключений до бота «Київ» @garage24_kyiv_test_bot: «Код надіслано в Telegram-бот вашого парку», «Надіслати SMS»"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-telegram-code": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "telegram-code"
+        ],
+        "scenario": "Скрін із телефона власника (не емулятор): чат з ботом «Київ» @garage24_kyiv_test_bot, повідомлення з кодом входу мовою застосунку. Знімає користувач; сирий кадр — у src/<мова>/app/telegram-code.png"
+      },
+      "pages": [
+        "/docs/driver-start"
+      ]
+    },
+    "app-vehicle-choose": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "vehicle-choose"
+        ],
+        "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Авто» → «Вільні (3)» після «Обрати автомобіль»"
+      },
+      "pages": [
+        "/docs/driver-shift"
+      ]
+    },
+    "app-vehicle-accept": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "vehicle-accept"
+        ],
+        "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Прийняти» на Passat → пробіг 30 312, клавіатуру сховано"
+      },
+      "pages": [
+        "/docs/driver-shift"
+      ]
+    },
+    "app-vehicle-mine": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "vehicle-mine"
+        ],
+        "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: Після прийому: «Мій автомобіль» (тост «Скасувати» вже зник)"
+      },
+      "pages": [
+        "/docs/driver-shift"
+      ]
+    },
+    "app-home-with-car": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "home-with-car"
+        ],
+        "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Головна» з авто, «Здати автомобіль»"
+      },
+      "pages": [
+        "/docs/driver-shift"
+      ]
+    },
+    "app-vehicle-handover": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "vehicle-handover"
+        ],
+        "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Здати автомобіль» → пробіг 30 498, клавіатуру сховано"
+      },
+      "pages": [
+        "/docs/driver-shift"
+      ]
+    },
+    "app-vehicle-handover-done": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "vehicle-handover-done"
+        ],
+        "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: Одразу після здачі: «Головна» без авто, тост «Автомобіль здано · Скасувати»"
+      },
+      "pages": [
+        "/docs/driver-shift"
       ]
     }
   },

@@ -28,9 +28,12 @@ $docsScreens = function () use ($root): array {
             foreach (array_merge([$item], $item['tabs'] ?? []) as $page) {
                 $file = $root . '/content/docs2/' . preg_replace('#^_data/#', '', $page['docFile'] ?? '');
                 if (is_file($file)) {
-                    preg_match_all('/!\[[^\]]*\]\(screen:([a-z0-9-]+)\)/', file_get_contents($file), $m);
-                    foreach ($m[1] as $id) {
-                        $used[$id][] = $page['slug'];
+                    // `![](screen:a)` або потік кроками `![](screen:a,b,c)`
+                    preg_match_all('/!\[[^\]]*\]\(screen:([a-z0-9-]+(?:,[a-z0-9-]+)*)\)/', file_get_contents($file), $m);
+                    foreach ($m[1] as $list) {
+                        foreach (explode(',', $list) as $id) {
+                            $used[$id][] = $page['slug'];
+                        }
                     }
                 }
             }
@@ -117,6 +120,15 @@ return [
                 if ($locale === 'uk' || $registry->exists($id, $locale)) {
                     check(trim($alts[$id] ?? '') !== '', "немає screens.{$id} у lang/{$locale}.php");
                 }
+            }
+        }
+    },
+
+    'підпис кроку (screen_captions) — лише для скрінів із реєстру' => function () use ($dictionary) {
+        $registry = ScreenRegistry::load();
+        foreach (Locale::config()->supported() as $locale) {
+            foreach (array_keys($dictionary($locale)['screen_captions'] ?? []) as $id) {
+                check($registry->has($id), "screen_captions.{$id} у lang/{$locale}.php — такого скріна немає в реєстрі");
             }
         }
     },

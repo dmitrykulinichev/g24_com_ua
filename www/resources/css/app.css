@@ -41,6 +41,29 @@ body {
 .content li {
     @apply mb-2;
 }
+
+/* Потік скрінів документації: номер кроку в кружечку на кадрі і такий самий у списку кроків одразу після ряду */
+.docs-step-badge {
+    @apply absolute top-3 left-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white shadow-md;
+}
+.content .docs-app-screens img {
+    @apply my-0;
+}
+.docs-step-caption {
+    @apply mt-2 text-center text-sm font-medium text-slate-700;
+}
+.content .docs-app-screens + ol {
+    @apply ml-0 list-none;
+    counter-reset: step;
+}
+.content .docs-app-screens + ol > li {
+    @apply relative pl-11 mb-3;
+    counter-increment: step;
+}
+.content .docs-app-screens + ol > li::before {
+    content: counter(step);
+    @apply absolute left-0 top-0 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-sm font-bold text-white;
+}
 /* Лише посилання з тексту (Markdown, без класів): картки й кнопки всередині .content мають свій вигляд */
 .content a:not([class]) {
     @apply text-primary underline underline-offset-2 hover:no-underline;

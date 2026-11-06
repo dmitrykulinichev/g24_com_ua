@@ -120,6 +120,9 @@ return [
                 'cta' => 'Contact support',
             ],
         ],
+        'badge' => [
+            'new' => 'New',
+        ],
         'page' => [
             'contents' => 'Section contents',
             'nav' => 'Documentation',
@@ -690,5 +693,27 @@ return [
         'cabinet-uklon-orders' => 'Web dashboard: Uklon orders',
         'cabinet-maintenance' => 'Web dashboard: vehicle maintenance',
         'cabinet-activity-logs' => 'Web dashboard: system activity log',
+        'app-signin' => 'Garage24 app: sign-in screen with your phone number',
+        'app-signin-code' => 'Signing in: the code field',
+        'app-signin-code-telegram' => 'Signing in: the code was sent to the fleet\'s Telegram bot',
+        'app-register-new-driver' => 'New driver sign-up: the app says the number isn\'t registered yet',
+        'app-register-profile-filled' => 'Driver sign-up: personal details filled in',
+        'app-register-password' => 'Driver sign-up: password for signing in',
+        'app-first-permissions' => 'The app after sign-up: permissions',
+        'app-new-driver-home' => 'New driver home screen: no vehicle yet',
+        'app-telegram-code' => 'Sign-in code message from the fleet\'s Telegram bot',
+    ],
+
+    'screen_captions' => [
+        'app-signin' => 'Phone number',
+        'app-signin-code' => 'SMS code',
+        'app-signin-code-telegram' => 'Code in Telegram',
+        'app-home' => 'Home screen',
+        'app-register-new-driver' => 'Fleet code',
+        'app-register-profile-filled' => 'Your details',
+        'app-register-password' => 'Password',
+        'app-first-permissions' => 'Permissions',
+        'app-new-driver-home' => 'Home screen',
+        'app-telegram-code' => 'Telegram',
     ],
 ];
