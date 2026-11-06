@@ -228,37 +228,25 @@
         "/features"
       ]
     },
-    "app-login": {
+    "app-signin": {
       "source": {
         "kind": "app",
         "shots": [
-          "login"
+          "signin"
         ],
-        "scenario": "Застосунок без входу (чисті дані): екран «Увійти» з вибором мови"
+        "scenario": "Застосунок 2.0.26+, без входу: перший екран «Вхід» (номер телефону, вибір мови, «Увійти з паролем»); flows/driver-start.py"
       },
       "pages": [
         "/docs/driver-start"
       ]
     },
-    "app-register-park-code": {
+    "app-signin-code": {
       "source": {
         "kind": "app",
         "shots": [
-          "register-park-code"
+          "signin-code"
         ],
-        "scenario": "«Зареєструватися» → крок «Код парку» з кодом парку «Київ» (WP7FR2), клавіатура схована"
-      },
-      "pages": [
-        "/docs/driver-start"
-      ]
-    },
-    "app-register-phone": {
-      "source": {
-        "kind": "app",
-        "shots": [
-          "register-phone"
-        ],
-        "scenario": "Після «Далі» — крок «Реєстрація» (телефон) з підтвердженням «Парк: Київ»"
+        "scenario": "Той самий екран після «Надіслати код» з тестовим номером Firebase: поле коду, «Повторно через …»"
       },
       "pages": [
         "/docs/driver-start"

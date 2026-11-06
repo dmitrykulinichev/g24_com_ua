@@ -142,8 +142,9 @@ return [
     'перекладена сторінка — усі її тексти є в кожній мові (немає — сторінка вийде наполовину українською)' => function () {
         // Адреса з localized_paths (config/i18n.php) => розділи словника, з яких вона бере тексти
         $common = ['meta', 'nav', 'footer', 'cookies', 'language', 'order_form'];
+        // Підписи скрінів (screens) — у ScreensTest: потрібні кожною мовою, якою скрін знято
         $sections = [
-            '/' => ['landing', 'screens', ...$common],
+            '/' => ['landing', ...$common],
             '/features' => ['features', ...$common],
             '/target' => ['target', ...$common],
             '/pricing' => ['pricing', ...$common],

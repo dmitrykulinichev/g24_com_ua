@@ -1,43 +1,44 @@
 """
-Сирі кадри для сторінки документації «Як почати» (/docs/driver-start) трьома мовами: вхід, «Код парку», телефон.
+Сирі кадри для сторінки документації «Як почати» (/docs/driver-start): «Вхід», код, перший крок реєстрації
+нового водія («ви новий водій»).
 
-    cd landing/tools/screens && python3 flows/driver-start.py [uk en ru]
-    node capture.mjs compose app-login app-register-park-code app-register-phone
+    cd landing/tools/screens && python3 flows/driver-start.py      # лише uk (інші мови — при перекладі сторінки)
+    node capture.mjs compose app-signin app-signin-code app-register-new-driver
 
-Android-емулятор з Garage24, без входу. Дані застосунку очищаються (pm clear) — якщо на емуляторі був вхід
-тестовим водієм, після знімання увійти знову. Код парку «Київ» лише перевіряється, акаунт не створюється.
+Android-емулятор із Garage24 (2.0.27+). Дані застосунку очищаються (pm clear) — якщо на емуляторі був вхід,
+після знімання увійти знову. Номер — тестовий Firebase «нового водія» (+380 00 000 00 02, код 123456,
+`kmp/docs/testing.md`): акаунта немає, тож після коду — реєстрація; сценарій зупиняється на першому кроці
+(акаунт не створюється).
 """
 import os, re, subprocess, sys, time
 
 ADB = os.path.expanduser('~/Library/Android/sdk/platform-tools/adb')
 CAPTURE = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'capture.mjs')
 PKG = 'ua.com.g24'
-CODE = 'WP7FR2'
-TEXT = {
-    'uk': {'register': 'Зареєструватися', 'field': 'Код парку', 'next': 'Далі', 'locale': 'uk-UA'},
-    'en': {'register': 'Sign up', 'field': 'Fleet code', 'next': 'Next', 'locale': 'en-US'},
-    'ru': {'register': 'Зарегистрироваться', 'field': 'Код парка', 'next': 'Далее', 'locale': 'ru-RU'},
-}
+TEST_PHONE = '0000000002'
+TEST_CODE = '123456'
+LOCALES = {'uk': 'uk-UA', 'en': 'en-US', 'ru': 'ru-RU'}
 
 
 def adb(*args):
     return subprocess.run([ADB, *args], capture_output=True, text=True).stdout
 
 
-def find(text):
+def screen_text():
     adb('shell', 'uiautomator', 'dump', '/sdcard/ui.xml')
-    xml = adb('shell', 'cat', '/sdcard/ui.xml')
-    for node in re.findall(r'<node [^>]*>', xml):
-        if f'text="{text}"' in node or f'content-desc="{text}"' in node:
-            a, b, c, d = map(int, re.search(r'bounds="\[(\d+),(\d+)\]\[(\d+),(\d+)\]"', node).groups())
-            return (a + c) // 2, (b + d) // 2
-    sys.exit(f'не знайшов «{text}» на екрані')
+    return adb('shell', 'cat', '/sdcard/ui.xml')
 
 
-def tap(text):
-    x, y = find(text)
-    adb('shell', 'input', 'tap', str(x), str(y))
-    time.sleep(1.5)
+def wait_for(pattern, seconds=30):
+    for _ in range(seconds):
+        if re.search(pattern, screen_text()):
+            return
+        time.sleep(1)
+    sys.exit(f'не дочекався «{pattern}» на екрані')
+
+
+def foreground_is_app():
+    return f'{PKG}/' in adb('shell', 'dumpsys', 'activity', 'activities').split('topResumedActivity', 1)[-1][:200]
 
 
 def hide_keyboard():
@@ -49,32 +50,30 @@ def hide_keyboard():
 
 def capture(shot, locale):
     hide_keyboard()
-    for _ in range(10):  # банер «немає зв'язку» після запуску зникає сам — чекаємо
-        adb('shell', 'uiautomator', 'dump', '/sdcard/ui.xml')
-        if not re.search(r'сервер|server|сервер', adb('shell', 'cat', '/sdcard/ui.xml'), re.I):
-            break
-        time.sleep(2)
-    else:
-        sys.exit(f'{shot}/{locale}: банер «немає зв\'язку» не зник')
+    # Емулятором буває користується інша програма — не знімати чужий екран
+    if not foreground_is_app():
+        sys.exit(f'{shot}/{locale}: на передньому плані не Garage24')
     subprocess.run(['node', CAPTURE, 'app', shot, '--locale', locale], check=True)
 
 
-for locale in sys.argv[1:] or TEXT:
-    t = TEXT[locale]
-    adb('shell', 'pm', 'clear', PKG)  # чистий запуск: без збереженого стану майстра реєстрації
-    adb('shell', 'cmd', 'locale', 'set-app-locales', PKG, '--locales', t['locale'])
+for locale in sys.argv[1:] or ['uk']:
+    adb('shell', 'pm', 'clear', PKG)
+    adb('shell', 'cmd', 'locale', 'set-app-locales', PKG, '--locales', LOCALES[locale])
     adb('shell', 'monkey', '-p', PKG, '-c', 'android.intent.category.LAUNCHER', '1')
-    time.sleep(6)
-    capture('login', locale)
+    wait_for(r'Увійти з паролем|Sign in with password|Войти с паролем')  # перший екран готовий
+    time.sleep(2)
+    capture('signin', locale)
 
-    tap(t['register'])
-    tap(t['field'])
-    adb('shell', 'input', 'text', CODE)
+    adb('shell', 'input', 'text', TEST_PHONE)
+    adb('shell', 'input', 'keyevent', '66')
+    wait_for(r'\+380000000002')  # з'явився крок коду
     time.sleep(1)
-    capture('register-park-code', locale)
-    tap(t['next'])
-    time.sleep(3)
+    capture('signin-code', locale)
+
+    adb('shell', 'input', 'text', TEST_CODE)
+    adb('shell', 'input', 'keyevent', '66')
+    wait_for(r'новий водій|new driver|новый водитель')  # перший крок реєстрації
     time.sleep(1)
-    capture('register-phone', locale)
+    capture('register-new-driver', locale)
 
 adb('shell', 'cmd', 'locale', 'set-app-locales', PKG, '--locales', 'uk-UA')

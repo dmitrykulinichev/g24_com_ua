@@ -108,11 +108,15 @@ return [
         }
     },
 
-    'підпис (alt) кожного скріна є в кожній мові' => function () use ($dictionary) {
+    'підпис (alt) скріна є українською і кожною мовою, якою його знято' => function () use ($dictionary) {
+        // Нова сторінка — лише українською; переклад (підписи й скріни разом) — після затвердження
+        $registry = ScreenRegistry::load();
         foreach (Locale::config()->supported() as $locale) {
             $alts = $dictionary($locale)['screens'] ?? [];
-            foreach (ScreenRegistry::load()->ids() as $id) {
-                check(trim($alts[$id] ?? '') !== '', "немає screens.{$id} у lang/{$locale}.php");
+            foreach ($registry->ids() as $id) {
+                if ($locale === 'uk' || $registry->exists($id, $locale)) {
+                    check(trim($alts[$id] ?? '') !== '', "немає screens.{$id} у lang/{$locale}.php");
+                }
             }
         }
     },
