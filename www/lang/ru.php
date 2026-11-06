@@ -702,6 +702,12 @@ return [
         'app-first-permissions' => 'Приложение после регистрации: разрешения',
         'app-new-driver-home' => 'Главный экран нового водителя: ещё без авто',
         'app-telegram-code' => 'Сообщение с кодом входа от Telegram-бота парка',
+        'app-vehicle-choose' => 'Приложение: свободные автомобили парка',
+        'app-vehicle-accept' => 'Приём автомобиля: пробег с одометра',
+        'app-vehicle-mine' => 'Приложение: мой автомобиль после приёма',
+        'app-home-with-car' => 'Главный экран водителя с автомобилем',
+        'app-vehicle-handover' => 'Сдача автомобиля: пробег с одометра',
+        'app-vehicle-handover-done' => 'Автомобиль сдан: можно отменить',
     ],
 
     'screen_captions' => [
@@ -715,5 +721,11 @@ return [
         'app-first-permissions' => 'Разрешения',
         'app-new-driver-home' => 'Главный экран',
         'app-telegram-code' => 'Telegram',
+        'app-vehicle-choose' => 'Свободные авто',
+        'app-vehicle-accept' => 'Пробег',
+        'app-vehicle-mine' => 'Мой автомобиль',
+        'app-home-with-car' => 'Сдать автомобиль',
+        'app-vehicle-handover' => 'Пробег',
+        'app-vehicle-handover-done' => 'Сдано',
     ],
 ];

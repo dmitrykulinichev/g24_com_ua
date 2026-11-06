@@ -26,7 +26,17 @@
         "description": "Прийняти автомобіль на початку зміни й здати в кінці: пробіг, «Скасувати», зайняте авто.",
         "docFile": "_data/driver/shift.md",
         "badge": "new",
-        "screen": "app-vehicle-mine"
+        "screen": "app-vehicle-mine",
+        "i18n": {
+          "en": {
+            "title": "Shift: take and return the vehicle",
+            "description": "Accept a vehicle at the start of a shift and return it at the end: mileage, \"Undo\", a vehicle with another driver."
+          },
+          "ru": {
+            "title": "Смена: принять и сдать авто",
+            "description": "Принять автомобиль в начале смены и сдать в конце: пробег, «Отменить», занятое авто."
+          }
+        }
       }
     ],
     "i18n": {

@@ -53,6 +53,9 @@ def capture(shot, locale):
     hide_keyboard()
     if f'{PKG}/' not in adb('shell', 'dumpsys', 'activity', 'activities').split('topResumedActivity', 1)[-1][:200]:
         sys.exit(f'{shot}/{locale}: на передньому плані не Garage24')
+    # Сповіщення (напр. «Air raid alert» від Google) лізуть у кадр банером і значком у статус-барі, демо-режим їх не ховає
+    if 'NotificationRecord(' in adb('shell', 'dumpsys', 'notification', '--noredact'):
+        sys.exit(f'{shot}/{locale}: на емуляторі є сповіщення — шторка → «Clear all», і знову')
     subprocess.run(['node', CAPTURE, 'app', shot, '--locale', locale], check=True)
 
 
@@ -61,7 +64,7 @@ for locale in sys.argv[3:] or ['uk']:
     adb('shell', 'cmd', 'locale', 'set-app-locales', PKG, '--locales', LOCALES[locale])
     adb('shell', 'am', 'force-stop', PKG)
     adb('shell', 'monkey', '-p', PKG, '-c', 'android.intent.category.LAUNCHER', '1')
-    time.sleep(10)
+    time.sleep(15)  # вкладка «Таксі» з'являється, коли підвантажиться стан таксі
     tap(TAB_HOME)
 
     tap(CHOOSE_CAR)

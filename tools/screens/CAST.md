@@ -45,4 +45,4 @@
 | `app-signin-code-telegram` | Tkachenko, бот підключено | вручну |
 | `app-telegram-code` | Tkachenko — скрін із телефона власника | знімає власник |
 | `app-home`, `app-driver-trio` | Петренко, Camry KA9001AR | вхід власника (пароль) |
-| `app-vehicle-choose`, `app-vehicle-accept`, `app-vehicle-mine`, `app-home-with-car`, `app-vehicle-handover`, `app-vehicle-handover-done` | Tkachenko, Passat KA1001AA | `flows/driver-shift.py <прийом> <здача>`; старт — Tkachenko без авто. Останній прогін 06.11.2026: 30512 → 30698, Passat здано (пробіг тепер 30 698) |
+| `app-vehicle-choose`, `app-vehicle-accept`, `app-vehicle-mine`, `app-home-with-car`, `app-vehicle-handover`, `app-vehicle-handover-done` | Tkachenko, Passat KA1001AA | `flows/driver-shift.py <прийом> <здача>`; старт — Tkachenko без авто. Прогони 06.11.2026: uk 30512→30698, en 31110→31296, ru 31308→31494; Passat здано, пробіг тепер **31 494** (наступний прийом — більше). Перед прогоном — шторка сповіщень порожня (сценарій перевіряє) |

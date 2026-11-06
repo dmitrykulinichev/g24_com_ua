@@ -702,6 +702,12 @@ return [
         'app-first-permissions' => 'The app after sign-up: permissions',
         'app-new-driver-home' => 'New driver home screen: no vehicle yet',
         'app-telegram-code' => 'Sign-in code message from the fleet\'s Telegram bot',
+        'app-vehicle-choose' => 'Driver app: available fleet vehicles',
+        'app-vehicle-accept' => 'Accepting a vehicle: odometer reading',
+        'app-vehicle-mine' => 'Driver app: my vehicle after accepting it',
+        'app-home-with-car' => 'Driver home screen with a vehicle',
+        'app-vehicle-handover' => 'Returning a vehicle: odometer reading',
+        'app-vehicle-handover-done' => 'Vehicle returned: can be undone',
     ],
 
     'screen_captions' => [
@@ -715,5 +721,11 @@ return [
         'app-first-permissions' => 'Permissions',
         'app-new-driver-home' => 'Home screen',
         'app-telegram-code' => 'Telegram',
+        'app-vehicle-choose' => 'Available',
+        'app-vehicle-accept' => 'Mileage',
+        'app-vehicle-mine' => 'My Vehicle',
+        'app-home-with-car' => 'Return Vehicle',
+        'app-vehicle-handover' => 'Mileage',
+        'app-vehicle-handover-done' => 'Returned',
     ],
 ];
