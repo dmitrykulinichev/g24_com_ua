@@ -296,7 +296,7 @@
         "shots": [
           "first-permissions"
         ],
-        "scenario": "Після реєстрації: «Дозволи додатку» (геолокацію дано); новий водій Andrii Tkachenko, парк «Київ»"
+        "scenario": "Після входу: «Дозволи додатку» (геолокацію дано, без камери — 2.0.29+); Andrii Tkachenko, парк «Київ»"
       },
       "pages": [
         "/docs/driver-start"
@@ -409,6 +409,114 @@
       },
       "pages": [
         "/docs/driver-shift"
+      ]
+    },
+    "app-quickadd-menu": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "quickadd-menu"
+        ],
+        "scenario": "Меню «+» на «Головній» з авто; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-add-manual-trip": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "add-manual-trip"
+        ],
+        "scenario": "«+» → Рука: форма «Додати поїздку» (100 грн за замовчуванням); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-add-mileage": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "add-mileage"
+        ],
+        "scenario": "«+» → Пробіг: «Оновити пробіг»; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-add-fuel": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "add-fuel"
+        ],
+        "scenario": "«+» → Заправка: 40 л, 2200 грн (не зберігається; в uk — збережено для кадру меню картки й видалено); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-add-expense": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "add-expense"
+        ],
+        "scenario": "«+» → Витрата: порожня форма; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-add-issue": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "add-issue"
+        ],
+        "scenario": "«+» → Звернення: порожня форма; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-record-undo": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "record-undo"
+        ],
+        "scenario": "Після «Зберегти» на «Руці»: список і тост «Скасувати» (одразу скасовано — на сервер не пішло); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-records-menu": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "records-menu"
+        ],
+        "scenario": "Бічне меню ☰: «Мої записи»; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
+      ]
+    },
+    "app-record-actions": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "record-actions"
+        ],
+        "scenario": "«Заправки»: меню картки «Редагувати / Видалити» (тестова заправка 40 л); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/docs/driver-records"
       ]
     }
   },

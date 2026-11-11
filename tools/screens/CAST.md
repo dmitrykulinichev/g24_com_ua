@@ -19,6 +19,7 @@
 | Хто | Номер (у застосунку) | Вхід | Парк | Авто | Стан (06.11.2026) |
 |---|---|---|---|---|---|
 | **Andrii Tkachenko** | `0791112299` | тестовий код `123456`; підключений до бота @garage24_kyiv_test_bot (Telegram власника) — тоді код іде в Telegram, «Надіслати SMS» → `123456` | «Київ» | Passat KA1001AA (veh 38) — приймає й здає у В2 | зареєстрований 06.11.2026; після сценаріїв — без авто |
+|  | ↳ **11.11.2026 (В3):** прийняв Passat з 31 600, здав з **31 650** — наступний прийом більше 31 650; без авто | | | | |
 | **Новий водій для скрінів** | `0791112298` | тестовий код `123456` | — (код парку `WP7FR2`) | — | акаунта немає; реєстрацію **не завершувати** |
 | Новий водій (відео) | `0000000002` | тестовий код `123456` | — | — | акаунта немає |
 | Людина без парку | `0000000001` | тестовий код `123456` | — | — | акаунт є, без парку → «Код парку» |
@@ -40,9 +41,10 @@
 | `app-register-new-driver` | новий водій `0791112298` | `flows/driver-register.py` |
 | `app-register-profile-filled` | новий водій `0791112298`, дані прикладу | `flows/driver-register.py` |
 | `app-register-password` | новий водій `0791112298` | `flows/driver-register.py` |
-| `app-first-permissions` | Tkachenko (одразу після реєстрації) | вручну; тепер — вийти й увійти Tkachenko |
+| `app-first-permissions` | Tkachenko | 11.11.2026, 2.0.30: `pm clear` → вхід `0791112299` (на емуляторі код підтверджується сам) → системний запит геолокації «Don’t allow» → `pm grant` FINE/COARSE_LOCATION → кадр. Мова: `set-app-locales` + `force-stop` + запуск, **перевіряти текст перед кадром** (мова застосовується не з першого разу) |
 | `app-new-driver-home` | Tkachenko, без авто | вручну |
 | `app-signin-code-telegram` | Tkachenko, бот підключено | вручну |
 | `app-telegram-code` | Tkachenko — скрін із телефона власника | знімає власник |
 | `app-home`, `app-driver-trio` | Петренко, Camry KA9001AR | вхід власника (пароль) |
 | `app-vehicle-choose`, `app-vehicle-accept`, `app-vehicle-mine`, `app-home-with-car`, `app-vehicle-handover`, `app-vehicle-handover-done` | Tkachenko, Passat KA1001AA | `flows/driver-shift.py <прийом> <здача>`; старт — Tkachenko без авто. Прогони 06.11.2026: uk 30512→30698, en 31110→31296, ru 31308→31494; Passat здано, пробіг тепер **31 494** (наступний прийом — більше). Перед прогоном — шторка сповіщень порожня (сценарій перевіряє) |
+| `app-quickadd-menu`, `app-add-manual-trip`, `app-add-mileage`, `app-add-fuel`, `app-add-expense`, `app-add-issue`, `app-record-undo`, `app-records-menu`, `app-record-actions` | Tkachenko на Passat KA1001AA | 11.11.2026, 2.0.30: координатний сценарій (меню «+»: Рука 192,2108 · Пробіг 328,1876 · Звернення 540,1840 · Витрата 752,1924 · Заправка 888,2108). `record-undo` — «Зберегти» на Руці → screencap → одразу тап по тосту (скасовано, на сервер не йде). `record-actions` — тестова заправка 40 л / 2200 грн, після кадрів **видалено**. Перед прогоном прийняти Passat, після — здати. Мова — перевіряти текст після force-stop |

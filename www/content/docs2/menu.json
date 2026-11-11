@@ -37,6 +37,24 @@
             "description": "Принять автомобиль в начале смены и сдать в конце: пробег, «Отменить», занятое авто."
           }
         }
+      },
+      {
+        "title": "Записи за зміну",
+        "slug": "driver-records",
+        "description": "Кнопка «+»: поїздка «на руку», пробіг, заправка, витрата, звернення; «Скасувати», виправити й видалити запис.",
+        "docFile": "_data/driver/records.md",
+        "badge": "new",
+        "screen": "app-quickadd-menu",
+        "i18n": {
+          "en": {
+            "title": "Shift records",
+            "description": "The «+» button: cash trip, mileage, refueling, expense, issue; «Undo», fix and delete a record."
+          },
+          "ru": {
+            "title": "Записи за смену",
+            "description": "Кнопка «+»: поездка «на руку», пробег, заправка, расход, обращение; «Отменить», исправить и удалить запись."
+          }
+        }
       }
     ],
     "i18n": {
