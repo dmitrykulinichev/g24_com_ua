@@ -14,6 +14,7 @@ return [
         'pricing' => 'Тарифы',
         'blog' => 'Блог',
         'docs' => 'Документация',
+        'driver' => 'Водителям',
         'contacts' => 'Контакты',
         'login' => 'В гараж',
         'login_mobile' => 'Войти в кабинет',
@@ -114,6 +115,11 @@ return [
             'subtitle' => 'Инструкции, советы и ответы на частые вопросы.',
             'go_to_section' => 'Перейти к разделу ":title".',
             'read' => 'Читать',
+            // Посилання на посібник водія (/driver) над списком розділів
+            'driver_banner' => [
+                'question' => 'Вы водитель?',
+                'link' => 'Руководство водителя',
+            ],
             'help' => [
                 'title' => 'Не нашли ответ?',
                 'text' => 'Наша служба поддержки готова помочь.',
@@ -136,6 +142,22 @@ return [
         ],
         'search' => [
             'placeholder' => 'Поиск...',
+        ],
+    ],
+
+    // Посібник водія — окремий розділ (/driver, content/driver; DriverGuideController, шаблони документації)
+    'driver' => [
+        'meta' => [
+            'title' => 'Руководство водителя',
+            'description' => 'Как водителю пользоваться приложением Garage24: вход по номеру телефона, приём и сдача авто, записи за смену.',
+        ],
+        'index' => [
+            'title' => 'Руководство водителя',
+            'subtitle' => 'Как работать в приложении Garage24: вход, смена, записи.',
+        ],
+        'page' => [
+            'nav' => 'Руководство водителя',
+            'breadcrumb' => 'Руководство водителя',
         ],
     ],
 
@@ -708,6 +730,20 @@ return [
         'app-home-with-car' => 'Главный экран водителя с автомобилем',
         'app-vehicle-handover' => 'Сдача автомобиля: пробег с одометра',
         'app-vehicle-handover-done' => 'Автомобиль сдан: можно отменить',
+        'app-quickadd-menu' => 'Приложение: меню кнопки «+» с записями за смену',
+        'app-add-manual-trip' => 'Приложение: запись поездки «на руку»',
+        'app-add-mileage' => 'Приложение: обновление пробега',
+        'app-add-fuel' => 'Приложение: новая заправка',
+        'app-add-expense' => 'Приложение: новый расход',
+        'app-add-issue' => 'Приложение: новое обращение',
+        'app-record-undo' => 'Запись сохранена: можно отменить',
+        'app-records-menu' => 'Меню приложения: мои записи',
+        'app-record-actions' => 'Запись: редактировать или удалить',
+        'app-schedule' => "Приложение: график смен водителя",
+        'app-vehicle-general' => "Приложение: ваш автомобиль",
+        'app-vehicle-documents' => "Приложение: документы автомобиля",
+        'app-info' => "Приложение: справка и контакты парка",
+        'app-info-accident' => "Справка: что делать при ДТП",
     ],
 
     'screen_captions' => [
@@ -727,5 +763,19 @@ return [
         'app-home-with-car' => 'Сдать автомобиль',
         'app-vehicle-handover' => 'Пробег',
         'app-vehicle-handover-done' => 'Сдано',
+        'app-quickadd-menu' => 'Меню «+»',
+        'app-add-manual-trip' => 'Рука',
+        'app-add-mileage' => 'Пробег',
+        'app-add-fuel' => 'Заправка',
+        'app-add-expense' => 'Расход',
+        'app-add-issue' => 'Обращение',
+        'app-record-undo' => 'Отменить',
+        'app-records-menu' => 'Мои записи',
+        'app-record-actions' => 'Редактировать или удалить',
+        'app-schedule' => 'График',
+        'app-vehicle-general' => 'Общее',
+        'app-vehicle-documents' => 'Документы',
+        'app-info' => 'Инфо',
+        'app-info-accident' => 'При ДТП',
     ],
 ];

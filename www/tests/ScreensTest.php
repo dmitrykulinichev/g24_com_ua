@@ -19,20 +19,22 @@ $config = fn () => LocaleConfig::load([
     'preview' => false,
 ]);
 
-// id зі сторінок документації (menu.json → docFile): [id => [slug]]
+// id зі сторінок документації (/docs) і посібника водія (/driver) — menu.json → docFile: [id => [адреса сторінки]]
 $docsScreens = function () use ($root): array {
     $used = [];
-    $menu = json_decode(file_get_contents($root . '/content/docs2/menu.json'), true);
-    foreach ($menu as $group) {
-        foreach ($group['items'] as $item) {
-            foreach (array_merge([$item], $item['tabs'] ?? []) as $page) {
-                $file = $root . '/content/docs2/' . preg_replace('#^_data/#', '', $page['docFile'] ?? '');
-                if (is_file($file)) {
-                    // `![](screen:a)` або потік кроками `![](screen:a,b,c)`
-                    preg_match_all('/!\[[^\]]*\]\(screen:([a-z0-9-]+(?:,[a-z0-9-]+)*)\)/', file_get_contents($file), $m);
-                    foreach ($m[1] as $list) {
-                        foreach (explode(',', $list) as $id) {
-                            $used[$id][] = $page['slug'];
+    foreach (['/docs' => '/content/docs2', '/driver' => '/content/driver'] as $base => $dir) {
+        $menu = json_decode(file_get_contents($root . $dir . '/menu.json'), true);
+        foreach ($menu as $group) {
+            foreach ($group['items'] as $item) {
+                foreach (array_merge([$item], $item['tabs'] ?? []) as $page) {
+                    $file = $root . $dir . '/' . preg_replace('#^_data/#', '', $page['docFile'] ?? '');
+                    if (is_file($file)) {
+                        // `![](screen:a)` або потік кроками `![](screen:a,b,c)`
+                        preg_match_all('/!\[[^\]]*\]\(screen:([a-z0-9-]+(?:,[a-z0-9-]+)*)\)/', file_get_contents($file), $m);
+                        foreach ($m[1] as $list) {
+                            foreach (explode(',', $list) as $id) {
+                                $used[$id][] = "{$base}/{$page['slug']}";
+                            }
                         }
                     }
                 }
@@ -54,10 +56,10 @@ $usedIds = function () use ($root, $docsScreens): array {
         }
     }
 
-    // Скріни в сторінках документації: `![](screen:id)` (Docs2Controller)
-    foreach ($docsScreens() as $id => $slugs) {
-        foreach ($slugs as $slug) {
-            $used[$id][] = "/docs/{$slug}";
+    // Скріни в сторінках документації й посібника водія: `![](screen:id)` (Docs2Controller)
+    foreach ($docsScreens() as $id => $paths) {
+        foreach ($paths as $path) {
+            $used[$id][] = $path;
         }
     }
 
@@ -86,11 +88,11 @@ return [
 
     'скрін у сторінці документації — і в її pages у реєстрі (мапа сайту)' => function () use ($docsScreens) {
         $registry = ScreenRegistry::load();
-        foreach ($docsScreens() as $id => $slugs) {
-            foreach ($slugs as $slug) {
+        foreach ($docsScreens() as $id => $paths) {
+            foreach ($paths as $path) {
                 check(
-                    $registry->has($id) && in_array("/docs/{$slug}", $registry->get($id)['pages'] ?? [], true),
-                    "«{$id}» стоїть на /docs/{$slug}, але цієї адреси немає в його pages"
+                    $registry->has($id) && in_array($path, $registry->get($id)['pages'] ?? [], true),
+                    "«{$id}» стоїть на {$path}, але цієї адреси немає в його pages"
                 );
             }
         }

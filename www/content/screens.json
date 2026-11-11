@@ -83,7 +83,7 @@
       "pages": [
         "/",
         "/features",
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-driver-trio": {
@@ -238,7 +238,7 @@
         "scenario": "Застосунок 2.0.26+, без входу: перший екран «Вхід» (номер телефону, вибір мови, «Увійти з паролем»); flows/driver-start.py"
       },
       "pages": [
-        "/docs/driver-start",
+        "/driver/start",
         "/docs"
       ]
     },
@@ -251,7 +251,7 @@
         "scenario": "Новий водій для скрінів (0791112298, CAST.md): «Надіслати код» → поле коду, «Повторно через …»; flows/driver-register.py"
       },
       "pages": [
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-register-new-driver": {
@@ -263,7 +263,7 @@
         "scenario": "Новий водій для скрінів (0791112298, CAST.md) → код → перший крок реєстрації «Код парку» з «ви новий водій»; flows/driver-register.py"
       },
       "pages": [
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-register-profile-filled": {
@@ -275,7 +275,7 @@
         "scenario": "Реєстрація: «Ваші дані» заповнено, «✓ Парк: Київ»; flows/driver-register.py (новий водій 0791112298, CAST.md; приклад даних — Andrii Tkachenko, 14.03.1990, AXK 482917)"
       },
       "pages": [
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-register-password": {
@@ -287,7 +287,7 @@
         "scenario": "Реєстрація: «Створіть пароль» (порожнє поле); flows/driver-register.py (новий водій 0791112298, CAST.md; приклад даних — Andrii Tkachenko, 14.03.1990, AXK 482917)"
       },
       "pages": [
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-first-permissions": {
@@ -299,7 +299,7 @@
         "scenario": "Після входу: «Дозволи додатку» (геолокацію дано, без камери — 2.0.29+); Andrii Tkachenko, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-new-driver-home": {
@@ -311,8 +311,8 @@
         "scenario": "Після реєстрації: «Головна» нового водія — «Ви не в автомобілі», «Обрати автомобіль»; Andrii Tkachenko (0791112299, CAST.md)"
       },
       "pages": [
-        "/docs/driver-start",
-        "/docs/driver-shift"
+        "/driver/start",
+        "/driver/shift"
       ]
     },
     "app-signin-code-telegram": {
@@ -324,7 +324,7 @@
         "scenario": "Тестовий водій Andrii Tkachenko (+380791112299), підключений до бота «Київ» @garage24_kyiv_test_bot: «Код надіслано в Telegram-бот вашого парку», «Надіслати SMS»"
       },
       "pages": [
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-telegram-code": {
@@ -336,7 +336,7 @@
         "scenario": "Скрін із телефона власника (не емулятор): чат з ботом «Київ» @garage24_kyiv_test_bot, повідомлення з кодом входу мовою застосунку. Знімає користувач; сирий кадр — у src/<мова>/app/telegram-code.png"
       },
       "pages": [
-        "/docs/driver-start"
+        "/driver/start"
       ]
     },
     "app-vehicle-choose": {
@@ -348,7 +348,7 @@
         "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Авто» → «Вільні (3)» після «Обрати автомобіль»"
       },
       "pages": [
-        "/docs/driver-shift"
+        "/driver/shift"
       ]
     },
     "app-vehicle-accept": {
@@ -360,7 +360,7 @@
         "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Прийняти» на Passat → пробіг 30 312, клавіатуру сховано"
       },
       "pages": [
-        "/docs/driver-shift"
+        "/driver/shift"
       ]
     },
     "app-vehicle-mine": {
@@ -372,7 +372,7 @@
         "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: Після прийому: «Мій автомобіль» (тост «Скасувати» вже зник)"
       },
       "pages": [
-        "/docs/driver-shift"
+        "/driver/shift"
       ]
     },
     "app-home-with-car": {
@@ -384,7 +384,7 @@
         "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Головна» з авто, «Здати автомобіль»"
       },
       "pages": [
-        "/docs/driver-shift"
+        "/driver/shift"
       ]
     },
     "app-vehicle-handover": {
@@ -396,7 +396,7 @@
         "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: «Здати автомобіль» → пробіг 30 498, клавіатуру сховано"
       },
       "pages": [
-        "/docs/driver-shift"
+        "/driver/shift"
       ]
     },
     "app-vehicle-handover-done": {
@@ -408,7 +408,7 @@
         "scenario": "Andrii Tkachenko (0791112299, CAST.md), парк «Київ», Passat KA1001AA: Одразу після здачі: «Головна» без авто, тост «Автомобіль здано · Скасувати»"
       },
       "pages": [
-        "/docs/driver-shift"
+        "/driver/shift"
       ]
     },
     "app-quickadd-menu": {
@@ -420,7 +420,7 @@
         "scenario": "Меню «+» на «Головній» з авто; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-add-manual-trip": {
@@ -432,7 +432,7 @@
         "scenario": "«+» → Рука: форма «Додати поїздку» (100 грн за замовчуванням); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-add-mileage": {
@@ -444,7 +444,7 @@
         "scenario": "«+» → Пробіг: «Оновити пробіг»; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-add-fuel": {
@@ -456,7 +456,7 @@
         "scenario": "«+» → Заправка: 40 л, 2200 грн (не зберігається; в uk — збережено для кадру меню картки й видалено); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-add-expense": {
@@ -468,7 +468,7 @@
         "scenario": "«+» → Витрата: порожня форма; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-add-issue": {
@@ -480,7 +480,7 @@
         "scenario": "«+» → Звернення: порожня форма; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-record-undo": {
@@ -492,7 +492,7 @@
         "scenario": "Після «Зберегти» на «Руці»: список і тост «Скасувати» (одразу скасовано — на сервер не пішло); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-records-menu": {
@@ -504,7 +504,7 @@
         "scenario": "Бічне меню ☰: «Мої записи»; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
       ]
     },
     "app-record-actions": {
@@ -516,7 +516,67 @@
         "scenario": "«Заправки»: меню картки «Редагувати / Видалити» (тестова заправка 40 л); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/docs/driver-records"
+        "/driver/records"
+      ]
+    },
+    "app-schedule": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "schedule"
+        ],
+        "scenario": "Вкладка «Графік»: 4 зміни Ткаченка на Passat KA1001AA (12–15.11.2026, додано в кабінеті); Andrii Tkachenko на Passat, парк «Київ»"
+      },
+      "pages": [
+        "/driver/schedule-and-info"
+      ]
+    },
+    "app-vehicle-general": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "vehicle-general"
+        ],
+        "scenario": "Вкладка «Авто» → «Загальне»: Passat KA1001AA; Andrii Tkachenko на Passat, парк «Київ»"
+      },
+      "pages": [
+        "/driver/schedule-and-info"
+      ]
+    },
+    "app-vehicle-documents": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "vehicle-documents"
+        ],
+        "scenario": "Вкладка «Авто» → «Документи (3)»; Andrii Tkachenko на Passat, парк «Київ»"
+      },
+      "pages": [
+        "/driver/schedule-and-info"
+      ]
+    },
+    "app-info": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "info"
+        ],
+        "scenario": "Меню ☰ → «Інфо»: корисна інформація й контакти парку «Київ»; Andrii Tkachenko на Passat, парк «Київ»"
+      },
+      "pages": [
+        "/driver/schedule-and-info"
+      ]
+    },
+    "app-info-accident": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "info-accident"
+        ],
+        "scenario": "«Інфо» → «Що робити при ДТП»; Andrii Tkachenko на Passat, парк «Київ»"
+      },
+      "pages": [
+        "/driver/schedule-and-info"
       ]
     }
   },

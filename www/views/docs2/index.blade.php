@@ -1,16 +1,27 @@
 @extends('layout')
 
+{{-- Головна розділу: документація (/docs) чи посібник водія (/driver) — $section з контролера (Docs2Controller::section) --}}
 @section('content')
     <div class="pt-32 lg:pt-40 pb-20">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12 bg-gradient-to-br from-blue-50 to-white p-10 rounded-3xl border border-blue-100">
-                <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">{{ t('docs.index.title') }}</h1>
-                <p class="text-lg text-slate-600 mb-8">{{ t('docs.index.subtitle') }}</p>
+                <h1 class="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">{{ $section['title'] }}</h1>
+                <p class="text-lg text-slate-600 mb-8">{{ $section['subtitle'] }}</p>
 
                 <div class="max-w-xl mx-auto">
-                    @include('partials.docs2-search')
+                    @include('partials.docs2-search', ['searchUrl' => $section['search'], 'pageBase' => lurl($section['base'])])
                 </div>
             </div>
+
+            @if($section['name'] === 'docs')
+                {{-- Посібник водія — окремий розділ (/driver): водію, що потрапив у документацію парку, — туди --}}
+                <a href="{{ lurl('/driver') }}" class="group mb-12 flex items-center justify-between gap-4 rounded-2xl border border-blue-100 bg-white px-6 py-4 text-slate-800 shadow-sm hover:border-primary/30 hover:bg-blue-50 transition-colors">
+                    <span class="font-medium">{{ t('docs.index.driver_banner.question') }} <span class="text-primary font-semibold group-hover:underline">{{ t('docs.index.driver_banner.link') }}</span></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-primary flex-shrink-0 transform group-hover:translate-x-1 transition-transform">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </a>
+            @endif
 
             @foreach($menu as $group)
                 <div class="mb-16">
@@ -19,7 +30,7 @@
                     </h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                         @foreach($group['items'] as $item)
-                            <a href="{{ lurl('/docs/' . $item['slug']) }}" class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
+                            <a href="{{ lurl($section['base'] . '/' . $item['slug']) }}" class="group bg-white border border-slate-200 rounded-xl overflow-hidden hover:shadow-xl hover:border-primary/30 transition-all duration-300 flex flex-col h-full">
                                 <!-- Зображення-прев'ю -->
                                 <div class="h-40 bg-slate-100 overflow-hidden border-b border-slate-100 relative">
                                     @if(!empty($item['screen']))

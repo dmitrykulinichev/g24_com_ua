@@ -9,34 +9,53 @@ class Docs2Controller
 {
     protected $blade;
     protected $contentPath;
-    protected $menuPath;
     protected $screenshotsWebPath;
+    /** Розділ: тека, меню й адреса (DocsStore::docs() чи DocsStore::driver()) */
+    protected DocsStore $store;
 
     public function __construct()
     {
         $this->blade = new \Jenssegers\Blade\Blade(__DIR__ . '/../../views', __DIR__ . '/../../storage/cache');
-        $this->contentPath = __DIR__ . '/../../content/docs2';
-        $this->menuPath = __DIR__ . '/../../content/docs2/menu.json';
+        $this->store = DocsStore::docs();
+        $this->contentPath = $this->store->root();
         $this->screenshotsWebPath = '/content/docs2/screenshots';
+    }
+
+    /**
+     * Що шаблонам треба знати про розділ: адреси, пошук і тексти (views/docs2). Посібник водія
+     * (DriverGuideController) підставляє своє — шаблони й код ті самі.
+     */
+    protected function section(): array
+    {
+        return [
+            'name'        => 'docs',
+            'base'        => $this->store->basePath(),
+            'search'      => '/api/docs/search',
+            'title'       => t('docs.index.title'),
+            'subtitle'    => t('docs.index.subtitle'),
+            'nav'         => t('docs.page.nav'),
+            'breadcrumb'  => t('docs.page.breadcrumb'),
+            'title_suffix' => null,
+        ];
     }
 
     protected function getMenu()
     {
         // Українська — основна: у меню лише сторінки, що мають український файл; назви — мовою сторінки (DocsStore)
         $default = \App\I18n\Locale::config()->default();
-        $menu = DocsStore::rawMenu();
+        $menu = $this->store->rawMenu();
 
         foreach ($menu as &$group) {
             $group = DocsStore::localize($group);
             $group['items'] = array_values(array_filter($group['items'], function ($item) use ($default) {
-                return !empty($item['docFile']) && file_exists(DocsStore::file($item['docFile'], $default));
+                return !empty($item['docFile']) && file_exists($this->store->file($item['docFile'], $default));
             }));
 
             foreach ($group['items'] as &$item) {
                 $item = DocsStore::localize($item);
                 if (!empty($item['tabs'])) {
                     $item['tabs'] = array_values(array_map([DocsStore::class, 'localize'], array_filter($item['tabs'], function ($tab) use ($default) {
-                        return !empty($tab['docFile']) && file_exists(DocsStore::file($tab['docFile'], $default));
+                        return !empty($tab['docFile']) && file_exists($this->store->file($tab['docFile'], $default));
                     })));
                 }
             }
@@ -233,18 +252,43 @@ HTML;
     {
         $menu = $this->getMenu();
         echo $this->blade->make('docs2.index', [
-            'menu' => $menu,
-            'meta' => [
-                'title' => t('docs.meta.title'),
-                'description' => t('docs.meta.description'),
-            ]
+            'menu'    => $menu,
+            'section' => $this->section(),
+            'meta'    => $this->indexMeta(),
         ])->render();
+    }
+
+    protected function indexMeta(): array
+    {
+        return [
+            'title' => t('docs.meta.title'),
+            'description' => t('docs.meta.description'),
+        ];
+    }
+
+    /**
+     * Стара адреса сторінки, що переїхала в інший розділ: /docs/driver-records → /driver/records (301).
+     * null — такої старої адреси немає.
+     */
+    protected function movedTo(string $slug): ?string
+    {
+        if (preg_match('/^driver-([a-z0-9-]+)$/', $slug, $m) && DocsStore::driver()->pageLocales($m[1]) !== null) {
+            return DocsStore::driver()->pagePath($m[1]);
+        }
+
+        return null;
     }
 
     public function show($slug)
     {
         $menu = $this->getMenu();
         $found = $this->findMenuItem($menu, $slug);
+
+        if (!$found && ($moved = $this->movedTo($slug)) !== null) {
+            // Мова зберігається: /en/docs/driver-records → /en/driver/records
+            header('Location: ' . lurl($moved), true, 301);
+            return;
+        }
 
         if (!$found) {
             http_response_code(404);
@@ -259,7 +303,7 @@ HTML;
 
         $docFile  = $isTab ? $activeTab['docFile'] : $parentItem['docFile'];
         // Мовою сторінки, якщо є переклад; інакше українська (canonical — на неї, LocalizedUrl)
-        $filePath = DocsStore::file($docFile, DocsStore::contentLocale($slug));
+        $filePath = $this->store->file($docFile, $this->store->contentLocale($slug));
         $data = MarkdownService::parseFile($filePath);
 
         if (!$data) {
@@ -304,8 +348,17 @@ HTML;
             }
         }
 
+        // Сторінка розділу з власною назвою (посібник водія): «Записи за зміну — Посібник водія | Garage24»
+        $section = $this->section();
+        $docTitle = $data['meta']['title'] ?? $slug;
+        if (!empty($section['title_suffix']) && !empty($data['meta']['title'])) {
+            $data['meta']['title'] .= ' — ' . $section['title_suffix'];
+        }
+
         echo $this->blade->make('docs2.page', [
+            'section'       => $section,
             'slug'          => $slug,
+            'docTitle'      => $docTitle,
             'content'       => $htmlContent,
             'menu'          => $menu,
             'meta'          => $data['meta'],

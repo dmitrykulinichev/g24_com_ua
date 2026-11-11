@@ -1,3 +1,4 @@
+{{-- Пошук розділу: $searchUrl — API (документація /api/docs/search, посібник водія /api/driver/search), $pageBase — адреса розділу мовою сторінки --}}
 <div class="search-container {{ $class ?? '' }}">
     <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
@@ -123,7 +124,7 @@
         }
 
         debounceTimer = setTimeout(() => {
-            apiFetch('/api/docs/search?q=' + encodeURIComponent(query))
+            apiFetch(@json($searchUrl ?? '/api/docs/search') + '?q=' + encodeURIComponent(query))
                 .then(response => response.json())
                 .then(data => {
                     resultsContainer.innerHTML = '';
@@ -131,7 +132,7 @@
                     if (data.length > 0) {
                         data.forEach(item => {
                             let link = document.createElement('a');
-                            link.href = '/docs/' + item.slug + '?highlight=' + encodeURIComponent(query);
+                            link.href = @json($pageBase ?? lurl('/docs')) + '/' + item.slug + '?highlight=' + encodeURIComponent(query);
                             link.className = 'search-result-item';
                             link.innerHTML = `
                                 <div class="result-title">${item.title}</div>

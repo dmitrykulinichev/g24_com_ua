@@ -14,6 +14,7 @@ return [
         'pricing' => 'Pricing',
         'blog' => 'Blog',
         'docs' => 'Documentation',
+        'driver' => 'For drivers',
         'contacts' => 'Contacts',
         'login' => 'Open garage',
         'login_mobile' => 'Log in to the cabinet',
@@ -114,6 +115,11 @@ return [
             'subtitle' => 'Guides, tips and answers to common questions.',
             'go_to_section' => 'Go to the ":title" section.',
             'read' => 'Read',
+            // Посилання на посібник водія (/driver) над списком розділів
+            'driver_banner' => [
+                'question' => 'Are you a driver?',
+                'link' => 'Driver guide',
+            ],
             'help' => [
                 'title' => 'Did not find an answer?',
                 'text' => 'Our support team is ready to help.',
@@ -136,6 +142,22 @@ return [
         ],
         'search' => [
             'placeholder' => 'Search...',
+        ],
+    ],
+
+    // Посібник водія — окремий розділ (/driver, content/driver; DriverGuideController, шаблони документації)
+    'driver' => [
+        'meta' => [
+            'title' => 'Driver guide',
+            'description' => 'How drivers use the Garage24 app: signing in with a phone number, taking and returning a vehicle, shift records.',
+        ],
+        'index' => [
+            'title' => 'Driver guide',
+            'subtitle' => 'How to work in the Garage24 app: sign-in, shift, records.',
+        ],
+        'page' => [
+            'nav' => 'Driver guide',
+            'breadcrumb' => 'Driver guide',
         ],
     ],
 
@@ -708,6 +730,20 @@ return [
         'app-home-with-car' => 'Driver home screen with a vehicle',
         'app-vehicle-handover' => 'Returning a vehicle: odometer reading',
         'app-vehicle-handover-done' => 'Vehicle returned: can be undone',
+        'app-quickadd-menu' => 'The app: the «+» menu with shift records',
+        'app-add-manual-trip' => 'The app: recording a cash trip',
+        'app-add-mileage' => 'The app: updating mileage',
+        'app-add-fuel' => 'The app: new refueling',
+        'app-add-expense' => 'The app: new expense',
+        'app-add-issue' => 'The app: new issue',
+        'app-record-undo' => 'Record saved: can be undone',
+        'app-records-menu' => 'App menu: my records',
+        'app-record-actions' => 'A record: edit or delete',
+        'app-schedule' => "The app: the driver's shift schedule",
+        'app-vehicle-general' => "The app: your vehicle",
+        'app-vehicle-documents' => "The app: the vehicle's documents",
+        'app-info' => "The app: the fleet's info and contacts",
+        'app-info-accident' => "Info: what to do after an accident",
     ],
 
     'screen_captions' => [
@@ -727,5 +763,19 @@ return [
         'app-home-with-car' => 'Return Vehicle',
         'app-vehicle-handover' => 'Mileage',
         'app-vehicle-handover-done' => 'Returned',
+        'app-quickadd-menu' => '«+» menu',
+        'app-add-manual-trip' => 'Trip',
+        'app-add-mileage' => 'Mileage',
+        'app-add-fuel' => 'Fuel',
+        'app-add-expense' => 'Expense',
+        'app-add-issue' => 'Issue',
+        'app-record-undo' => 'Undo',
+        'app-records-menu' => 'My records',
+        'app-record-actions' => 'Edit or delete',
+        'app-schedule' => 'Schedule',
+        'app-vehicle-general' => 'General',
+        'app-vehicle-documents' => 'Documents',
+        'app-info' => 'Info',
+        'app-info-accident' => 'Accident',
     ],
 ];

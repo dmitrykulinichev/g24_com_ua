@@ -1,0 +1,87 @@
+[
+  {
+    "title": "Застосунок для водія",
+    "items": [
+      {
+        "title": "Як почати",
+        "slug": "start",
+        "description": "Вхід за номером телефону: для водія, якого вже додав парк, і для нового водія.",
+        "docFile": "_data/start.md",
+        "badge": "new",
+        "screen": "app-signin",
+        "i18n": {
+          "en": {
+            "title": "Getting started",
+            "description": "Sign in with your phone number: for a driver your fleet has already added, and for a new driver."
+          },
+          "ru": {
+            "title": "Как начать",
+            "description": "Вход по номеру телефона: для водителя, которого уже добавил парк, и для нового водителя."
+          }
+        }
+      },
+      {
+        "title": "Зміна: прийняти й здати авто",
+        "slug": "shift",
+        "description": "Прийняти автомобіль на початку зміни й здати в кінці: пробіг, «Скасувати», зайняте авто.",
+        "docFile": "_data/shift.md",
+        "badge": "new",
+        "screen": "app-vehicle-mine",
+        "i18n": {
+          "en": {
+            "title": "Shift: take and return the vehicle",
+            "description": "Accept a vehicle at the start of a shift and return it at the end: mileage, \"Undo\", a vehicle with another driver."
+          },
+          "ru": {
+            "title": "Смена: принять и сдать авто",
+            "description": "Принять автомобиль в начале смены и сдать в конце: пробег, «Отменить», занятое авто."
+          }
+        }
+      },
+      {
+        "title": "Записи за зміну",
+        "slug": "records",
+        "description": "Кнопка «+»: поїздка «на руку», пробіг, заправка, витрата, звернення; «Скасувати», виправити й видалити запис.",
+        "docFile": "_data/records.md",
+        "badge": "new",
+        "screen": "app-quickadd-menu",
+        "i18n": {
+          "en": {
+            "title": "Shift records",
+            "description": "The «+» button: cash trip, mileage, refueling, expense, issue; «Undo», fix and delete a record."
+          },
+          "ru": {
+            "title": "Записи за смену",
+            "description": "Кнопка «+»: поездка «на руку», пробег, заправка, расход, обращение; «Отменить», исправить и удалить запись."
+          }
+        }
+      },
+      {
+        "title": "Графік, авто й довідка",
+        "slug": "schedule-and-info",
+        "description": "Графік змін, документи вашого авто, що робити при ДТП і контакти парку.",
+        "docFile": "_data/schedule-and-info.md",
+        "badge": "new",
+        "screen": "app-schedule",
+        "i18n": {
+          "en": {
+            "title": "Schedule, vehicle and fleet info",
+            "description": "Your shift schedule, your vehicle's documents, what to do after an accident and the fleet's contacts."
+          },
+          "ru": {
+            "title": "График, авто и справка",
+            "description": "График смен, документы вашего авто, что делать при ДТП и контакты парка."
+          }
+        }
+      }
+    ],
+    "i18n": {
+      "en": {
+        "title": "Driver app"
+      },
+      "ru": {
+        "title": "Приложение для водителя"
+      }
+    }
+  }
+]

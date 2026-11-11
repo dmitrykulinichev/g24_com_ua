@@ -12,7 +12,7 @@ trips, mileage and issues to the fleet's Telegram group.
 ![The «+» menu](screen:app-quickadd-menu)
 
 «+» works only while you are in a vehicle. If you haven't accepted one, the app says «No vehicle assigned».
-How to accept a vehicle — see [Shift: take and return the vehicle](/en/docs/driver-shift).
+How to accept a vehicle — see [Shift: take and return the vehicle](/en/driver/shift).
 
 ## Cash trip
 

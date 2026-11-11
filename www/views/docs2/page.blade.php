@@ -13,11 +13,11 @@
 
             <div class="lg:flex lg:flex-col lg:flex-1 lg:min-h-0" :class="{ 'hidden': !docsMenuOpen }">
                 <div class="sidebar-search">
-                    @include('partials.docs2-search')
+                    @include('partials.docs2-search', ['searchUrl' => $section['search'], 'pageBase' => lurl($section['base'])])
                 </div>
 
                 <div class="sidebar-nav">
-                <nav aria-label="{{ t('docs.page.nav') }}">
+                <nav aria-label="{{ $section['nav'] }}">
                 @foreach($menu as $group)
                     <div class="mb-6">
                         <p class="font-bold text-slate-900 uppercase text-xs tracking-wider mb-2">{{ $group['title'] }}</p>
@@ -27,7 +27,7 @@
                                     $isActive = $slug === $menuItem['slug'] || ($isTab && $parentSlug === $menuItem['slug']);
                                 @endphp
                                 <li>
-                                    <a href="{{ lurl('/docs/' . $menuItem['slug']) }}"
+                                    <a href="{{ lurl($section['base'] . '/' . $menuItem['slug']) }}"
                                        class="block px-3 py-2 rounded-md text-sm transition-colors duration-200
                                               {{ $isActive ? 'bg-blue-50 text-primary font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900' }}"
                                        @if($isActive) aria-current="page" @endif>
@@ -38,7 +38,7 @@
                                     <ul aria-label="{{ t('docs.page.sections', ['title' => $menuItem['title']]) }}" class="mt-0.5 ml-3 border-l border-slate-200 pl-2">
                                         @foreach($menuItem['tabs'] as $tab)
                                         <li>
-                                            <a href="{{ lurl('/docs/' . $tab['slug']) }}"
+                                            <a href="{{ lurl($section['base'] . '/' . $tab['slug']) }}"
                                                class="block px-2 py-1 text-xs transition-colors duration-200
                                                       {{ $activeTabSlug === $tab['slug'] ? 'text-primary font-medium' : 'text-slate-400 hover:text-slate-700' }}"
                                                @if($activeTabSlug === $tab['slug']) aria-current="page" @endif>
@@ -65,9 +65,9 @@
 
             <!-- Підключення компонента навігації -->
             @include('partials.navigation-buttons', [
-                'prevLink' => $prev ? "/docs/{$prev['slug']}" : null,
+                'prevLink' => $prev ? lurl($section['base'] . '/' . $prev['slug']) : null,
                 'prevTitle' => $prev['title'] ?? null,
-                'nextLink' => $next ? "/docs/{$next['slug']}" : null,
+                'nextLink' => $next ? lurl($section['base'] . '/' . $next['slug']) : null,
                 'nextTitle' => $next['title'] ?? null
             ])
         </article>
@@ -82,16 +82,17 @@
 @push('scripts')
 @php
     $baseUrl = rtrim($_ENV['APP_URL'] ?? ('https://' . $_SERVER['HTTP_HOST']), '/');
-    $docTitle = $meta['title'] ?? $slug;
+    // Назва сторінки без назви розділу (її контролер додає до <title> посібника водія)
+    $docTitle = $docTitle ?? $meta['title'] ?? $slug;
     $breadcrumbs = [
         ["position" => 1, "name" => "Garage24", "item" => \App\I18n\LocalizedUrl::absolute('/')],
-        ["position" => 2, "name" => t('docs.page.breadcrumb'), "item" => \App\I18n\LocalizedUrl::absolute('/docs')],
+        ["position" => 2, "name" => $section['breadcrumb'], "item" => \App\I18n\LocalizedUrl::absolute($section['base'])],
     ];
     if ($isTab && $parentItem) {
-        $breadcrumbs[] = ["position" => 3, "name" => $parentItem['title'], "item" => \App\I18n\LocalizedUrl::absolute('/docs/' . $parentItem['slug'])];
-        $breadcrumbs[] = ["position" => 4, "name" => $docTitle, "item" => \App\I18n\LocalizedUrl::absolute('/docs/' . $slug)];
+        $breadcrumbs[] = ["position" => 3, "name" => $parentItem['title'], "item" => \App\I18n\LocalizedUrl::absolute($section['base'] . '/' . $parentItem['slug'])];
+        $breadcrumbs[] = ["position" => 4, "name" => $docTitle, "item" => \App\I18n\LocalizedUrl::absolute($section['base'] . '/' . $slug)];
     } else {
-        $breadcrumbs[] = ["position" => 3, "name" => $docTitle, "item" => \App\I18n\LocalizedUrl::absolute('/docs/' . $slug)];
+        $breadcrumbs[] = ["position" => 3, "name" => $docTitle, "item" => \App\I18n\LocalizedUrl::absolute($section['base'] . '/' . $slug)];
     }
 @endphp
 <script type="application/ld+json">
@@ -113,7 +114,7 @@
   "headline": "{{ addslashes($docTitle) }}",
   "description": "{{ addslashes($meta['description'] ?? '') }}",
   "image": "{{ $articleImage }}",
-  "url": "{{ $baseUrl }}/docs2/{{ $slug }}",
+  "url": "{{ \App\I18n\LocalizedUrl::canonical() }}",
   "inLanguage": "uk",
   "publisher": {
     "@type": "Organization",

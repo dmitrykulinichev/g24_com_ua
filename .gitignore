@@ -23,3 +23,6 @@ Thumbs.db
 /tools/screens/node_modules/
 /tools/screens/.chrome-profile/
 /tools/screens/.cabinet-session.json
+
+# Карта сайту генерується на сервері (SitemapController: щоночі /api/sitemap/generate); нема файлу — віддається на льоту
+www/sitemap.xml

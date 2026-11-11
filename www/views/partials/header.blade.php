@@ -8,6 +8,7 @@
         ['path' => '/pricing', 'title' => t('nav.pricing')],
         ['path' => '/blog', 'title' => t('nav.blog')],
         ['path' => '/docs', 'title' => t('nav.docs')],
+        ['path' => '/driver', 'title' => t('nav.driver')],
         ['path' => '/contacts', 'title' => t('nav.contacts')],
     ];
 @endphp

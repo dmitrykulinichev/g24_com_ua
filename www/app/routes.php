@@ -18,9 +18,15 @@ $app->get('/pricing', 'App\Controllers\PricingController@index');
 $app->get('/contacts', 'App\Controllers\ContactsController@index');
 
 // Документація v2 → основний шлях /docs
+// (старі /docs/driver-* — 301 на посібник водія, Docs2Controller::movedTo)
 $app->get('/docs', 'App\Controllers\Docs2Controller@index');
 $app->get('/docs/{slug}', 'App\Controllers\Docs2Controller@show');
 $app->get('/api/docs/search', 'App\Controllers\SearchController@searchDocs2');
+
+// Посібник водія — окремий розділ (content/driver)
+$app->get('/driver', 'App\Controllers\DriverGuideController@index');
+$app->get('/driver/{slug}', 'App\Controllers\DriverGuideController@show');
+$app->get('/api/driver/search', 'App\Controllers\SearchController@searchDriver');
 
 // Документація v2 → старий шлях (редірект на /docs)
 $app->get('/docs2', function() { response()->redirect('/docs'); });

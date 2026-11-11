@@ -15,8 +15,9 @@ $config = fn () => LocaleConfig::load([
     'preview' => false,
 ]);
 
-// «start» — українською й англійською, «old» — лише українською
-$setup = function () use ($config): string {
+// «start» — українською й англійською, «old» — лише українською; розділ — /docs (посібник водія /driver — той самий код)
+$store = null;
+$setup = function () use ($config, &$store): string {
     $root = sys_get_temp_dir() . '/docs-test-' . bin2hex(random_bytes(4));
     mkdir("{$root}/driver", 0755, true);
     file_put_contents("{$root}/menu.json", json_encode([[
@@ -32,51 +33,50 @@ $setup = function () use ($config): string {
     file_put_contents("{$root}/driver/start.en.md", "# Getting started");
     file_put_contents("{$root}/old.md", "# Стара");
     Locale::useConfig($config());
-    DocsStore::useRoot($root);
+    $store = new DocsStore($root, '/docs');
     LocalizedUrl::forgetContent();
-    LocalizedUrl::registerContent('docs', [DocsStore::class, 'localesOfPath']);
+    LocalizedUrl::registerContent('docs', [$store, 'localesOfPath']);
 
     return $root;
 };
 $teardown = function (string $root): void {
     exec('rm -rf ' . escapeshellarg($root));
-    DocsStore::useRoot(null);
     LocalizedUrl::forgetContent();
     Locale::useConfig(null);
 };
 
 return [
-    'документація: сторінка є лише мовами, якими є її файл' => function () use ($setup, $teardown) {
+    'документація: сторінка є лише мовами, якими є її файл' => function () use ($setup, $teardown, &$store) {
         $root = $setup();
         try {
-            same(['uk', 'en'], DocsStore::localesOfPath('/docs/start'));
-            same(['uk'], DocsStore::localesOfPath('/docs/old'));
-            same(null, DocsStore::localesOfPath('/docs/missing'));
-            same(['uk', 'en'], DocsStore::localesOfPath('/docs'));
-            same(null, DocsStore::localesOfPath('/features'));
+            same(['uk', 'en'], $store->localesOfPath('/docs/start'));
+            same(['uk'], $store->localesOfPath('/docs/old'));
+            same(null, $store->localesOfPath('/docs/missing'));
+            same(['uk', 'en'], $store->localesOfPath('/docs'));
+            same(null, $store->localesOfPath('/features'));
         } finally {
             $teardown($root);
         }
     },
 
-    'документація: файл мовою сторінки, без перекладу — український' => function () use ($setup, $teardown) {
+    'документація: файл мовою сторінки, без перекладу — український' => function () use ($setup, $teardown, &$store) {
         $root = $setup();
         try {
             Locale::set('en', '/docs/start');
-            same("{$root}/driver/start.en.md", DocsStore::file('_data/driver/start.md', DocsStore::contentLocale('start')));
+            same("{$root}/driver/start.en.md", $store->file('_data/driver/start.md', $store->contentLocale('start')));
             Locale::set('en', '/docs/old');
-            same("{$root}/old.md", DocsStore::file('_data/old.md', DocsStore::contentLocale('old')));
+            same("{$root}/old.md", $store->file('_data/old.md', $store->contentLocale('old')));
             Locale::set('ru', '/docs/start');
-            same("{$root}/driver/start.md", DocsStore::file('_data/driver/start.md', DocsStore::contentLocale('start')));
+            same("{$root}/driver/start.md", $store->file('_data/driver/start.md', $store->contentLocale('start')));
         } finally {
             $teardown($root);
         }
     },
 
-    'документація: назви меню мовою сторінки, без перекладу — українські' => function () use ($setup, $teardown) {
+    'документація: назви меню мовою сторінки, без перекладу — українські' => function () use ($setup, $teardown, &$store) {
         $root = $setup();
         try {
-            $group = DocsStore::rawMenu()[0];
+            $group = $store->rawMenu()[0];
             Locale::set('en', '/docs');
             same('Driver app', DocsStore::localize($group)['title']);
             same('Getting started', DocsStore::localize($group['items'][0])['title']);
@@ -88,7 +88,21 @@ return [
         }
     },
 
-    'документація: перекладена сторінка — в альтернативах (hreflang) лише своїми мовами' => function () use ($setup, $teardown) {
+    'розділ відповідає лише за свої адреси: /driver/start — не документація' => function () use ($setup, $teardown, &$store) {
+        $root = $setup();
+        try {
+            $driver = new DocsStore($root, '/driver');
+            same(['uk', 'en'], $driver->localesOfPath('/driver/start'));
+            same(['uk', 'en'], $driver->localesOfPath('/driver'));
+            same(null, $driver->localesOfPath('/docs/start'));
+            same(null, $store->localesOfPath('/driver/start'));
+            same('/driver/start', $driver->pagePath('start'));
+        } finally {
+            $teardown($root);
+        }
+    },
+
+    'документація: перекладена сторінка — в альтернативах (hreflang) лише своїми мовами' => function () use ($setup, $teardown, &$store) {
         $root = $setup();
         $_ENV['APP_URL'] = 'https://g24.com.ua';
         try {

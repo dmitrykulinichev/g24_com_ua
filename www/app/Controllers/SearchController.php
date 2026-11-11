@@ -6,9 +6,20 @@ use App\Services\MarkdownService;
 
 class SearchController
 {
-    // Пошук по документації
-    // Пошук по документації v2
+    // Пошук по документації (без посібника водія — у нього свій пошук)
     public function searchDocs2()
+    {
+        $this->searchSection(\App\Docs\DocsStore::docs());
+    }
+
+    // Пошук по посібнику водія (/driver)
+    public function searchDriver()
+    {
+        $this->searchSection(\App\Docs\DocsStore::driver());
+    }
+
+    // Пошук у межах одного розділу (DocsStore): сторінки мовою запиту (X-Locale), якщо є переклад, інакше українські
+    private function searchSection(\App\Docs\DocsStore $store)
     {
         $query = $_GET['q'] ?? '';
         $query = mb_strtolower(trim($query));
@@ -18,58 +29,38 @@ class SearchController
             return;
         }
 
-        $menuPath    = __DIR__ . '/../../content/docs2/menu.json';
-        $contentPath = __DIR__ . '/../../content/docs2';
-
-        if (!file_exists($menuPath)) {
-            response()->json([]);
-            return;
-        }
-
-        $menu    = json_decode(file_get_contents($menuPath), true) ?? [];
         $results = [];
 
-        foreach ($menu as $group) {
-            foreach ($group['items'] as $item) {
-                $entries = [['slug' => $item['slug'], 'docFile' => $item['docFile']]];
-                foreach ($item['tabs'] ?? [] as $tab) {
-                    $entries[] = ['slug' => $tab['slug'], 'docFile' => $tab['docFile']];
-                }
+        foreach ($store->pages() as $entry) {
+            $filePath = $store->file($entry['docFile'], $store->contentLocale($entry['slug']));
 
-                foreach ($entries as $entry) {
-                    $relative = preg_replace('/^_data\//', '', $entry['docFile']);
-                    $filePath = $contentPath . '/' . $relative;
+            $data      = MarkdownService::parseFile($filePath);
+            if (!$data) continue;
+            $plainText = strip_tags($data['content']);
+            $plainText = preg_replace('/[#*`_\[\]!]/', '', $plainText);
+            $plainText = preg_replace('/\((?:screenshots|screen:)[^)]+\)/', '', $plainText);
+            $plainTextLower = mb_strtolower($plainText);
+            $titleLower     = mb_strtolower($data['meta']['title'] ?? '');
 
-                    if (!file_exists($filePath)) continue;
+            if (strpos($titleLower, $query) !== false) {
+                $results[] = [
+                    'title'   => $data['meta']['title'],
+                    'slug'    => $entry['slug'],
+                    'snippet' => mb_substr($plainText, 0, 100) . '...',
+                    'score'   => 10,
+                ];
+                continue;
+            }
 
-                    $data      = MarkdownService::parseFile($filePath);
-                    $plainText = strip_tags($data['content']);
-                    $plainText = preg_replace('/[#*`_\[\]!]/', '', $plainText);
-                    $plainText = preg_replace('/\(screenshots[^)]+\)/', '', $plainText);
-                    $plainTextLower = mb_strtolower($plainText);
-                    $titleLower     = mb_strtolower($data['meta']['title']);
-
-                    if (strpos($titleLower, $query) !== false) {
-                        $results[] = [
-                            'title'   => $data['meta']['title'],
-                            'slug'    => $entry['slug'],
-                            'snippet' => mb_substr($plainText, 0, 100) . '...',
-                            'score'   => 10,
-                        ];
-                        continue;
-                    }
-
-                    $pos = strpos($plainTextLower, $query);
-                    if ($pos !== false) {
-                        $start = max(0, $pos - 50);
-                        $results[] = [
-                            'title'   => $data['meta']['title'],
-                            'slug'    => $entry['slug'],
-                            'snippet' => '...' . mb_substr($plainText, $start, 100) . '...',
-                            'score'   => 5,
-                        ];
-                    }
-                }
+            $pos = mb_strpos($plainTextLower, $query);
+            if ($pos !== false) {
+                $start = max(0, $pos - 50);
+                $results[] = [
+                    'title'   => $data['meta']['title'],
+                    'slug'    => $entry['slug'],
+                    'snippet' => '...' . mb_substr($plainText, $start, 100) . '...',
+                    'score'   => 5,
+                ];
             }
         }
 

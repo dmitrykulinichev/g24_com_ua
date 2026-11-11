@@ -21,7 +21,9 @@ require __DIR__ . '/app/I18n/helpers.php';
 // Блог сам каже, якими мовами є його адреси (стаття — лише мовами, якими написана; app/Blog)
 App\I18n\LocalizedUrl::registerContent('blog', [App\Blog\BlogStore::class, 'localesOfPath']);
 // Документація — так само: сторінка є лише мовами, якими є її файл (app/Docs)
-App\I18n\LocalizedUrl::registerContent('docs', [App\Docs\DocsStore::class, 'localesOfPath']);
+App\I18n\LocalizedUrl::registerContent('docs', [App\Docs\DocsStore::docs(), 'localesOfPath']);
+// Посібник водія (/driver) — окремий розділ з тим самим кодом
+App\I18n\LocalizedUrl::registerContent('driver', [App\Docs\DocsStore::driver(), 'localesOfPath']);
 $localeResolution = (new App\I18n\LocaleResolver(App\I18n\Locale::config()))
     ->resolve($_SERVER['REQUEST_URI'] ?? '/', $_SERVER['HTTP_X_LOCALE'] ?? null);
 if ($localeResolution['redirect'] !== null) {

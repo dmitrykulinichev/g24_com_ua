@@ -93,6 +93,7 @@ class SitemapController
             ['loc' => '/contacts',  'lastmod' => '2025-10-01', 'changefreq' => 'yearly',  'priority' => '0.7'],
             ['loc' => '/blog',      'lastmod' => date('Y-m-d'), 'changefreq' => 'daily',  'priority' => '0.8'],
             ['loc' => '/docs',      'lastmod' => '2025-10-01', 'changefreq' => 'monthly', 'priority' => '0.8'],
+            ['loc' => '/driver',    'lastmod' => '2026-11-11', 'changefreq' => 'monthly', 'priority' => '0.8'],
         ];
 
         // Перекладені сторінки — кожною відкритою мовою з альтернативами (hreflang); решта — українською (app/I18n)
@@ -135,13 +136,18 @@ class SitemapController
             }
         }
 
-        // 3. Документація (content/docs2, шлях /docs) — кожна сторінка кожною мовою, якою вона є (app/Docs),
-        //    з альтернативами й скрінами з реєстру мовою цієї адреси (документація без перекладу — лише українською)
-        foreach (\App\Docs\DocsStore::slugs() as $docSlug) {
-            $path = '/docs/' . $docSlug;
-            if (\App\Docs\DocsStore::pageLocales($docSlug) === null) {
-                continue;
+        // 3. Документація (content/docs2, шлях /docs) і посібник водія (content/driver, шлях /driver) — кожна
+        //    сторінка кожною мовою, якою вона є (app/Docs), з альтернативами й скрінами з реєстру мовою цієї адреси
+        //    (документація без перекладу — лише українською). Головні розділів — серед статичних сторінок вище.
+        $docPages = [];
+        foreach ([\App\Docs\DocsStore::docs(), \App\Docs\DocsStore::driver()] as $store) {
+            foreach ($store->slugs() as $docSlug) {
+                if ($store->pageLocales($docSlug) !== null) {
+                    $docPages[] = $store->pagePath($docSlug);
+                }
             }
+        }
+        foreach ($docPages as $path) {
             $alternates = \App\I18n\LocalizedUrl::alternates($path);
             foreach ($alternates as $locale => $loc) {
                 $urls[] = [
