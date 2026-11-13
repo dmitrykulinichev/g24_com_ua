@@ -578,6 +578,90 @@
       "pages": [
         "/driver/schedule-and-info"
       ]
+    },
+    "tg-group": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "tg-group"
+        ],
+        "scenario": "Група «Парк Київ - Водії» (@garage24_kyiv_test_group), Telegram власника як водій Ткаченко: 1001 пробіг, рука, звернення, страховка — під кожним 👌 (web.telegram.org, вікно 400×714; бот пише лише українською — кадр один для всіх мов)"
+      },
+      "pages": [
+        "/driver/telegram"
+      ]
+    },
+    "tg-hints": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "tg-hints"
+        ],
+        "scenario": "Та сама група: «1001 здал 31740» і «1001 ( 300грн)» — відповіді бота «Я зрозумів так…» (web.telegram.org, вікно 400×714; бот пише лише українською — кадр один для всіх мов)"
+      },
+      "pages": [
+        "/driver/telegram"
+      ]
+    },
+    "app-profile": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "profile"
+        ],
+        "scenario": "Ткаченко (0791112299, тестовий код), «Київ»: меню ☰ → «Профіль»"
+      },
+      "pages": [
+        "/driver/profile-settings"
+      ]
+    },
+    "app-settings": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "settings"
+        ],
+        "scenario": "Ткаченко: меню ☰ → «Налаштування»"
+      },
+      "pages": [
+        "/driver/profile-settings"
+      ]
+    },
+    "app-sos-panel": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "sos-panel"
+        ],
+        "scenario": "Ткаченко: закладка SOS збоку відкрита, кнопку SOS НЕ натискати"
+      },
+      "pages": [
+        "/driver/profile-settings"
+      ]
+    },
+    "app-offline": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "offline-banner"
+        ],
+        "scenario": "Ткаченко: головна без зв'язку з сервером (емулятор без інтернету) — жовтий банер"
+      },
+      "pages": [
+        "/driver/profile-settings"
+      ]
+    },
+    "app-permissions": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "permissions"
+        ],
+        "scenario": "Ткаченко: меню ☰ → «Налаштування» → «Дозволи» (геолокація увімкнена, сповіщення ні)"
+      },
+      "pages": [
+        "/driver/profile-settings"
+      ]
     }
   },
   "cabinet_blur_text": [

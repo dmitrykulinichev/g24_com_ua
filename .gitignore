@@ -26,3 +26,4 @@ Thumbs.db
 
 # Карта сайту генерується на сервері (SitemapController: щоночі /api/sitemap/generate); нема файлу — віддається на льоту
 www/sitemap.xml
+/tools/screens/.telegram-profile/

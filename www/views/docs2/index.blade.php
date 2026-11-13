@@ -68,9 +68,9 @@
             <div class="mt-16 text-center bg-slate-50 rounded-2xl p-10 border border-slate-200">
                 <h3 class="text-xl font-bold text-slate-900 mb-2">{{ t('docs.index.help.title') }}</h3>
                 <p class="text-slate-600 mb-6">{{ t('docs.index.help.text') }}</p>
-                <button @click="$dispatch('open-order-modal', {})" class="inline-block bg-white border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-lg hover:bg-slate-100 hover:text-primary transition shadow-sm">
+                <a href="{{ lurl('/contacts') }}" class="inline-block bg-white border border-slate-300 text-slate-700 font-semibold px-6 py-3 rounded-lg hover:bg-slate-100 hover:text-primary transition shadow-sm">
                     {{ t('docs.index.help.cta') }}
-                </button>
+                </a>
             </div>
         </div>
     </div>

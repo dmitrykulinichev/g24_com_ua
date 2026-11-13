@@ -7,7 +7,6 @@
         "slug": "start",
         "description": "Вхід за номером телефону: для водія, якого вже додав парк, і для нового водія.",
         "docFile": "_data/start.md",
-        "badge": "new",
         "screen": "app-signin",
         "i18n": {
           "en": {
@@ -25,7 +24,6 @@
         "slug": "shift",
         "description": "Прийняти автомобіль на початку зміни й здати в кінці: пробіг, «Скасувати», зайняте авто.",
         "docFile": "_data/shift.md",
-        "badge": "new",
         "screen": "app-vehicle-mine",
         "i18n": {
           "en": {
@@ -43,7 +41,6 @@
         "slug": "records",
         "description": "Кнопка «+»: поїздка «на руку», пробіг, заправка, витрата, звернення; «Скасувати», виправити й видалити запис.",
         "docFile": "_data/records.md",
-        "badge": "new",
         "screen": "app-quickadd-menu",
         "i18n": {
           "en": {
@@ -61,7 +58,6 @@
         "slug": "schedule-and-info",
         "description": "Графік змін, документи вашого авто, що робити при ДТП і контакти парку.",
         "docFile": "_data/schedule-and-info.md",
-        "badge": "new",
         "screen": "app-schedule",
         "i18n": {
           "en": {
@@ -71,6 +67,40 @@
           "ru": {
             "title": "График, авто и справка",
             "description": "График смен, документы вашего авто, что делать при ДТП и контакты парка."
+          }
+        }
+      },
+      {
+        "title": "Профіль, налаштування і SOS",
+        "slug": "profile-settings",
+        "description": "Профіль і кілька парків, Telegram, мова й тема, дозволи, кнопка SOS і робота без інтернету.",
+        "docFile": "_data/profile-settings.md",
+        "screen": "app-sos-panel",
+        "i18n": {
+          "en": {
+            "title": "Profile, settings and SOS",
+            "description": "Profile and several fleets, Telegram, language and theme, permissions, the SOS button and working without internet."
+          },
+          "ru": {
+            "title": "Профиль, настройки и SOS",
+            "description": "Профиль и несколько парков, Telegram, язык и тема, разрешения, кнопка SOS и работа без интернета."
+          }
+        }
+      },
+      {
+        "title": "Як писати в групу Telegram",
+        "slug": "telegram",
+        "description": "Без застосунку: прийняти й здати авто, пробіг, рука, заправка й звернення коротким повідомленням у групі парку.",
+        "docFile": "_data/telegram.md",
+        "screen": "tg-group",
+        "i18n": {
+          "en": {
+            "title": "How to write in the Telegram group",
+            "description": "Without the app: take and return a vehicle, mileage, cash, refuelling and issues with a short message in the fleet's group."
+          },
+          "ru": {
+            "title": "Как писать в группу Telegram",
+            "description": "Без приложения: принять и сдать авто, пробег, рука, заправка и обращения коротким сообщением в группе парка."
           }
         }
       }
