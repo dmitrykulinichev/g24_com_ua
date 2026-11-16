@@ -44,6 +44,7 @@ $app->get('/api/blog/sync/{token}', 'App\Controllers\BlogSyncController@sync');
 
 // Sitemap
 $app->get('/sitemap.xml', 'App\Controllers\SitemapController@index');
+$app->get('/sitemap-driver.xml', 'App\Controllers\SitemapController@driver');  // САЙТ ВОДІЯ (app/DriverSite)
 $app->get('/api/sitemap/generate', 'App\Controllers\SitemapController@generate');
 
 // API для статичних сторінок (модалки)

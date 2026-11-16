@@ -24,6 +24,8 @@ App\I18n\LocalizedUrl::registerContent('blog', [App\Blog\BlogStore::class, 'loca
 App\I18n\LocalizedUrl::registerContent('docs', [App\Docs\DocsStore::docs(), 'localesOfPath']);
 // Посібник водія (/driver) — окремий розділ з тим самим кодом
 App\I18n\LocalizedUrl::registerContent('driver', [App\Docs\DocsStore::driver(), 'localesOfPath']);
+// САЙТ ВОДІЯ (app/DriverSite): driver.g24.com.ua — лише посібник; g24.com.ua/driver… → 301 туди
+App\DriverSite\DriverSite::handleRequest();
 $localeResolution = (new App\I18n\LocaleResolver(App\I18n\Locale::config()))
     ->resolve($_SERVER['REQUEST_URI'] ?? '/', $_SERVER['HTTP_X_LOCALE'] ?? null);
 if ($localeResolution['redirect'] !== null) {

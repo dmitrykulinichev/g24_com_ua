@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://g24.com.ua/sitemap.xml
+Sitemap: https://driver.g24.com.ua/sitemap-driver.xml

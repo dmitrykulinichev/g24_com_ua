@@ -2,6 +2,8 @@
 
 namespace App\I18n;
 
+use App\DriverSite\DriverSite;
+
 /** Адреси з мовою: внутрішні посилання, canonical, перемикач і hreflang. */
 final class LocalizedUrl
 {
@@ -47,6 +49,11 @@ final class LocalizedUrl
         $locale ??= Locale::current();
         $path = '/' . ltrim($path, '/');
 
+        // САЙТ ВОДІЯ (app/DriverSite): свої адреси посібника, решта сторінок — на основному домені
+        if (DriverSite::active()) {
+            return DriverSite::link($path, $locale === Locale::config()->default() ? '' : "/{$locale}");
+        }
+
         if ($locale === Locale::config()->default()) {
             return $path;
         }
@@ -56,7 +63,9 @@ final class LocalizedUrl
 
     public static function absolute(string $path, ?string $locale = null): string
     {
-        return self::base() . self::to($path, $locale);
+        $url = self::to($path, $locale);
+
+        return str_starts_with($url, 'https://') || str_starts_with($url, 'http://') ? $url : self::base() . $url;
     }
 
     /**
@@ -85,6 +94,10 @@ final class LocalizedUrl
 
     public static function base(): string
     {
+        if (DriverSite::active()) {  // САЙТ ВОДІЯ — свій домен
+            return DriverSite::url();
+        }
+
         return rtrim($_ENV['APP_URL'] ?? ('https://' . ($_SERVER['HTTP_HOST'] ?? 'localhost')), '/');
     }
 }

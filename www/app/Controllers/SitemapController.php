@@ -8,11 +8,14 @@ use App\Services\TelegramService;
 class SitemapController
 {
     protected $sitemapPath;
+    /** САЙТ ВОДІЯ (app/DriverSite): окрема мапа driver.g24.com.ua — для своєї властивості в Google Search Console */
+    protected $driverSitemapPath;
     protected $telegram;
 
     public function __construct()
     {
         $this->sitemapPath = dirname(__DIR__, 2) . '/sitemap.xml';
+        $this->driverSitemapPath = dirname(__DIR__, 2) . '/' . \App\DriverSite\DriverSite::SITEMAP_FILE;
         $this->telegram = new TelegramService();
     }
 
@@ -29,6 +32,17 @@ class SitemapController
         // Генеруємо та повертаємо без збереження
         header('Content-Type: application/xml; charset=UTF-8');
         echo $this->buildXml();
+    }
+
+    /** САЙТ ВОДІЯ: /sitemap-driver.xml — так само (статичний файл; цей метод — коли файлу ще немає). */
+    public function driver()
+    {
+        header('Content-Type: application/xml; charset=UTF-8');
+        if (file_exists($this->driverSitemapPath)) {
+            readfile($this->driverSitemapPath);
+            return;
+        }
+        echo $this->buildXml('driver');
     }
 
     /**
@@ -48,22 +62,28 @@ class SitemapController
 
         $xml = $this->buildXml();
         $urlsCount = substr_count($xml, '<url>');
+        // САЙТ ВОДІЯ: окрема мапа посібника (driver.g24.com.ua)
+        $driverXml = $this->buildXml('driver');
+        $driverUrlsCount = substr_count($driverXml, '<url>');
 
-        if (file_put_contents($this->sitemapPath, $xml) === false) {
+        if (file_put_contents($this->sitemapPath, $xml) === false
+            || file_put_contents($this->driverSitemapPath, $driverXml) === false) {
             http_response_code(500);
             header('Content-Type: application/json');
             echo json_encode(['error' => 'Failed to write sitemap.xml']);
             $this->telegram->sendMessage(
-                "🔴 <b>Генерація карти сайту — помилка</b>\nНе вдалось записати sitemap.xml ({$urlsCount} URL мали потрапити в файл)."
+                "🔴 <b>Генерація карти сайту — помилка</b>\nНе вдалось записати sitemap.xml ({$urlsCount} URL) чи " . \App\DriverSite\DriverSite::SITEMAP_FILE . " ({$driverUrlsCount} URL)."
             );
             return;
         }
 
         header('Content-Type: application/json');
         echo json_encode([
-            'success' => true,
-            'urls'    => $urlsCount,
-            'saved'   => $this->sitemapPath,
+            'success'     => true,
+            'urls'        => $urlsCount,
+            'saved'       => $this->sitemapPath,
+            'driver_urls' => $driverUrlsCount,
+            'driver_saved' => $this->driverSitemapPath,
         ]);
 
         // Не змушуємо клієнта чекати ще й на Telegram (до 5с) — завершуємо
@@ -73,11 +93,14 @@ class SitemapController
         }
 
         $this->telegram->sendMessage(
-            "🟢 <b>Карта сайту згенерована</b>\nURL у файлі: {$urlsCount}"
+            "🟢 <b>Карта сайту згенерована</b>\nURL у файлі: {$urlsCount}; посібник водія: {$driverUrlsCount}"
         );
     }
 
-    protected function buildXml(): string
+    /**
+     * [$site]: `main` — основний сайт без посібника водія; `driver` — лише посібник, адресами driver.g24.com.ua.
+     */
+    protected function buildXml(string $site = 'main'): string
     {
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? 'https' : 'http';
         $baseUrl  = rtrim($_ENV['APP_URL'] ?? ("$protocol://" . $_SERVER['HTTP_HOST']), '/');
@@ -162,6 +185,19 @@ class SitemapController
                     ),
                 ];
             }
+        }
+
+        // САЙТ ВОДІЯ (app/DriverSite): мапи окремі — посібник лише в мапі driver.g24.com.ua і його адресами
+        $urls = array_values(array_filter(
+            $urls,
+            fn ($url) => \App\DriverSite\DriverSite::isSectionUrl($url['loc']) === ($site === 'driver')
+        ));
+        if ($site === 'driver') {
+            foreach ($urls as &$url) {
+                $url['loc'] = \App\DriverSite\DriverSite::sitemapUrl($url['loc']);
+                $url['alternates'] = array_map([\App\DriverSite\DriverSite::class, 'sitemapUrl'], $url['alternates']);
+            }
+            unset($url);
         }
 
         $imageEntries = (new Docs2ImageSitemapService())->getEntries($baseUrl, '/docs');

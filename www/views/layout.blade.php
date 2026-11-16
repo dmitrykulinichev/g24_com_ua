@@ -96,16 +96,20 @@
     @stack('styles')
 </head>
 <body class="text-slate-800 antialiased bg-white" x-data="{ yearly: false }">
-    @include('partials.header')
+    {{-- САЙТ ВОДІЯ (app/DriverSite): на driver.g24.com.ua — своя шапка й підвал, без форми заявки --}}
+    @php($driverSite = \App\DriverSite\DriverSite::active())
+    @include($driverSite ? 'driver-site.header' : 'partials.header')
 
     <main>
         @yield('content')
     </main>
 
-    @include('partials.footer')
+    @include($driverSite ? 'driver-site.footer' : 'partials.footer')
 
     <!-- Модальні вікна (підключаються глобально ОДИН РАЗ) -->
+    @unless($driverSite)
     @include('partials.modal-form')
+    @endunless
     @include('partials.cookie-consent')
 
     <!-- Скрипти сторінок -->

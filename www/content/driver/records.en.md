@@ -6,7 +6,7 @@ description: How to record a cash trip, mileage, refueling, an expense or an iss
 # Shift records
 
 Everything that happens during a shift is recorded with the «+» button at the bottom of the screen: cash trips,
-mileage, refueling, expenses and issues. The fleet administrator sees records right away, and the bot also posts
+mileage, refueling, expenses, issues and a vehicle condition report ([Vehicle condition photos and video](/en/driver/condition-report)). The fleet administrator sees records right away, and the bot also posts
 trips, mileage and issues to the fleet's Telegram group.
 
 ![The «+» menu](screen:app-quickadd-menu)

@@ -15,7 +15,8 @@
 
             @if($section['name'] === 'docs')
                 {{-- Посібник водія — окремий розділ (/driver): водію, що потрапив у документацію парку, — туди --}}
-                <a href="{{ lurl('/driver') }}" class="group mb-12 flex items-center justify-between gap-4 rounded-2xl border border-blue-100 bg-white px-6 py-4 text-slate-800 shadow-sm hover:border-primary/30 hover:bg-blue-50 transition-colors">
+                {{-- САЙТ ВОДІЯ (app/DriverSite): посібник водія — на driver.g24.com.ua --}}
+                <a href="{{ \App\DriverSite\DriverSite::driverUrl(lurl('/driver')) }}" class="group mb-12 flex items-center justify-between gap-4 rounded-2xl border border-blue-100 bg-white px-6 py-4 text-slate-800 shadow-sm hover:border-primary/30 hover:bg-blue-50 transition-colors">
                     <span class="font-medium">{{ t('docs.index.driver_banner.question') }} <span class="text-primary font-semibold group-hover:underline">{{ t('docs.index.driver_banner.link') }}</span></span>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5 text-primary flex-shrink-0 transform group-hover:translate-x-1 transition-transform">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />

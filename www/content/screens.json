@@ -417,10 +417,11 @@
         "shots": [
           "quickadd-menu"
         ],
-        "scenario": "Меню «+» на «Головній» з авто; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+        "scenario": "Меню «+» (сітка 2×3, 2.0.32) на «Головній» з авто; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
       },
       "pages": [
-        "/driver/records"
+        "/driver/records",
+        "/driver/condition-report"
       ]
     },
     "app-add-manual-trip": {
@@ -661,6 +662,66 @@
       },
       "pages": [
         "/driver/profile-settings"
+      ]
+    },
+    "app-condition-report-empty": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "condition-report-empty"
+        ],
+        "scenario": "«+» → Фотозвіт: порожня форма — «Зробити фото» і «Записати відео»; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/driver/condition-report"
+      ]
+    },
+    "app-condition-report-filled": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "condition-report-filled"
+        ],
+        "scenario": "Форма «Фотозвіт»: 2 фото з камери й відео (емулятор); Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/driver/condition-report"
+      ]
+    },
+    "app-condition-report-video-actions": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "condition-report-video-actions"
+        ],
+        "scenario": "Тап по відео у формі: Переглянути / Перезаписати / Видалити; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/driver/condition-report"
+      ]
+    },
+    "app-condition-reports": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "condition-reports"
+        ],
+        "scenario": "☰ → Мої записи → Фотозвіти: щойно збережений звіт (2 фото + відео) і стан заливки; звіт збережено на проді; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/driver/condition-report"
+      ]
+    },
+    "app-condition-report-actions": {
+      "source": {
+        "kind": "app",
+        "shots": [
+          "condition-report-actions"
+        ],
+        "scenario": "Тап по прийнятому звіту: Змінити коментар / Видалити; Andrii Tkachenko на Passat KA1001AA, парк «Київ»"
+      },
+      "pages": [
+        "/driver/condition-report"
       ]
     }
   },

@@ -54,6 +54,23 @@
         }
       },
       {
+        "title": "Фото й відео стану авто",
+        "slug": "condition-report",
+        "description": "Звіт про стан авто: до 10 фото й відео до хвилини, без інтернету теж; змінити коментар чи видалити звіт.",
+        "docFile": "_data/condition-report.md",
+        "screen": "app-condition-report-filled",
+        "i18n": {
+          "en": {
+            "title": "Vehicle condition photos and video",
+            "description": "A condition report: up to 10 photos and a video up to a minute, offline too; edit the comment or delete the report."
+          },
+          "ru": {
+            "title": "Фото и видео состояния авто",
+            "description": "Отчёт о состоянии авто: до 10 фото и видео до минуты, без интернета тоже; изменить комментарий или удалить отчёт."
+          }
+        }
+      },
+      {
         "title": "Графік, авто й довідка",
         "slug": "schedule-and-info",
         "description": "Графік змін, документи вашого авто, що робити при ДТП і контакти парку.",

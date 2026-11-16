@@ -285,8 +285,10 @@ HTML;
         $found = $this->findMenuItem($menu, $slug);
 
         if (!$found && ($moved = $this->movedTo($slug)) !== null) {
-            // Мова зберігається: /en/docs/driver-records → /en/driver/records
-            header('Location: ' . lurl($moved), true, 301);
+            // Мова зберігається: /en/docs/driver-records → /en/driver/records;
+            // САЙТ ВОДІЯ (app/DriverSite): на основному домені — одразу на driver.g24.com.ua, без другої переадресації
+            $target = lurl($moved);
+            header('Location: ' . (\App\DriverSite\DriverSite::redirectFromMain($target) ?? $target), true, 301);
             return;
         }
 
@@ -314,6 +316,9 @@ HTML;
 
         $rendered    = MarkdownService::render($data['content']);
         $htmlContent = $this->rewriteImagePaths($this->processScreenshots($this->renderRegistryScreens($rendered)));
+        if (\App\DriverSite\DriverSite::active()) {  // САЙТ ВОДІЯ: «/driver/shift» у текстах → «/shift»
+            $htmlContent = \App\DriverSite\DriverSite::rewriteLinks($htmlContent);
+        }
 
         // OG image — конвертуємо відносний шлях скріншота в абсолютний web-шлях
         if (!empty($data['meta']['image']) && str_starts_with($data['meta']['image'], 'screenshots/')) {
