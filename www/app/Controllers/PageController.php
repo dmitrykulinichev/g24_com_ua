@@ -20,6 +20,8 @@ class PageController
     public function showTaxiPrivacy()       { $this->show('taxi-privacy'); }
     public function showTaxiDeleteAccount() { $this->show('taxi-delete-account'); }
     public function showTaxiTerms()         { $this->show('taxi-terms'); }
+    // Куди веде "Повідомити про помилку" в застосунку (feedback.url у taxiMobile/brand.properties).
+    public function showTaxiFeedback()      { $this->show('taxi-feedback'); }
 
     public function show($slug)
     {
