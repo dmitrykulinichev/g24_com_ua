@@ -40,8 +40,8 @@ comment: `5683 cash 500 12 airport`. Fuel: «бензин» (petrol), «дизе
 ![](screen:tg-group,tg-hints)
 
 - 👌 under your message: recorded.
-- ❌: the message was understood, but could not be recorded, for example the vehicle is taken by another driver.
-  Contact the administrator.
+- 👎 and a bot reply saying why: the message was understood, but could not be recorded, for example the vehicle is
+  taken by another driver or runs on a different fuel. Fix it and send again, or contact the administrator.
 - The bot replied in the group «Я зрозумів так…» ("I understood it as…"): it recorded the message, but you did
   not follow the format. Next time write it the way the bot suggests.
 - No 👌 and no reply: the bot did not understand the message. It will send you a hint with the formats in a
